@@ -12,7 +12,8 @@ public interface TechnicalSanctionService {
 	
 
 
-public void insertTechnicalSanctions(List<TechnicalSanctionsModel> list);
+
+public  BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> insertTechnicalSanctions(List<TechnicalSanctionsModel> list);
 
 public BaseResponse<HttpStatus, List<TechnicalSanctionsModel>>  getTechnicalSanctionByWorkId(Integer workId);
 

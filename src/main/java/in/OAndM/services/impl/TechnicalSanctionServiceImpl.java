@@ -28,13 +28,17 @@ public class TechnicalSanctionServiceImpl extends BaseServiceImpl<TechnicalSanct
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 	
 	@Override
-	public void insertTechnicalSanctions(List<TechnicalSanctionsModel> list) {
+	public  BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> insertTechnicalSanctions(List<TechnicalSanctionsModel> list) {
 
+		
+		BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> responseJson = new BaseResponse<>();
 			if(list!=null) {
-				saveAll(list);
+				responseJson=saveAll(list);
+				responseJson.setMessage("Submitted SuccessFully");
 			}else {
-				
+				responseJson.setMessage("Error in Submitting");
 			}
+			return responseJson;
 	}
 	
 	public BaseResponse<HttpStatus, List<TechnicalSanctionsModel>>  getTechnicalSanctionByWorkId(Integer workId){

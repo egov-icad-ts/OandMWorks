@@ -27,11 +27,13 @@ import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.AgreementsModel;
 import in.OAndM.DTO.BillsModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
+import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AgreementsService;
 import in.OAndM.services.BillsService;
 import in.OAndM.services.TechnicalSanctionService;
+import in.OAndM.services.WorkDetailsViewService;
 import in.OAndM.utils.DateUtil;
 
 @RestController
@@ -46,6 +48,10 @@ public class OAndMController {
 	
 	@Autowired
 	AgreementsService agreementsService;
+	
+
+	@Autowired
+	WorkDetailsViewService workDetailsService;
 	
 	@Autowired
 	BillsService billsService;
@@ -113,91 +119,94 @@ public class OAndMController {
 	}
 
 
-		@PostMapping(value="/submitTechnicalSanctions",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
-		public void submitTechnicalSanctions(@ModelAttribute TechnicalSanctionsModel techlist){
-			
-			  MultipartFile tsFile=null,tsEstimateFile=null; 
- List<TechnicalSanctionsModel> tsList1 = new ArrayList<TechnicalSanctionsModel>();
- 
- List<TechnicalSanctionsModel> tsList = techlist.getTechList();
- 
-			  String tsValidFile,tsEstValidFile=null; 
-			  if(techlist!=null) {
-					for(int i=0;i<tsList.size();i++) {
-//						tsList.get(i).setUpdatedByUserName(uname);
+	@PostMapping(value="/submitTechnicalSanctions",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
-						tsFile = tsList.get(i).getTechSancUrl();
-						tsEstimateFile = tsList.get(i).getTechEstimateUrl();
-						if (null != tsFile && tsFile.getSize() > 0) {
-							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-							Long uploadTime = timestamp.getTime();
-							String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");;
-							String FileType = tsFile.getContentType();
-							String rootPath = System.getProperty("catalina.home");
-							File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-									+ File.separator + "O&MWorks"+ File.separator + "TechSanctionFiles" + File.separator);
-							String[] temps = fileName.split(Pattern.quote("."));
-							if (!dir.exists())
-								dir.mkdirs();
-							String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
-							try {
-								tsFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-							} catch (IllegalStateException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							tsList.get(i).setTsFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
-							tsValidFile = temps[temps.length - 1];
-							tsList.get(i).setSancFileType(tsValidFile);
+	public ResponseEntity<BaseResponse<HttpStatus,  List<TechnicalSanctionsModel>>> submitTechnicalSanctions(@ModelAttribute TechnicalSanctionsModel techlist){
+		
+		  MultipartFile tsFile=null,tsEstimateFile=null; 
+List<TechnicalSanctionsModel> tsList1 = new ArrayList<TechnicalSanctionsModel>();
+
+List<TechnicalSanctionsModel> tsList = techlist.getTechList();
+
+		  String tsValidFile,tsEstValidFile=null; 
+		  if(techlist!=null) {
+				for(int i=0;i<tsList.size();i++) {
+//					tsList.get(i).setUpdatedByUserName(uname);
+
+					tsFile = tsList.get(i).getTechSancUrl();
+					tsEstimateFile = tsList.get(i).getTechEstimateUrl();
+					if (null != tsFile && tsFile.getSize() > 0) {
+						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						Long uploadTime = timestamp.getTime();
+						String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");;
+						String FileType = tsFile.getContentType();
+						String rootPath = System.getProperty("catalina.home");
+						File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
+								+ File.separator + "O&MWorks"+ File.separator + "TechSanctionFiles" + File.separator);
+						String[] temps = fileName.split(Pattern.quote("."));
+						if (!dir.exists())
+							dir.mkdirs();
+						String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
+						try {
+							tsFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+						} catch (IllegalStateException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						
-						if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
-							Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-							Long uploadTime = timestamp.getTime();
-							String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");;
-							String FileType = tsEstimateFile.getContentType();
-							String rootPath = System.getProperty("catalina.home");
-							File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-									+ File.separator + "O&MWorks"+ File.separator + "TechEstimateFiles" + File.separator);
-							String[] temps = fileName.split(Pattern.quote("."));
-							if (!dir.exists())
-								dir.mkdirs();
-							String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
-							try {
-								tsEstimateFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-							} catch (IllegalStateException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							tsList.get(i).setTsEstFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
-							tsEstValidFile = temps[temps.length - 1];
-							tsList.get(i).setEstFileType(tsEstValidFile);
+						tsList.get(i).setTsFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
+						tsValidFile = temps[temps.length - 1];
+						tsList.get(i).setSancFileType(tsValidFile);
+					}
+					
+					if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
+						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+						Long uploadTime = timestamp.getTime();
+						String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");;
+						String FileType = tsEstimateFile.getContentType();
+						String rootPath = System.getProperty("catalina.home");
+						File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
+								+ File.separator + "O&MWorks"+ File.separator + "TechEstimateFiles" + File.separator);
+						String[] temps = fileName.split(Pattern.quote("."));
+						if (!dir.exists())
+							dir.mkdirs();
+						String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
+						try {
+							tsEstimateFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+						} catch (IllegalStateException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-						java.sql.Date sqlDate=null;
-						if(tsList.get(i).getTsDate()!=null) {
-							try {
-								sqlDate=DateUtil.getSQLDate1(tsList.get(i).getTsDate());
-								if(sqlDate!=null) {
-									tsList.get(i).setTsApprovedDate(sqlDate);
-								}
-							} catch (ParseException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+						tsList.get(i).setTsEstFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
+						tsEstValidFile = temps[temps.length - 1];
+						tsList.get(i).setEstFileType(tsEstValidFile);
+					}
+					java.sql.Date sqlDate=null;
+					if(tsList.get(i).getTsDate()!=null) {
+						try {
+							sqlDate=DateUtil.getSQLDate1(tsList.get(i).getTsDate());
+							if(sqlDate!=null) {
+								tsList.get(i).setTsApprovedDate(sqlDate);
 							}
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}
-				technicalSanctionService.insertTechnicalSanctions(tsList);
-				
+			}
+		  BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response	 =technicalSanctionService.insertTechnicalSanctions(tsList);
+		  
+		  return  new ResponseEntity<>(response, response.getStatus());
+			
 
-	}
+}
 	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> testUpload(@RequestParam("file") MultipartFile file) {
 		return ResponseEntity.ok("File uploaded: " + file.getOriginalFilename());
@@ -221,4 +230,14 @@ public class OAndMController {
 		billsService.insertBills(bills);
 
 }
+	
+	@GetMapping("/getWorksByFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
+			@RequestParam Integer finyear) {
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response = workDetailsService.getWorksByFinyear(finyear);
+
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
 }
