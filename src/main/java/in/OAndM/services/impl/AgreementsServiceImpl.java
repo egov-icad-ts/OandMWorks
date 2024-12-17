@@ -67,14 +67,19 @@ public class AgreementsServiceImpl  extends BaseServiceImpl<AgreementsEntity, Ag
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_STARTED));
 		BaseResponse<HttpStatus, AgreementsModel> responseJson = new BaseResponse<>();
 		AgreementsEntity entities = agreementsRepo.findByworkIdAndAgreementIdAndIsLatestAndDeleteFlagAndBillsIsLatestAndBillsDeleteFlag(workId,agreementId,true,false,true,false) ;
+		if(entities ==null ) {
+			entities = agreementsRepo.findByworkIdAndAgreementIdAndIsLatestAndDeleteFlag(workId,agreementId,true,false) ;
+		}
+		
 		AgreementsModel model=new AgreementsModel();
 			model.setWorkId(entities.getWorkId());
 			model.setAgreementAmount(entities.getAgreementAmount());
-
 			model.setAgreementDate(entities.getAgreementDate());
 			model.setAgreementNumber(entities.getAgreementNumber());
 			
 			List<BillsModel> billEntryModel=new ArrayList<>();
+			
+			if( entities.getBills().size()>0) {
 			for(BillsEntity  bills: entities.getBills()) {
 				
 				BillsModel billsModel=new BillsModel();
@@ -85,6 +90,7 @@ public class AgreementsServiceImpl  extends BaseServiceImpl<AgreementsEntity, Ag
 				billsModel.setCumWorkDoneAmount(bills.getCumWorkDoneAmount());
 				billsModel.setStatusId(bills.getStatusId());
 				billEntryModel.add(billsModel);
+			}
 			}
 			model.setBillsList(billEntryModel);
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
