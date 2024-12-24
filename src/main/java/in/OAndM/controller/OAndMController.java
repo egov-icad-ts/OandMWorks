@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ import in.OAndM.utils.DateUtil;
 
 @RestController
 @RequestMapping("/OandMWorks")
+
 public class OAndMController {
 
 	@Autowired
@@ -64,13 +66,14 @@ public class OAndMController {
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@GetMapping("/adminSanctionsByworkId")
+	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = adminSanctionService.findbyWorkId(workId);
-
+System.out.println("response"+response);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -86,29 +89,28 @@ public class OAndMController {
 	@GetMapping("/O&MWorksTechnicalSanction")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionsForDEE(
-			@RequestParam Integer unitId, @RequestParam Integer divisionId, @RequestParam Integer subDivisionId,
-			@RequestParam Integer finyear) {
+			@ModelAttribute AdminSanctionsModel admin) {
 		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService
-				.getAdminSanctionForDEE(unitId, divisionId, subDivisionId, finyear);
+				.getAdminSanctionForDEE(admin.getUnitId(), admin.getDivisionId(), admin.getSubDivisionId(),admin.getFinancialYear());
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
-	 @CrossOrigin(origins = "http://localhost:3000")
+	
 	 @GetMapping("/technicalSanctionsByworkId")
 	    public ResponseEntity<BaseResponse<HttpStatus,  List<TechnicalSanctionsModel>>> getTechSanctionsByworkId(Integer workId) {
 	        BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService.getTechnicalSanctionByWorkId(workId);
 	        return new ResponseEntity<>(response, response.getStatus());
 	    }
 	 
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@GetMapping("/AgreementsByworkId")
 	public ResponseEntity<BaseResponse<HttpStatus,  List<AgreementsModel>>> getAgreementsByworkId(Integer workId) {
         BaseResponse<HttpStatus, List<AgreementsModel>> response = agreementsService.getAgreementsByworkId(workId);
         return new ResponseEntity<>(response, response.getStatus());
     }
 	
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@GetMapping("/agmtAndBillDetailsByworkId")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AgreementsModel>> getAgmtAndBillDetailsByworkId(
@@ -212,30 +214,25 @@ List<TechnicalSanctionsModel> tsList = techlist.getTechList();
 		return ResponseEntity.ok("File uploaded: " + file.getOriginalFilename());
 	}
 	
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@PostMapping(value="/submitAgreements")
-
 	public void submitAgreements(@RequestBody AgreementsModel agreements){
-		 
 			agreementsService.insertAgreements(agreements);
-			
-
 }
 	
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@PostMapping(value="/submitBillDetails")
 
-	public void submitBillDetails(@RequestBody BillsModel bills){
-		 
+	public void submitBillDetails(@RequestBody BillsModel bills){ 
 		billsService.insertBills(bills);
-
 }
 	
-	@GetMapping("/getWorksByFinyear")
+	@GetMapping("/getAbsRepSanctionAuthorityWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
-			@RequestParam Integer finyear) {
-		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response = workDetailsService.getWorksByFinyear(finyear);
+			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+		
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response = workDetailsService.getWorksByFinyear(workDetailsViewModel.getFinyear());
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}

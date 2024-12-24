@@ -46,7 +46,11 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 		
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
 		
-		 List<WorkDetailsViewModel> list=workdetailsrepo.getWorksByFinyear(finYear);
+		String condition="";
+		
+		//condition="w.unitdId=9812";
+		
+		 List<WorkDetailsViewModel> list=workdetailsrepo.getWorksByFinyear(finYear,condition);
 		 
 		// List<WorkDetailsViewModel> list=new ArrayList<>();
 		responseJson.setSuccess(true);
