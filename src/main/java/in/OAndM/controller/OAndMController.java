@@ -47,14 +47,13 @@ public class OAndMController {
 
 	@Autowired
 	TechnicalSanctionService technicalSanctionService;
-	
+
 	@Autowired
 	AgreementsService agreementsService;
-	
 
 	@Autowired
 	WorkDetailsViewService workDetailsService;
-	
+
 	@Autowired
 	BillsService billsService;
 
@@ -66,14 +65,13 @@ public class OAndMController {
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
-
 	@GetMapping("/adminSanctionsByworkId")
 	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = adminSanctionService.findbyWorkId(workId);
-System.out.println("response"+response);
+		System.out.println("response" + response);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -90,151 +88,165 @@ System.out.println("response"+response);
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionsForDEE(
 			@ModelAttribute AdminSanctionsModel admin) {
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService
-				.getAdminSanctionForDEE(admin.getUnitId(), admin.getDivisionId(), admin.getSubDivisionId(),admin.getFinancialYear());
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService.getAdminSanctionForDEE(
+				admin.getUnitId(), admin.getDivisionId(), admin.getSubDivisionId(), admin.getFinancialYear());
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
-	
-	 @GetMapping("/technicalSanctionsByworkId")
-	    public ResponseEntity<BaseResponse<HttpStatus,  List<TechnicalSanctionsModel>>> getTechSanctionsByworkId(Integer workId) {
-	        BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService.getTechnicalSanctionByWorkId(workId);
-	        return new ResponseEntity<>(response, response.getStatus());
-	    }
-	 
+	@GetMapping("/technicalSanctionsByworkId")
+	public ResponseEntity<BaseResponse<HttpStatus, List<TechnicalSanctionsModel>>> getTechSanctionsByworkId(
+			Integer workId) {
+		BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService
+				.getTechnicalSanctionByWorkId(workId);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
 
 	@GetMapping("/AgreementsByworkId")
-	public ResponseEntity<BaseResponse<HttpStatus,  List<AgreementsModel>>> getAgreementsByworkId(Integer workId) {
-        BaseResponse<HttpStatus, List<AgreementsModel>> response = agreementsService.getAgreementsByworkId(workId);
-        return new ResponseEntity<>(response, response.getStatus());
-    }
-	
+	public ResponseEntity<BaseResponse<HttpStatus, List<AgreementsModel>>> getAgreementsByworkId(Integer workId) {
+		BaseResponse<HttpStatus, List<AgreementsModel>> response = agreementsService.getAgreementsByworkId(workId);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
 
 	@GetMapping("/agmtAndBillDetailsByworkId")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AgreementsModel>> getAgmtAndBillDetailsByworkId(
-			@RequestParam Integer workId,@RequestParam Integer agreementId) {
-		BaseResponse<HttpStatus, AgreementsModel> response = agreementsService.getAgmtAndBillDetailsByworkId(workId, agreementId);
+			@RequestParam Integer workId, @RequestParam Integer agreementId) {
+		BaseResponse<HttpStatus, AgreementsModel> response = agreementsService.getAgmtAndBillDetailsByworkId(workId,
+				agreementId);
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
+	@PostMapping(value = "/submitTechnicalSanctions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
+	public ResponseEntity<BaseResponse<HttpStatus, List<TechnicalSanctionsModel>>> submitTechnicalSanctions(
+			@ModelAttribute TechnicalSanctionsModel techlist) {
 
-	@PostMapping(value="/submitTechnicalSanctions",  consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+		MultipartFile tsFile = null, tsEstimateFile = null;
+		List<TechnicalSanctionsModel> tsList1 = new ArrayList<TechnicalSanctionsModel>();
 
-	public ResponseEntity<BaseResponse<HttpStatus,  List<TechnicalSanctionsModel>>> submitTechnicalSanctions(@ModelAttribute TechnicalSanctionsModel techlist){
-		
-		  MultipartFile tsFile=null,tsEstimateFile=null; 
-List<TechnicalSanctionsModel> tsList1 = new ArrayList<TechnicalSanctionsModel>();
+		List<TechnicalSanctionsModel> tsList = techlist.getTechList();
 
-List<TechnicalSanctionsModel> tsList = techlist.getTechList();
-
-		  String tsValidFile,tsEstValidFile=null; 
-		  if(techlist!=null) {
-				for(int i=0;i<tsList.size();i++) {
+		String tsValidFile, tsEstValidFile = null;
+		if (techlist != null) {
+			for (int i = 0; i < tsList.size(); i++) {
 //					tsList.get(i).setUpdatedByUserName(uname);
 
-					tsFile = tsList.get(i).getTechSancUrl();
-					tsEstimateFile = tsList.get(i).getTechEstimateUrl();
-					if (null != tsFile && tsFile.getSize() > 0) {
-						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-						Long uploadTime = timestamp.getTime();
-						String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");;
-						String FileType = tsFile.getContentType();
-						String rootPath = System.getProperty("catalina.home");
-						File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-								+ File.separator + "O&MWorks"+ File.separator + "TechSanctionFiles" + File.separator);
-						String[] temps = fileName.split(Pattern.quote("."));
-						if (!dir.exists())
-							dir.mkdirs();
-						String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
-						try {
-							tsFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-						} catch (IllegalStateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						tsList.get(i).setTsFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
-						tsValidFile = temps[temps.length - 1];
-						tsList.get(i).setSancFileType(tsValidFile);
+				tsFile = tsList.get(i).getTechSancUrl();
+				tsEstimateFile = tsList.get(i).getTechEstimateUrl();
+				if (null != tsFile && tsFile.getSize() > 0) {
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+					Long uploadTime = timestamp.getTime();
+					String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");
+					;
+					String FileType = tsFile.getContentType();
+					String rootPath = System.getProperty("catalina.home");
+					File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
+							+ File.separator + "O&MWorks" + File.separator + "TechSanctionFiles" + File.separator);
+					String[] temps = fileName.split(Pattern.quote("."));
+					if (!dir.exists())
+						dir.mkdirs();
+					String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
+					try {
+						tsFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					
-					if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
-						Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-						Long uploadTime = timestamp.getTime();
-						String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");;
-						String FileType = tsEstimateFile.getContentType();
-						String rootPath = System.getProperty("catalina.home");
-						File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-								+ File.separator + "O&MWorks"+ File.separator + "TechEstimateFiles" + File.separator);
-						String[] temps = fileName.split(Pattern.quote("."));
-						if (!dir.exists())
-							dir.mkdirs();
-						String saveFileName = temps[0]+"_"+uploadTime + "." +temps[temps.length - 1];
-						try {
-							tsEstimateFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-						} catch (IllegalStateException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						tsList.get(i).setTsEstFileUrl("O&MWorks"+ File.separator + "TechSanctionFiles"+  File.separator + saveFileName);
-						tsEstValidFile = temps[temps.length - 1];
-						tsList.get(i).setEstFileType(tsEstValidFile);
+					tsList.get(i).setTsFileUrl(
+							"O&MWorks" + File.separator + "TechSanctionFiles" + File.separator + saveFileName);
+					tsValidFile = temps[temps.length - 1];
+					tsList.get(i).setSancFileType(tsValidFile);
+				}
+
+				if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
+					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+					Long uploadTime = timestamp.getTime();
+					String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");
+					;
+					String FileType = tsEstimateFile.getContentType();
+					String rootPath = System.getProperty("catalina.home");
+					File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
+							+ File.separator + "O&MWorks" + File.separator + "TechEstimateFiles" + File.separator);
+					String[] temps = fileName.split(Pattern.quote("."));
+					if (!dir.exists())
+						dir.mkdirs();
+					String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
+					try {
+						tsEstimateFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+					} catch (IllegalStateException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					java.sql.Date sqlDate=null;
-					if(tsList.get(i).getTsDate()!=null) {
-						try {
-							sqlDate=DateUtil.getSQLDate1(tsList.get(i).getTsDate());
-							if(sqlDate!=null) {
-								tsList.get(i).setTsApprovedDate(sqlDate);
-							}
-						} catch (ParseException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+					tsList.get(i).setTsEstFileUrl(
+							"O&MWorks" + File.separator + "TechSanctionFiles" + File.separator + saveFileName);
+					tsEstValidFile = temps[temps.length - 1];
+					tsList.get(i).setEstFileType(tsEstValidFile);
+				}
+				java.sql.Date sqlDate = null;
+				if (tsList.get(i).getTsDate() != null) {
+					try {
+						sqlDate = DateUtil.getSQLDate1(tsList.get(i).getTsDate());
+						if (sqlDate != null) {
+							tsList.get(i).setTsApprovedDate(sqlDate);
 						}
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			}
-		  BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response	 =technicalSanctionService.insertTechnicalSanctions(tsList);
-		  
-		  return  new ResponseEntity<>(response, response.getStatus());
-			
+		}
+		BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService
+				.insertTechnicalSanctions(tsList);
 
-}
+		return new ResponseEntity<>(response, response.getStatus());
+
+	}
+
 	@PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> testUpload(@RequestParam("file") MultipartFile file) {
 		return ResponseEntity.ok("File uploaded: " + file.getOriginalFilename());
 	}
-	
 
-	@PostMapping(value="/submitAgreements")
-	public void submitAgreements(@RequestBody AgreementsModel agreements){
-			agreementsService.insertAgreements(agreements);
-}
-	
+	@PostMapping(value = "/submitAgreements")
+	public void submitAgreements(@RequestBody AgreementsModel agreements) {
+		agreementsService.insertAgreements(agreements);
+	}
 
-	@PostMapping(value="/submitBillDetails")
+	@PostMapping(value = "/submitBillDetails")
 
-	public void submitBillDetails(@RequestBody BillsModel bills){ 
+	public void submitBillDetails(@RequestBody BillsModel bills) {
 		billsService.insertBills(bills);
-}
-	
+	}
+
 	@GetMapping("/getAbsRepSanctionAuthorityWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
 			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
-		
-		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response = workDetailsService.getWorksByFinyear(workDetailsViewModel.getFinyear());
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+
+		Integer finyear, unitId, circleId, divisionId, subDivisionId, designationId = 0;
+
+		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
+		unitId = workDetailsViewModel.getUnitId() != null ? workDetailsViewModel.getUnitId() : 0;
+		circleId = workDetailsViewModel.getCircleId() != null ? workDetailsViewModel.getCircleId() : 0;
+		divisionId = workDetailsViewModel.getDivisionId() != null ? workDetailsViewModel.getDivisionId() : 0;
+		subDivisionId = workDetailsViewModel.getSubDivisionId() != null ? workDetailsViewModel.getSubDivisionId() : 0;
+
+		designationId = workDetailsViewModel.getDesignationId() != null ? workDetailsViewModel.getDesignationId() : 0;
+
+		response = workDetailsService.getAbsRepSanctionAuthorityWiseByFinyear(finyear, unitId, circleId, divisionId,
+				subDivisionId,designationId);
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 }

@@ -41,18 +41,30 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 
 	
 	@Override
-	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getWorksByFinyear(Integer finYear) {
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepSanctionAuthorityWiseByFinyear(Integer finYear,Integer unit,Integer circle,Integer division,Integer subDivision,Integer designationId) {
 		// TODO Auto-generated method stub
 		
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
-		
-		String condition="";
-		
-		//condition="w.unitdId=9812";
-		
-		 List<WorkDetailsViewModel> list=workdetailsrepo.getWorksByFinyear(finYear,condition);
-		 
-		// List<WorkDetailsViewModel> list=new ArrayList<>();
+		List<WorkDetailsViewModel> list;
+
+		if(designationId==4 || designationId==113 ) {
+			list=workdetailsrepo.getAbsRepSanctionAuthorityWiseDEE(finYear, unit, circle, division, subDivision);
+			} else if (designationId==5 || designationId==114) {
+				/* for EE */
+				list=workdetailsrepo.getAbsRepSanctionAuthorityWiseEE(finYear, unit, circle,division);
+			}
+			 else if (designationId==7) {
+					/* for SE */
+				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseSE(finYear, unit, circle);
+				}
+			 else if (designationId==9 || designationId==10) {
+					/* for CE */
+				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseCE(finYear, unit);
+				}
+			 else {
+				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseByFinyear(finYear);
+			 }
+	
 		responseJson.setSuccess(true);
 		responseJson.setData(list);
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));

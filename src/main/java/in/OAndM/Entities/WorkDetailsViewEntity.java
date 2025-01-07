@@ -115,5 +115,22 @@ public class WorkDetailsViewEntity {
 
 	@Column(name = "work_type_name")
 	private String workTypeName;
+	
+	@Column(name = "admin_approved_amount_lakhs")
+	private BigDecimal adminApprovedAmountLakh;
+	
+	@Column(name = "ts_approved_amount_lakhs")
+	private BigDecimal tsApprovedAmountLakh;
+	
+	@Column(name = "agreement_amount_lakhs")
+	private BigDecimal agreementAmountLakh;
+	
+
+
+	@Column(name = "paid_amount_lakhs")
+	private BigDecimal paidAmountLakh;
+	
+	@Column(name = "pending_amount_lakhs")
+	private BigDecimal pendingAmountLakh;
 
 }

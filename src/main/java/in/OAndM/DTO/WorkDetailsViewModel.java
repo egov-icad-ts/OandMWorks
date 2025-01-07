@@ -16,6 +16,16 @@ public class WorkDetailsViewModel {
 
 	private Integer unitId;
 	private String unitName;
+	
+	private Integer circleId;
+	private String circleName;
+	
+	private Integer divisionId;
+	private String divisionName;
+	
+	private Integer subDivisionId;
+	private String subDivisionName;
+
 
 	private BigDecimal adminAmt;
 
@@ -48,7 +58,9 @@ public class WorkDetailsViewModel {
 	private Integer workTypeId;
 
 	private String workTypeName;
-	
+
 	private Integer finyear;
+
+	private Integer designationId;
 
 }
