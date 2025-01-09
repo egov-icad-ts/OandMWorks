@@ -24,7 +24,7 @@ public class WorkDetailsViewEntity {
 	private Integer workId;
 
 	@Column(name = "unit_id")
-	private Integer unitdId;
+	private Integer unitId;
 
 	@Column(name = "tech_work_id")
 	private Integer techWorkId;
@@ -63,7 +63,7 @@ public class WorkDetailsViewEntity {
 	private String headOfAccount;
 
 	@Column(name = "approved_by_id")
-	private Integer approvedById;
+	private Integer approvedId;
 
 	@Column(name = "authority_name")
 	private String approvedName;

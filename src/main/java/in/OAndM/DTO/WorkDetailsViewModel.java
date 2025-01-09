@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class WorkDetailsViewModel {
 
-	private Integer unitId;
+	private Integer workId;	
+	private String workName;
+	
+	private Integer unitId;	
 	private String unitName;
 	
 	private Integer circleId;
@@ -25,7 +28,6 @@ public class WorkDetailsViewModel {
 	
 	private Integer subDivisionId;
 	private String subDivisionName;
-
 
 	private BigDecimal adminAmt;
 
@@ -50,7 +52,7 @@ public class WorkDetailsViewModel {
 	private Long actionToBeTakenCount;
 
 	private BigDecimal actionToBeTakenAmt;
-
+	
 	private Integer approvedId;
 
 	private String approvedName;
@@ -60,7 +62,13 @@ public class WorkDetailsViewModel {
 	private String workTypeName;
 
 	private Integer finyear;
+	
+	private String referenceNumber;
+	
+	private String headOfAccount;
 
 	private Integer designationId;
+	
+	
 
 }

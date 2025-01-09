@@ -47,6 +47,8 @@ public class AdminSanctionsModel {
 	
 	private Integer hoaId ;
 	
+	private String HeadOfAccount;
+	
 
 	private Integer approvedById ;
 	

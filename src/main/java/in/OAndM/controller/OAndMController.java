@@ -91,6 +91,7 @@ public class OAndMController {
 		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService.getAdminSanctionForDEE(
 				admin.getUnitId(), admin.getDivisionId(), admin.getSubDivisionId(), admin.getFinancialYear());
 
+
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -247,6 +248,28 @@ public class OAndMController {
 				subDivisionId,designationId);
 
 		return new ResponseEntity<>(response, response.getStatus());
+	}
+
+	
+	@GetMapping("/getAbsRepSanctionAuthorityAndOfcWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinYearAndOffice(@ModelAttribute WorkDetailsViewModel works) {
+
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+		
+		Integer finyear, unitId, circleId, divisionId, subDivisionId, approvedId = 0;
+
+		finyear = works.getFinyear() != null ? works.getFinyear() : 0;
+		unitId = works.getUnitId() != null ? works.getUnitId() : 0;
+		circleId = works.getCircleId() != null ? works.getCircleId() : 0;
+		divisionId = works.getDivisionId() != null ? works.getDivisionId() : 0;
+		subDivisionId = works.getSubDivisionId() != null ? works.getSubDivisionId() : 0;
+
+		approvedId = works.getApprovedId() != null ? works.getApprovedId() : 0;
+		
+		response= workDetailsService.getWorksByFinyearAndOffice(unitId,circleId,divisionId,subDivisionId,finyear,approvedId);
+		
+		return new ResponseEntity<>(response,response.getStatus());
 	}
 
 }

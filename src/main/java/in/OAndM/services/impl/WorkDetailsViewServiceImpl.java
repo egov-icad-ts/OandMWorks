@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import in.OAndM.DTO.AdminSanctionsModel;
+import in.OAndM.DTO.BillsModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.Entities.AdminSanctionsEntity;
+import in.OAndM.Entities.BillsEntity;
 import in.OAndM.Entities.TechnicalSanctionEntity;
 import in.OAndM.Entities.WorkDetailsViewEntity;
 import in.OAndM.config.AppConstant;
@@ -73,7 +75,52 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 		return responseJson;
 	}
 
+	@Override
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getWorksByFinyearAndOffice(Integer unitId,Integer circleId,Integer divisionId,Integer subDivisionId,Integer finYear,Integer approvedId) {
+		// TODO Auto-generated method stub
+		
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
+		
+		List<WorkDetailsViewEntity> list = null;
+		
+		if(unitId > 0 && circleId == 0) {
+			list = workdetailsrepo.findByFinyearAndUnitIdAndApprovedId(finYear,unitId,approvedId);
+		}
+		else if (circleId > 0 && divisionId == 0 && subDivisionId == 0) {
+			list = workdetailsrepo.findByFinyearAndUnitIdAndCircleIdAndApprovedId(finYear,unitId,circleId,approvedId);
+		}
+		else if (divisionId > 0 && subDivisionId == 0) {
+			list = workdetailsrepo.findByFinyearAndUnitIdAndCircleIdAndDivisionIdAndApprovedId(finYear,unitId,circleId,divisionId,approvedId);
+		}
+		else if (subDivisionId > 0) {
+			list = workdetailsrepo.findByFinyearAndUnitIdAndCircleIdAndDivisionIdAndSubDivisionIdAndApprovedId(finYear,unitId,circleId,divisionId,subDivisionId,approvedId);
+		}
+		 
+		List<WorkDetailsViewModel> worksViewModel=new ArrayList<>();
+		if( list.size()>0) {
+			for(WorkDetailsViewEntity  work: list) {
+				
+				WorkDetailsViewModel worksModel=new WorkDetailsViewModel();
+				worksModel.setWorkId(work.getWorkId());
+				worksModel.setWorkName(work.getWorkName());
+				worksModel.setWorkTypeName(work.getWorkTypeName());
+				worksModel.setReferenceNumber(work.getReferenceNumber());
+				worksModel.setAdminAmt(work.getAdminApprovedAmount());
+				worksModel.setHeadOfAccount(work.getHeadOfAccount());
+				worksModel.setApprovedName(work.getApprovedName());
+				worksModel.setFinyear(work.getFinyear());
+				worksViewModel.add(worksModel);
+			}
+			}
+			
+		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setSuccess(true);
+		responseJson.setData(worksViewModel);
 
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
 
-
-}
+	}
