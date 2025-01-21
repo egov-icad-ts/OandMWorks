@@ -88,8 +88,20 @@ public class OAndMController {
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionsForDEE(
 			@ModelAttribute AdminSanctionsModel admin) {
+		
+		Integer finyear, unitId, circleId, divisionId, subDivisionId, designationId = 0;
+
+		finyear = admin.getFinancialYear() != null ? admin.getFinancialYear() : 0;
+		unitId = admin.getUnitId() != null ? admin.getUnitId() : 0;
+		circleId = admin.getCircleId() != null ? admin.getCircleId() : 0;
+		divisionId = admin.getDivisionId() != null ? admin.getDivisionId() : 0;
+		subDivisionId = admin.getSubDivisionId() != null ? admin.getSubDivisionId() : 0;
+
+		designationId = admin.getDesignationId()!= null ? admin.getDesignationId() : 0;
+
+		
 		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService.getAdminSanctionForDEE(
-				admin.getUnitId(), admin.getDivisionId(), admin.getSubDivisionId(), admin.getFinancialYear());
+				admin.getUnitId(),admin.getCircleId(), admin.getDivisionId(), admin.getSubDivisionId(), admin.getFinancialYear());
 
 
 		return new ResponseEntity<>(response, response.getStatus());
