@@ -120,6 +120,8 @@ public class AdminSanctionsModel {
 
 	private Integer projSubTypeId ;
 	
+	private Integer designationId ;
+	
 private Integer techId;
 
 private String  tsNumber;

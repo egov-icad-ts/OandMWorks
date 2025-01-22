@@ -29,7 +29,7 @@ public interface AdminSanctionService  {
 	
 	public BaseResponse<HttpStatus, AdminSanctionsModel> findByunitIdAndFinancialYearAndIsLatestAndDeleteFlagAndTechnEntriesIsLatestAndTechnEntriesTsId(Integer unit,Integer finyear,Boolean isLatest,Boolean deleteFlag,Boolean tech_is_latest,Integer tsId);
 
-	public BaseResponse<HttpStatus, List<AdminSanctionsModel>>  getAdminSanctionForDEE(Integer unit,Integer divisionId,Integer subDivisionId,Integer year);
+	public BaseResponse<HttpStatus, List<AdminSanctionsModel>>  getAdminSanctionForDEE(Integer unit,Integer circle,Integer divisionId,Integer subDivisionId,Integer year);
 	
 	
 }
