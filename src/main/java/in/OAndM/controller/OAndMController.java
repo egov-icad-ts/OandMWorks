@@ -71,7 +71,7 @@ public class OAndMController {
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = adminSanctionService.findbyWorkId(workId);
-		System.out.println("response" + response);
+		//System.out.println("response" + response);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -264,7 +264,6 @@ public class OAndMController {
 		circleId = works.getCircleId() != null ? works.getCircleId() : 0;
 		divisionId = works.getDivisionId() != null ? works.getDivisionId() : 0;
 		subDivisionId = works.getSubDivisionId() != null ? works.getSubDivisionId() : 0;
-
 		approvedId = works.getApprovedId() != null ? works.getApprovedId() : 0;
 		
 		response= workDetailsService.getWorksByFinyearAndOffice(unitId,circleId,divisionId,subDivisionId,finyear,approvedId);

@@ -133,6 +133,12 @@ public class AdminSanctionsEntity {
 	@Column(name = "proj_sub_type_id")
 	private Integer projSubTypeId ;
 	
+	@Column(name = "approved_by_id")
+	private Integer approvedById;
+	
+	@Column(name = "work_type_id")
+	private Integer workTypeId;
+	
 	
 //	  @OneToMany(mappedBy = "adminSanction", fetch = FetchType.LAZY)
 //	  private List<TechnicalSanctionEntity> technEntries;

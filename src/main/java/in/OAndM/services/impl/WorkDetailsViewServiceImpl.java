@@ -119,7 +119,7 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
-		
+		//System.out.println("responseJson" +responseJson);
 		return responseJson;
 	}
 

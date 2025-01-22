@@ -53,8 +53,13 @@ public BaseResponse<HttpStatus, AdminSanctionsModel> findbyWorkId(Integer workId
 		AdminSanctionsEntity entities = adminSanctionRepo.findByworkIdAndIsLatestAndDeleteFlagAndTechnEntriesIsLatestAndTechnEntriesDeleteFlag(workId,true,false,true,false) ;
 			AdminSanctionsModel model=new AdminSanctionsModel();
 			model.setWorkId(entities.getWorkId());
+			model.setWorkName(entities.getWorkName());
+			model.setAaFileUrl(entities.getAaFileUrl());
+			model.setHoaId(entities.getHoaId());
+			model.setApprovedById(entities.getApprovedById());
+			model.setWorkTypeId(entities.getWorkTypeId());
+			model.setFinancialYear(entities.getFinancialYear());
 			model.setAdminSanctionAmt(entities.getAdminSanctionAmt());
-	
 			model.setApprovedByName(entities.getApprovedByName());
 			model.setReferenceNumber(entities.getReferenceNumber());
 			model.setReferenceDate(entities.getReferenceDate());

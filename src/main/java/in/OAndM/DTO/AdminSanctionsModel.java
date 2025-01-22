@@ -130,6 +130,7 @@ private List<TechnicalSanctionsModel> techlist=new ArrayList<TechnicalSanctionsM
 private String sancFileType;
 private String estFileType;
 
+private Integer workTypeId;
 
 
 }
