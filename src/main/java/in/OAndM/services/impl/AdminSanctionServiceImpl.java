@@ -58,8 +58,13 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		AdminSanctionsModel model = new AdminSanctionsModel();
 		model.setWorkId(entities.getWorkId());
 		model.setAdminSanctionAmt(entities.getAdminSanctionAmt());
-
+		model.setWorkName(entities.getWorkName());
+		model.setAaFileUrl(entities.getAaFileUrl());
+		model.setApprovedById(entities.getApprovedById());
 		model.setApprovedByName(entities.getApprovedByName());
+		model.setHoaId(entities.getHoaId());
+		model.setWorkTypeId(entities.getWorkTypeId());
+		model.setFinancialYear(entities.getFinancialYear());
 		model.setReferenceNumber(entities.getReferenceNumber());
 		model.setReferenceDate(entities.getReferenceDate());
 
