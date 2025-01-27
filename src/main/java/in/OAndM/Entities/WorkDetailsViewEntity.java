@@ -16,6 +16,7 @@ import lombok.Data;
 
 public class WorkDetailsViewEntity {
 
+	@Id
 	@Column(name = "ts_id")
 	private Integer tsId;
 
@@ -94,16 +95,24 @@ public class WorkDetailsViewEntity {
 	@Column(name = "pendingAmount")
 	private BigDecimal pendingAmount;
 	
-	@Column(name = "ts_approved_amount_lakhs")
-	private BigDecimal tsApprovedAmountLakh;
+	/*
+	 * @Column(name = "ts_approved_amount_lakhs") private BigDecimal
+	 * tsApprovedAmountLakh;
+	 */
 	
-	@Column(name = "agreement_amount_lakhs")
-	private BigDecimal agreementAmountLakh;
-
+	/*
+	 * @Column(name = "agreement_amount_lakhs") private BigDecimal
+	 * agreementAmountLakh;
+	 */
 	@Column(name = "paid_amount_lakhs")
 	private BigDecimal paidAmountLakh;
 	
 	@Column(name = "pending_amount_lakhs")
 	private BigDecimal pendingAmountLakh;
+	
+	@Column(name = "financial_year")
+	private Integer finyear;
+	
+	
 
 }

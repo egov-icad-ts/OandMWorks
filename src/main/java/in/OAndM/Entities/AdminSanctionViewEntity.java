@@ -3,11 +3,16 @@ package in.OAndM.Entities;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-
+import lombok.Data;
+@Entity
+@Table(name="o_m_admin_sanctions_view")
+@Data
 public class AdminSanctionViewEntity {
 	
 	
@@ -18,6 +23,7 @@ public class AdminSanctionViewEntity {
 	 * 
 	 * @NotNull
 	 */
+	@Id
 	@Column(name = "admin_id")
 	private Integer adminId;
 	
@@ -187,5 +193,8 @@ public class AdminSanctionViewEntity {
 	
 	@Column(name = "go_45_sanc_amount_dee")
 	private BigDecimal go45SancAmountDee;
+	
+	@Column(name = "admin_approved_amount_lakhs")
+	private BigDecimal adminApprovedAmountLakh;
 	
 }

@@ -56,11 +56,11 @@ public class WorkDetailsViewModel {
 	
 	private Date tenderDate;
 	
-	private Integer billsPaid;
+	private Long billsPaid;
 	
-	private Integer billsPending;
+	private Long billsPending;
 
-	private Integer actionToBeTakenCount;
+	private Long actionToBeTakenCount;
 
 	private BigDecimal actionToBeTakenAmt;
 
@@ -76,6 +76,38 @@ public class WorkDetailsViewModel {
 	
 	private BigDecimal pendingAmountLakh;
 	
+	private String workName;
 	
+	private Integer unitId;	
+	private String unitName;
+	
+	private Integer circleId;
+	private String circleName;
+	
+	private Integer divisionId;
+	private String divisionName;
+	
+	private Integer subDivisionId;
+	private String subDivisionName;
+
+	private BigDecimal adminAmt;
+
+	private Long adminCount;
+	
+	private String approvedName;
+	private Integer workTypeId;
+	private String workTypeName;
+	private Integer finyear;
+	
+	private String referenceNumber;
+	private String headOfAccount;
+	private Integer designationId;
+	private Integer approvedId;
+	private Long techCount;
+	private BigDecimal techAmt;
+	private Long agreementCount;
+	private BigDecimal agreementAmt;
+	
+
 
 }

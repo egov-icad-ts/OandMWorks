@@ -102,7 +102,7 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 				
 				WorkDetailsViewModel worksModel=new WorkDetailsViewModel();
 				worksModel.setWorkId(work.getWorkId());
-				worksModel.setWorkName(work.getWorkName());
+				worksModel.setWorkName();
 				worksModel.setWorkTypeName(work.getWorkTypeName());
 				worksModel.setReferenceNumber(work.getReferenceNumber());
 				worksModel.setAdminAmt(work.getAdminApprovedAmount());
