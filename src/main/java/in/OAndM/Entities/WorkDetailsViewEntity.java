@@ -16,81 +16,71 @@ import lombok.Data;
 
 public class WorkDetailsViewEntity {
 
-	@Column(name = "admin_id")
-	@Id
-	private Integer adminId;
+	@Column(name = "ts_id")
+	private Integer tsId;
 
 	@Column(name = "admin_work_id")
 	private Integer workId;
 
-	@Column(name = "unit_id")
-	private Integer unitId;
-
 	@Column(name = "tech_work_id")
 	private Integer techWorkId;
-
-	@Column(name = "unitName")
-	private String unitName;
+	
+	@Column(name = "ts_number")
+	private String tsNumber;
 
 	@Column(name = "ts_approved_amount")
 	private BigDecimal tsApprovedAmount;
+	
+	@Column(name = "ts_approved_amount_lakhs")
+	private BigDecimal tsApprovedAmountLakhs;
 
-	@Column(name = "financial_year")
-	private Integer finyear;
+	@Column(name = "ts_approved_date")
+	private Date tsApprovedDate;
 
-	@Column(name = "work_name")
-	private String workName;
+	@Column(name = "ts_file_url")
+	private String tsFileUrl;
+	
+	@Column(name = "ts_est_file_url")
+	private String tsEstFileUrl;
 
-	@Column(name = "project_id")
-	private Integer projectId;
-
-	@Column(name = "circle_id")
-	private Integer circleId;
-
-	@Column(name = "division_id")
-	private Integer divisionId;
-
-	@Column(name = "sub_division_id")
-	private Integer subDivisionId;
-
-	@Column(name = "hoa_id")
-	private Integer hoaId;
-
-	@Column(name = "project_name")
-	private String projectName;
-
-	@Column(name = "head_of_account")
-	private String headOfAccount;
-
-	@Column(name = "approved_by_id")
-	private Integer approvedId;
-
-	@Column(name = "authority_name")
-	private String approvedName;
-
-	@Column(name = "authority_name_alias")
-	private String approvedNameAlias;
-
-	@Column(name = "reference_number")
-	private String referenceNumber;
-
-	@Column(name = "reference_date")
-	private Date referenceDate;
-
-	@Column(name = "admin_approved_amount")
-	private BigDecimal adminApprovedAmount;
-
-	@Column(name = "project_res_lift_name")
-	private String projectResName;
-
-	@Column(name = "tank_id")
-	private Integer tankId;
+	@Column(name = "ts_type")
+	private Integer tsType;
 
 	@Column(name = "agr_work_id")
 	private Integer agrWorkId;
-
+	
+	@Column(name = "agreement_id")
+	private Integer agreementId;
+	
+	@Column(name = "tender_type")
+	private Integer tenderType;
+	
+	@Column(name = "tender_percentage")
+	private BigDecimal tenderPercentage;
+	
+	@Column(name = "agreement_number")
+	private String agreementNumber;
+	
+	@Column(name = "agreement_date")
+	private Date agreementDate;
+	
 	@Column(name = "agreement_amount")
 	private BigDecimal agreementAmount;
+	
+	@Column(name = "agreement_amount_lakhs")
+	private BigDecimal agreementAmountLakhs;
+	
+	@Column(name = "agency_name")
+	private String agencyName;
+	
+	@Column(name = "tender_date")
+	private Date tenderDate;
+	
+	@Column(name = "bills_paid")
+	private Integer billsPaid;
+	
+	@Column(name = "bills_pending")
+	private Integer billsPending;
 
 	@Column(name = "action_to_be_taken_cnt")
 	private Integer actionToBeTakenCount;
@@ -98,34 +88,17 @@ public class WorkDetailsViewEntity {
 	@Column(name = "action_to_be_taken_amt")
 	private BigDecimal actionToBeTakenAmt;
 
-	@Column(name = "bills_paid")
-	private Integer billsPaid;
-
-	@Column(name = "bills_pending")
-	private Integer billsPending;
-
 	@Column(name = "paid_amount")
 	private BigDecimal paidAmount;
 
 	@Column(name = "pendingAmount")
 	private BigDecimal pendingAmount;
-
-	@Column(name = "work_type_id")
-	private Integer workTypeId;
-
-	@Column(name = "work_type_name")
-	private String workTypeName;
-	
-	@Column(name = "admin_approved_amount_lakhs")
-	private BigDecimal adminApprovedAmountLakh;
 	
 	@Column(name = "ts_approved_amount_lakhs")
 	private BigDecimal tsApprovedAmountLakh;
 	
 	@Column(name = "agreement_amount_lakhs")
 	private BigDecimal agreementAmountLakh;
-	
-
 
 	@Column(name = "paid_amount_lakhs")
 	private BigDecimal paidAmountLakh;

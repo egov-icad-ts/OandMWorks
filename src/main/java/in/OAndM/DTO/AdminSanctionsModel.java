@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -133,6 +133,25 @@ private String sancFileType;
 private String estFileType;
 
 private Integer workTypeId;
+
+private Integer projectResLiftName;
+private String workTypeName;
+private Integer govtSanction;
+private BigDecimal govtSancAmount;
+private Integer omCommiteeSanction;
+private BigDecimal committeeSancAmount;
+private Integer go45Sanction;
+private BigDecimal go45SancAmount;
+private Integer go45SanctionCe;
+private BigDecimal go45SancAmountCe;
+private Integer go45SanctionSe;
+private BigDecimal go45SancAmountSe;
+private Integer go45SanctionEe;
+private BigDecimal go45SancAmountEe;
+private Integer go45SanctionDee;
+private BigDecimal go45SancAmountDee;
+private String projectName ;
+private String unitName ;
 
 
 }

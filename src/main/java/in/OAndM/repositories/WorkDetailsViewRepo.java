@@ -11,14 +11,15 @@ import in.OAndM.core.BaseRepository;
 public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntity, Integer> {
 
 	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(w.approvedId as approvedId,w.approvedName as approvedName,"
-			+ "count(distinct(w.workId)) as adminCount, COALESCE(sum(w.adminApprovedAmountLakh),0) as adminAmt,"
+			+ "count(distinct(aa.workId)) as adminCount, COALESCE(sum(aa.adminApprovedAmountLakh),0) as adminAmt,"
 			+ "count(distinct(w.techWorkId)) as techCount, COALESCE(sum(w.tsApprovedAmountLakh),0) as techAmt,"
 			+ "count(distinct(w.agrWorkId)) as agreementCount, COALESCE(sum(w.agreementAmountLakh),0) as agreementAmt, "
 			+ "count(distinct(w.actionToBeTakenCount)) as actionToBeTakenCount, COALESCE((sum(w.actionToBeTakenAmt))/100000,0) as actionToBeTakenAmt,"
 			+ "count(distinct(w.billsPaid)) as billsPaidCount, COALESCE(sum(w.paidAmountLakh),0) as billsPaidAmount, "
 			+ "count(distinct(w.billsPending)) as billsPendingCount, COALESCE(sum(w.pendingAmountLakh),0) as billsPendingAmount) "
-			+ " from WorkDetailsViewEntity  w where   w.finyear = :finyear group by w.approvedId,w.approvedName")
+			+ " from AdminSanctionViewEntity  aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId where   w.finyear = :finyear group by w.approvedId,w.approvedName")
 	public List<WorkDetailsViewModel> getAbsRepSanctionAuthorityWiseByFinyear(Integer finyear);
+
 
 	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(w.approvedId as approvedId,w.approvedName as approvedName,"
 			+ "count(distinct(w.workId)) as adminCount, COALESCE(sum(w.adminApprovedAmountLakh),0) as adminAmt,"
