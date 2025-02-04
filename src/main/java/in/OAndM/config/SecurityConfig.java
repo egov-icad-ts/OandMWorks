@@ -23,11 +23,9 @@ public class SecurityConfig {
              "/swagger-resources/", 
              "/api/database-endpoint/**",
              "/rti/**","/rti/app/**","/rti/prfmG/**",
-             "/api/hrms/**" };
-	 
-	
+             "/api/hrms/**",
+             "/OandMWorks/**"};
 
-	
 
 	@Bean
 	public SecurityFilterChain web(HttpSecurity http) throws Exception {

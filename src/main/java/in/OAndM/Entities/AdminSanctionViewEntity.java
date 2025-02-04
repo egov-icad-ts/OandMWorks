@@ -27,8 +27,8 @@ public class AdminSanctionViewEntity {
 	@Column(name = "admin_id")
 	private Integer adminId;
 	
-	@Column(name = "work_id")
-	  private Integer workId ;
+	@Column(name = "admin_work_id")
+	 private Integer workId ;
 	
 	@Column(name = "project_id")
 	  private Integer projectId ;
@@ -77,28 +77,19 @@ public class AdminSanctionViewEntity {
 	@Column(name = "admin_approved_amount")
 	  private BigDecimal adminSanctionAmt ;
 	
-	@Column(name = "is_latest")
-	  private Boolean isLatest;
-	  
-	
-	@Column(name = "delete_flag")
-	  private Boolean deleteFlag;
-	
-	@Column(name = "updated_by")
-	private String updatedby ;
-	
-	
-	@Column(name = "lift_id")
-	private Integer liftId ;
 
 	@Column(name = "tank_id")
 	private Integer tankId ;
 	
-	@Column(name = "small_lift_id")
-	private Integer smallLiftId ;
-	
-	@Column(name = "res_id")
-	private Integer resId ;
+	/*
+	 * @Column(name = "lift_id") private Integer liftId ;
+	 * 
+	 * @Column(name = "small_lift_id") private Integer smallLiftId ;
+	 * 
+	 * @Column(name = "res_id") private Integer resId ;
+	 * 
+	 * @Column(name = "proj_sub_type_id") private Integer projSubTypeId ;
+	 */
 	
 	@Column(name = "district_id")
 	private Integer districtId ;
@@ -127,18 +118,12 @@ public class AdminSanctionViewEntity {
 	
 	
 	@Column(name = "tank_name")
-	private String tank_name ;
-	
+	private String tank_name ;	
 	
 	@Column(name = "aa_file_url")
 	private String aaFileUrl ;
-	 
 	  
-	@Column(name = "is_assigned")
-	private Boolean isAssigned ;
-	  
-	@Column(name = "proj_sub_type_id")
-	private Integer projSubTypeId ;
+
 	
 	@Column(name = "approved_by_id")
 	private Integer approvedById;
@@ -150,7 +135,7 @@ public class AdminSanctionViewEntity {
 	private String workTypeName;
 
 	@Column(name = "project_res_lift_name")
-	private Integer projectResLiftName;
+	private String projectResLiftName;
 	
 	@Column(name = "govt_sanction")
 	private Integer govtSanction;

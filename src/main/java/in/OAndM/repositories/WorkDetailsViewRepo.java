@@ -77,19 +77,9 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 			+ "count(distinct(wd.billsPending)) as billsPending, COALESCE(sum(wd.pendingAmountLakh),0) as pendingAmount) "
 			+ " from AdminSanctionViewEntity  aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId where   aa.financialYear=:finyear and aa.unitId=:unitId "
 			+ " group by aa.workTypeId,aa.workTypeName")
+	
 	public List<WorkDetailsViewModel> getWorksByWorkcategoryByFinyear(Integer finyear);
 
-	public List<AdminSanctionViewEntity> findByFinyearAndUnitIdAndApprovedId(Integer finYear, Integer unitId,
-			Integer approvedId);
-
-	public List<AdminSanctionViewEntity> findByFinyearAndUnitIdAndCircleIdAndApprovedId(Integer finYear, Integer unitId,
-			Integer circleId, Integer approvedId);
-
-	public List<AdminSanctionViewEntity> findByFinyearAndUnitIdAndCircleIdAndDivisionIdAndApprovedId(Integer finYear,
-			Integer unitId, Integer circleId, Integer divisionId, Integer approvedId);
-
-	public List<AdminSanctionViewEntity> findByFinyearAndUnitIdAndCircleIdAndDivisionIdAndSubDivisionIdAndApprovedId(
-			Integer finYear, Integer unitId, Integer circleId, Integer divisionId, Integer subDivisionId,
-			Integer approvedId);
+	
 
 }
