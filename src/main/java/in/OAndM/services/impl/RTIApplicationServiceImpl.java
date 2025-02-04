@@ -33,7 +33,9 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
     @Override
     public BaseResponse<HttpStatus, List<RtiApplicationDto>> get() {
         //List<RTIApplication> applications = rtiApplicationRepository.findAll();
-    	List<RTIApplication> applications = rtiApplicationRepository.findAllByDeleteFlagFalse();
+    	//List<RTIApplication> applications = rtiApplicationRepository.findAllByDeleteFlagFalse();findTop10ByDeleteFlagFalse
+    	//List<RTIApplication> applications = rtiApplicationRepository.findTop10ByDeleteFlagFalse();
+    	List<RTIApplication> applications = rtiApplicationRepository.findTop10ByDeleteFlagFalseOrderByApplicationIdDesc();
         List<RtiApplicationDto> dtos = rtiApplicationMapper.mapEntityToModel(applications);
         
         BaseResponse<HttpStatus, List<RtiApplicationDto>> response = new BaseResponse<>();
@@ -98,7 +100,18 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         
         if (optionalApplication.isPresent()) {
             RTIApplication entity = optionalApplication.get();
+                        
+         // Map the model to entity but retain certain fields from the existing entity
+            // Retain createdDate and createdBy, don't overwrite them with the incoming model
             rtiApplicationMapper.mapModelToEntity(entity, model);
+
+            // Manually set fields that should not be updated--here handled in frontend make sure to use same names as entity in frontend 
+           // entity.setCreateDate(entity.getCreateDate());  // Ensure createdDate is retained
+           // entity.setCreatedBy(entity.getCreatedBy());  // Ensure createdBy is retained
+
+            // Perform the update
+            entity.setUpdatedDate(LocalDateTime.now());
+            //entity.setUpdatedBy(null);
             RTIApplication updatedApplication = rtiApplicationRepository.save(entity);
             
             response.setStatus(HttpStatus.OK);
@@ -144,7 +157,8 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 
         RTIApplication application = optionalApplication.get();
         application.setDeleteFlag(true); // Soft delete
-        application.setUpdatedDate(LocalDateTime.now());
+        application.setDeletedDate(LocalDateTime.now());
+       // application.setDeletedBy(null);
         rtiApplicationRepository.save(application);
 
         BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();

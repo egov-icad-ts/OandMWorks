@@ -26,12 +26,22 @@ public interface RtiApplicationRepository extends BaseRepository<RTIApplication,
 	
 	// No additional methods needed as findAllByDeleteFlagFalse and findByIdAndDeleteFlagFalse are inherited.
 
-	 @Query("SELECT r FROM RTIApplication r WHERE r.deleteFlag = false")
-	    List<RTIApplication> findAllByDeleteFlagFalse();
+	
 
-	    @Query("SELECT r FROM RTIApplication r WHERE r.id = :id AND r.deleteFlag = false")
+	    @Query("SELECT r FROM RTIApplication r WHERE r.applicationId = :id AND r.deleteFlag = false")
 	    Optional<RTIApplication> findByIdAndDeleteFlagFalse(@Param("id") Integer id);
 	    
+	    
+	    @Query("SELECT r FROM RTIApplication r WHERE r.deleteFlag = false")
+	    List<RTIApplication> findAllByDeleteFlagFalse();
+	    
+	    //native query for find all with orderBy and limit
+	    @Query(value = "SELECT * FROM rti_applications_register WHERE delete_flag = false ORDER BY application_id DESC LIMIT 10", nativeQuery = true)
+	    List<RTIApplication> findTop10ByDeleteFlagFalse();
+	    
+	    
+	    //derived query for above
+	    List<RTIApplication> findTop10ByDeleteFlagFalseOrderByApplicationIdDesc();
 	    
 	    
 }

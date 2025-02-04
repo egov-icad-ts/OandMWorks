@@ -24,7 +24,7 @@ public interface RtiProformaGRepository extends BaseRepository<RtiProformaG, Int
 	@Query("SELECT p FROM RtiProformaG p WHERE p.deleteFlag = false")
     List<RtiProformaG> findAllByDeleteFlagFalse();
 
-    @Query("SELECT p FROM RtiProformaG p WHERE p.id = :id AND p.deleteFlag = false")
+    @Query("SELECT p FROM RtiProformaG p WHERE p.proGId = :id AND p.deleteFlag = false")
     Optional<RtiProformaG> findByIdAndDeleteFlagFalse(@Param("id") Integer id);
 	    
 	  @Query("SELECT p FROM RtiProformaG p LEFT JOIN FETCH p.rejectionSectionStatus WHERE p.deleteFlag = false")
