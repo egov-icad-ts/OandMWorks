@@ -245,20 +245,15 @@ public class OAndMController {
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
 			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
-
 		Integer finyear, unitId, circleId, divisionId, subDivisionId, designationId = 0;
-
 		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
 		unitId = workDetailsViewModel.getUnitId() != null ? workDetailsViewModel.getUnitId() : 0;
 		circleId = workDetailsViewModel.getCircleId() != null ? workDetailsViewModel.getCircleId() : 0;
 		divisionId = workDetailsViewModel.getDivisionId() != null ? workDetailsViewModel.getDivisionId() : 0;
 		subDivisionId = workDetailsViewModel.getSubDivisionId() != null ? workDetailsViewModel.getSubDivisionId() : 0;
-
 		designationId = workDetailsViewModel.getDesignationId() != null ? workDetailsViewModel.getDesignationId() : 0;
-
 		response = workDetailsService.getAbsRepSanctionAuthorityWiseByFinyear(finyear, unitId, circleId, divisionId,
 				subDivisionId,designationId);
-
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
