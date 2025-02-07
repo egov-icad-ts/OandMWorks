@@ -45,7 +45,7 @@ public class UploadGOsEntity {
 
 	@Column(name="go_date")
 	 
-	 private Date  goDt;
+	 private java.sql.Date  goDt;
 
 	@Column(name="upload_type")
 	 

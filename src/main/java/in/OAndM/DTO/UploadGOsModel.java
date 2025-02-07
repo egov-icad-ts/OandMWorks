@@ -1,6 +1,5 @@
 package in.OAndM.DTO;
 
-import java.util.Date;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +15,7 @@ public class UploadGOsModel {
 	 private MultipartFile goFileUrl;
 	 private boolean  deleteFlag;
 	 private String  goDate;
-	 private Date goDt;
+	 private java.sql.Date goDt;
 	 private String  uploadType;
 	 private Double  goAmount;
 	 private Integer  financialYear;

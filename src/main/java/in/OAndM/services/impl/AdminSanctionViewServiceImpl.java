@@ -75,4 +75,22 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		return responseJson;
 	}
 
+	@Override
+	public BaseResponse<HttpStatus, List<AdminSanctionsModel>> getAbsRepHOAWiseByFinancialyear(Integer financialYear) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> responseJson = new BaseResponse<>();
+		
+		List<AdminSanctionsModel> list = null;
+		
+		if(financialYear > 0) {
+			 list=adminRepo.getAbsRepHOAWiseByFinancialyear(financialYear);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
+
 }

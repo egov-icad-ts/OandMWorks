@@ -305,6 +305,16 @@ public class OAndMController {
 	}
 
 	
+	@GetMapping("/getGosCirculars")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<UploadGOsModel>>> getGosCirculars(@ModelAttribute UploadGOsModel uploadGOsModel) {
+		BaseResponse<HttpStatus, List<UploadGOsModel>> response;
+		String type = uploadGOsModel.getUploadType()!=null ? uploadGOsModel.getUploadType() : "";
+		response= gosService.getGosCirculars(type);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	
 	@GetMapping("/getAbsRepSanctionAuthorityWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
@@ -319,6 +329,18 @@ public class OAndMController {
 		designationId = workDetailsViewModel.getDesignationId() != null ? workDetailsViewModel.getDesignationId() : 0;
 		response = workDetailsService.getAbsRepSanctionAuthorityWiseByFinyear(finyear, unitId, circleId, divisionId,
 				subDivisionId,designationId);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAbsRepHOAWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAbsRepHOAWiseFinyear(
+			@ModelAttribute AdminSanctionsModel adminSanctionsModel) {
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response;
+		Integer finyear= 0;
+		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
+		
+		response = adminViewService.getAbsRepHOAWiseByFinancialyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 

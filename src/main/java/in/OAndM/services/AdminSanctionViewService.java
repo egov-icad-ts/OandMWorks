@@ -12,5 +12,7 @@ public interface AdminSanctionViewService {
 	
 
 	public BaseResponse<HttpStatus, List<AdminSanctionsModel>>  getWorksByFinancialyearAndOffice(Integer unitId,Integer circleId,Integer divisionId,Integer subDivisionId,Integer finYear,Integer approvedId);
+	
+	public BaseResponse<HttpStatus, List<AdminSanctionsModel>> getAbsRepHOAWiseByFinancialyear(Integer financialYear);
 
 }

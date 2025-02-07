@@ -1,6 +1,9 @@
 package in.OAndM.Entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,20 +12,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 @Entity
 @Table(name="o_m_admin_sanctions_view")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminSanctionViewEntity {
 	
 	
-	/*
-	 * @Id
-	 * 
-	 * @GeneratedValue(strategy = GenerationType.SEQUENCE)
-	 * 
-	 * @NotNull
-	 */
 	@Id
 	@Column(name = "admin_id")
 	private Integer adminId;
@@ -181,5 +181,7 @@ public class AdminSanctionViewEntity {
 	
 	@Column(name = "admin_approved_amount_lakhs")
 	private BigDecimal adminApprovedAmountLakh;
+	
+
 	
 }

@@ -11,147 +11,124 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 public class AdminSanctionsModel {
-	
+
 	private Integer adminId;
 
-	  private Integer workId ;
-	
+	private Integer workId;
 
-	  private Integer projectId ;
-	
+	private Integer projectId;
 
-	private Integer unitId ;
-	
+	private Integer unitId;
 
-	private Integer circleId ;
-	
-	
+	private Integer circleId;
 
-	private Integer divisionId ;
-	
-	
+	private Integer divisionId;
 
-	private Integer subDivisionId ;
-	
-	
+	private Integer subDivisionId;
 
-	private String workName ;
-	
-	
-	private Integer hoaId ;
-	
-	private String HeadOfAccount;
-	
+	private String workName;
 
-	private Integer approvedById ;
+	private Integer hoaId;
+
+	private String headOfAccount;
+
+	private Integer approvedById;
+
+	private String approvedByName;
+
+	private String referenceNumber;
+
+	private String referenceDate;
+
+	private BigDecimal adminSanctionAmt;
+
+	private Boolean isLatest;
+
+	private Boolean delete_flag;
+
+	private String updatedby;
+
+	private Integer liftId;
+
+	private Integer tankId;
+
+	private Integer smallLiftId;
+
+	private Integer resId;
+
+	private Integer districtId;
+
+	private Integer mandalId;
+
+	private Integer villageId;
+
+	private Integer financialYear;
+
+	private String tankCode;
+
+	private String tankName;
+
+	private String aaFileUrl;
+
+	private Boolean isAssigned;
+
+	private Integer projSubTypeId;
+
+	private Integer designationId;
+
+	private Integer techId;
+
+	private String tsNumber;
 	
+	private Double tsApprovedAmount;
 
-	private String approvedByName ;
+	private List<TechnicalSanctionsModel> techlist = new ArrayList<TechnicalSanctionsModel>();
+
+	private String sancFileType;
 	
+	private String estFileType;
 
+	private Integer workTypeId;
 
-	private String referenceNumber ;
+	private Integer projectResLiftName;
 	
-
-
-	private String referenceDate ;
-
-
-	  private BigDecimal adminSanctionAmt ;
+	private String workTypeName;
 	
-
-	  private Boolean isLatest;
-	  
+	private Integer govtSanction;
 	
-
-	  private Boolean delete_flag;
+	private BigDecimal govtSancAmount;
 	
-
-	private String updatedby ;
+	private Integer omCommiteeSanction;
 	
+	private BigDecimal committeeSancAmount;
 	
-
-	private Integer liftId ;
-
-	private Integer tankId ;
+	private Integer go45Sanction;
 	
-
-	private Integer smallLiftId ;
+	private BigDecimal go45SancAmount;
 	
-
-	private Integer resId ;
+	private Integer go45SanctionCe;
 	
-
-	private Integer districtId ;
+	private BigDecimal go45SancAmountCe;
 	
-
-	private Integer mandalId ;
+	private Integer go45SanctionSe;
 	
-
-	private Integer villageId ;
+	private BigDecimal go45SancAmountSe;
 	
+	private Integer go45SanctionEe;
 	
-
-	private Integer financialYear ;
+	private BigDecimal go45SancAmountEe;
+	
+	private Integer go45SanctionDee;
+	
+	private BigDecimal go45SancAmountDee;
+	
+	private String projectName;
+	
+	private String unitName;
 	
 	
-	
-	private String tankCode ;
-	
-	
-
-	private String tankName ;
-	
-	
-
-	private String aaFileUrl ;
-	 
-	  
-
-	private Boolean isAssigned ;
-	  
-
-	private Integer projSubTypeId ;
-	
-	private Integer designationId ;
-	
-private Integer techId;
-
-private String  tsNumber;
-private Double  tsApprovedAmount;
-	
-private List<TechnicalSanctionsModel> techlist=new ArrayList<TechnicalSanctionsModel>();
-
-private String sancFileType;
-private String estFileType;
-
-private Integer workTypeId;
-
-private Integer projectResLiftName;
-private String workTypeName;
-private Integer govtSanction;
-private BigDecimal govtSancAmount;
-private Integer omCommiteeSanction;
-private BigDecimal committeeSancAmount;
-private Integer go45Sanction;
-private BigDecimal go45SancAmount;
-private Integer go45SanctionCe;
-private BigDecimal go45SancAmountCe;
-private Integer go45SanctionSe;
-private BigDecimal go45SancAmountSe;
-private Integer go45SanctionEe;
-private BigDecimal go45SancAmountEe;
-private Integer go45SanctionDee;
-private BigDecimal go45SancAmountDee;
-private String projectName ;
-private String unitName ;
-
 
 }

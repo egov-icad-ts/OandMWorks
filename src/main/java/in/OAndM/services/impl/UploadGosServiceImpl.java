@@ -1,5 +1,6 @@
 package in.OAndM.services.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.UploadGOsModel;
 import in.OAndM.Entities.UploadGOsEntity;
+import in.OAndM.config.AppConstant;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.core.BaseServiceImpl;
 import in.OAndM.services.UploadGOsService;
@@ -37,6 +38,32 @@ public class UploadGosServiceImpl  extends BaseServiceImpl<UploadGOsEntity, Uplo
 		}else {
 			responseJson.setMessage("Error in submitting");
 		}
+		return responseJson;
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, List<UploadGOsModel>> getGosCirculars(String type) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<UploadGOsModel>> responseJson = new BaseResponse<>();
+		List<UploadGOsEntity> list;
+		List<UploadGOsModel> models = new ArrayList<>();
+		list = gosRepo.findByuploadTypeAndDeleteFlagFalse(type);
+		for(UploadGOsEntity en : list) {
+			UploadGOsModel model = new UploadGOsModel();
+			model.setGoAmount(en.getGoAmount());
+			model.setGoDesc(en.getGoDesc());
+			model.setGoUrl(en.getGoUrl());
+			model.setGoNumber(en.getGoNumber());
+			model.setGoDt(en.getGoDt());
+			model.setGoId(en.getGoId());
+			model.setUploadType(en.getUploadType());
+			models.add(model);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(models);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
 		return responseJson;
 	}
 

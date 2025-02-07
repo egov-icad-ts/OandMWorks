@@ -15,5 +15,4 @@ public interface WorkDetailsViewService  {
 	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>>  getAbsRepSanctionAuthorityWiseByFinyear(Integer finyear,Integer unit,Integer circle,Integer division,Integer subdiv,Integer designationId);
 
 	
-	
 }
