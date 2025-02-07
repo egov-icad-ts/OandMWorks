@@ -4,9 +4,6 @@ package in.OAndM.DTO;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.Data;
 
 @Data

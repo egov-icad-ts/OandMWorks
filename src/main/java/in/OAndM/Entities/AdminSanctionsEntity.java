@@ -1,18 +1,18 @@
+
 package in.OAndM.Entities;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.util.List;
-
-
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,12 +31,15 @@ public class AdminSanctionsEntity {
 	
 	@Column(name = "admin_id")
 	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_sanction_seq")
+	@SequenceGenerator(name = "admin_sanction_seq", sequenceName = "o_m_admin_sanction_admin_id_seq", allocationSize = 1)
 	@NotNull
 	private Integer adminId;
 	
-	@Column(name = "work_id")
-	  private Integer workId ;
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "work_id_seq")
+//    @SequenceGenerator(name = "work_id_seq", sequenceName = "work_approval_details_work_id_seq", allocationSize = 1)
+    @Column(name = "work_id", unique = true)
+	 private Integer workId ;
 	
 	@Column(name = "project_id")
 	  private Integer projectId ;
@@ -73,7 +76,7 @@ public class AdminSanctionsEntity {
 	
 
 	@Column(name = "reference_date")
-	private String referenceDate ;
+	private Date referenceDate ;
 
 	@Column(name = "admin_approved_amount")
 	  private BigDecimal adminSanctionAmt ;
@@ -116,11 +119,11 @@ public class AdminSanctionsEntity {
 	
 	
 	@Column(name = "tank_code")
-	private String tank_code ;
+	private String tankCode ;
 	
 	
 	@Column(name = "tank_name")
-	private String tank_name ;
+	private String tankName ;
 	
 	
 	@Column(name = "aa_file_url")

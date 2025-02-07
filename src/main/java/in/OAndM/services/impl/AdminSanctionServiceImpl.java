@@ -151,4 +151,24 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		return responseJson;
 
 	}
+
+	@Override
+	public BaseResponse<HttpStatus, AdminSanctionsModel> insertAdminSanctions(AdminSanctionsModel admin) {
+		// TODO Auto-generated method stub
+		
+		BaseResponse<HttpStatus, AdminSanctionsModel> responseJson = new BaseResponse<>();
+		Integer workId=adminSanctionRepo.getNextWorkId();
+		
+		
+		if(admin!=null && workId >0) {
+			admin.setWorkId(workId);
+		create(admin);
+		responseJson.setMessage("Submitted SuccessFully");
+		responseJson.setStatus(HttpStatus.OK);
+		}else {
+			responseJson.setMessage("Error in submission");
+			responseJson.setStatus(HttpStatus.OK);
+		}
+		return responseJson;
+	}
 }

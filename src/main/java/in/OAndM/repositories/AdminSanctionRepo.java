@@ -2,6 +2,8 @@ package in.OAndM.repositories;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+
 import in.OAndM.Entities.AdminSanctionsEntity;
 import in.OAndM.core.BaseRepository;
 
@@ -19,5 +21,8 @@ public List<AdminSanctionsEntity> findByunitIdAndFinancialYearAndIsLatestAndDele
 (Integer unit,Integer finyear,Boolean isLatest,Boolean deleteFlag,Integer circleId,Integer DivisionId,Integer SubDivisionId,Boolean isAssigned,Boolean tech_is_latest,Boolean deleteflag);
 
 
+
+@Query(value = "SELECT nextval('work_approval_details_work_id_seq')", nativeQuery = true)
+public Integer getNextWorkId();
 
 }
