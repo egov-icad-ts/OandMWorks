@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import in.OAndM.DTO.AdminSanctionsModel;
+import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.Entities.AdminSanctionViewEntity;
 import in.OAndM.config.AppConstant;
 import in.OAndM.core.BaseResponse;
@@ -20,7 +20,7 @@ import jakarta.transaction.Transactional;
 @Service
 @Transactional
 
-public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionViewEntity, AdminSanctionsModel, Integer> implements AdminSanctionViewService {
+public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionViewEntity, AdminSanctionViewModel, Integer> implements AdminSanctionViewService {
 	
 	@Autowired
 	AdminSanctionViewRepo adminRepo;
@@ -28,10 +28,10 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 	
 	@Override
-	public BaseResponse<HttpStatus, List<AdminSanctionsModel>> getWorksByFinancialyearAndOffice(Integer unitId,Integer circleId,Integer divisionId,Integer subDivisionId,Integer finYear,Integer approvedId) {
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getWorksByFinancialyearAndOffice(Integer unitId,Integer circleId,Integer divisionId,Integer subDivisionId,Integer finYear,Integer approvedId) {
 		// TODO Auto-generated method stub
 		
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> responseJson = new BaseResponse<>();
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		
 		List<AdminSanctionViewEntity> list = null;
 		
@@ -48,11 +48,11 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 			list = adminRepo.findByFinancialYearAndUnitIdAndCircleIdAndDivisionIdAndSubDivisionIdAndApprovedById(finYear,unitId,circleId,divisionId,subDivisionId,approvedId);
 		}
 		 
-		List<AdminSanctionsModel> adminViewModel=new ArrayList<>();
+		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
 		if( list.size()>0) {
 			for(AdminSanctionViewEntity  work: list) {
 				
-				AdminSanctionsModel adminModel=new AdminSanctionsModel();
+				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
 				adminModel.setWorkId(work.getWorkId());
 				adminModel.setWorkName(work.getWorkName());
 				adminModel.setWorkTypeName(work.getWorkTypeName());
@@ -76,11 +76,11 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 
 	@Override
-	public BaseResponse<HttpStatus, List<AdminSanctionsModel>> getAbsRepHOAWiseByFinancialyear(Integer financialYear) {
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepHOAWiseByFinancialyear(Integer financialYear) {
 		// TODO Auto-generated method stub
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> responseJson = new BaseResponse<>();
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		
-		List<AdminSanctionsModel> list = null;
+		List<AdminSanctionViewModel> list = null;
 		
 		if(financialYear > 0) {
 			 list=adminRepo.getAbsRepHOAWiseByFinancialyear(financialYear);
@@ -92,5 +92,25 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		
 		return responseJson;
 	}
+
+	@Override
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepUnitHOAWiseFinyear(Integer financialYear) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
+		
+		List<AdminSanctionViewModel> list = null;
+		
+		if(financialYear > 0) {
+			 list=adminRepo.getAbsRepUnitHOAWiseFinyear(financialYear);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
+
+	
 
 }

@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.AgreementsModel;
 import in.OAndM.DTO.BillsModel;
@@ -334,22 +335,54 @@ public class OAndMController {
 	
 	@GetMapping("/getAbsRepHOAWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAbsRepHOAWiseFinyear(
-			@ModelAttribute AdminSanctionsModel adminSanctionsModel) {
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response;
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepHOAWiseFinyear(
+			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
 		Integer finyear= 0;
 		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
 		
 		response = adminViewService.getAbsRepHOAWiseByFinancialyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-
 	
+	@GetMapping("/getAbsRepUnitWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepUnitWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+		Integer finyear=0;
+		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		response = workDetailsService.getAbsRepUnitWiseFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAbsRepWorkTypeHOAWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeHOAWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+		Integer finyear=0;
+		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		response = workDetailsService.getAbsRepWorkTypeHOAWiseFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAbsRepUnitHOAWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepUnitHOAWiseFinyear(
+			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
+		Integer finyear= 0;
+		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
+		
+		response = adminViewService.getAbsRepUnitHOAWiseFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+
+		
 	@GetMapping("/getAbsRepSanctionAuthorityAndOfcWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getWorksByFinYearAndOffice(@ModelAttribute AdminSanctionsModel works) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getWorksByFinYearAndOffice(@ModelAttribute AdminSanctionViewModel works) {
 
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response;
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
 		
 		Integer finyear, unitId, circleId, divisionId, subDivisionId, approvedId = 0;
 

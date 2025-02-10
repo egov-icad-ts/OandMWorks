@@ -76,6 +76,44 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 		return responseJson;
 	}
 
+
+	@Override
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepUnitWiseFinyear(Integer finyear) {
+		// TODO Auto-generated method stub
+			BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
+		
+		List<WorkDetailsViewModel> list = null;
+		
+		if(finyear > 0) {
+			 list=workdetailsrepo.getAbsRepUnitWiseFinyear(finyear);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
+
+
+	@Override
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepWorkTypeHOAWiseFinyear(Integer finyear) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
+		
+		List<WorkDetailsViewModel> list = null;
+		
+		if(finyear > 0) {
+			 list=workdetailsrepo.getAbsRepWorkTypeHOAWiseFinyear(finyear);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
+
 	
 
 	}

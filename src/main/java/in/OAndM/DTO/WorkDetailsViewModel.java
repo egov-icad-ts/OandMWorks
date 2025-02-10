@@ -108,6 +108,18 @@ public class WorkDetailsViewModel {
 	private Long agreementCount;
 	private BigDecimal agreementAmt;
 	
+private long govtSanction;
+	
+	private BigDecimal govtSancAmount;
+	
+	private long omCommiteeSanction;
+	
+	private BigDecimal committeeSancAmount;
+	
+	private long go45Sanction;
+	
+	private BigDecimal go45SancAmount;
+	
 
 
 }
