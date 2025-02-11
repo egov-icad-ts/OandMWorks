@@ -182,6 +182,18 @@ public class AdminSanctionViewEntity {
 	@Column(name = "admin_approved_amount_lakhs")
 	private BigDecimal adminApprovedAmountLakh;
 	
-
+	@Column(name = "authority_type")
+	private String authorityType;
 	
+	@Column(name = "sc_count")
+	private Integer scCount;
+	
+	@Column(name = "sc_amount")
+	private BigDecimal scAmount;
+	
+	@Column(name = "st_count")
+	private Integer stCount;
+	
+	@Column(name = "st_amount")
+	private BigDecimal stAmount;
 }

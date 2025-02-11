@@ -355,6 +355,18 @@ public class OAndMController {
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 	
+	@GetMapping("/getAbsRepUnitWiseSCSTSdfFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepUnitWiseSCSTSdfFinyear(
+			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
+		Integer finyear= 0;
+		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
+		
+		response = adminViewService.getAbsRepUnitWiseSCSTSdfFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
 	@GetMapping("/getAbsRepWorkTypeHOAWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeHOAWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
@@ -362,6 +374,26 @@ public class OAndMController {
 		Integer finyear=0;
 		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
 		response = workDetailsService.getAbsRepWorkTypeHOAWiseFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAbsRepSanctionAuthWorkTypeWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepSanctionAuthWorkTypeWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+		Integer finyear=0;
+		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		response = workDetailsService.getAbsRepSanctionAuthWorkTypeWiseFinyear(finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAbsRepWorkTypeWiseFinyear")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+		Integer finyear=0;
+		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		response = workDetailsService.getAbsRepWorkTypeWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 	

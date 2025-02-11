@@ -111,6 +111,25 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		return responseJson;
 	}
 
+	@Override
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepUnitWiseSCSTSdfFinyear(
+			Integer financialYear) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
+		
+		List<AdminSanctionViewModel> list = null;
+		
+		if(financialYear > 0) {
+			 list=adminRepo.getAbsRepUnitWiseSCSTSdfFinyear(financialYear);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
+		return responseJson;
+	}
+
 	
 
 }

@@ -113,6 +113,9 @@ public class WorkDetailsViewEntity {
 	@Column(name = "financial_year")
 	private Integer finyear;
 	
+	@Column(name = "work_type_id")
+	private Integer workTypeId;
+	
 	
 
 }

@@ -47,8 +47,15 @@ public interface AdminSanctionViewRepo extends BaseRepository<AdminSanctionViewE
 			+ " from AdminSanctionViewEntity where financialYear = :financialYear group by hoaId,headOfAccount,unitId,unitName order by unitId,unitName,hoaId")
 	public List<AdminSanctionViewModel> getAbsRepUnitHOAWiseFinyear(Integer financialYear);
 	
-
-	
+	@Query( "select  new in.OAndM.DTO.AdminSanctionViewModel (unitId as unitId,unitName as unitName, count(distinct(workId)) as longWorkId "
+			+ ",count(distinct(govtSanction)) as govtSanction, COALESCE(SUM(govtSancAmount / 100000), 0) as govtSancAmount, "
+			+ "count(distinct(omCommiteeSanction)) as omCommiteeSanction, COALESCE(sum(committeeSancAmount/ 100000),0) as committeeSancAmount, "
+			+ "count(distinct(go45Sanction)) as go45Sanction, COALESCE(sum(go45SancAmount/ 100000),0) as go45SancAmount,  "
+			+ "count(distinct(scCount)) as scCount, COALESCE(sum(scAmount/ 100000),0) as scAmount,"
+			+ "count(distinct(stCount)) as stCount, COALESCE(sum(stAmount/ 100000),0) as stAmount,"
+			+ " COALESCE(sum(adminSanctionAmt/ 100000),0) as adminSanctionAmt )"
+			+ " from AdminSanctionViewEntity where financialYear = :financialYear group by unitId,unitName order by unitId,unitName")
+	public List<AdminSanctionViewModel> getAbsRepUnitWiseSCSTSdfFinyear(Integer financialYear);
 	
 
 }

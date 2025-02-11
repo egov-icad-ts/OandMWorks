@@ -120,6 +120,6 @@ private long govtSanction;
 	
 	private BigDecimal go45SancAmount;
 	
-
+	private String authorityType;
 
 }

@@ -17,6 +17,6 @@ public interface AdminSanctionViewService {
 	
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepUnitHOAWiseFinyear(Integer financialYear);
 	
-	
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepUnitWiseSCSTSdfFinyear(Integer financialYear);
 
 }

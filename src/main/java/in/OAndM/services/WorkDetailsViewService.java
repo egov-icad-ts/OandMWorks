@@ -17,4 +17,9 @@ public interface WorkDetailsViewService  {
 	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepUnitWiseFinyear(Integer finyear);
 	
 	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepWorkTypeHOAWiseFinyear(Integer finyear);
+	
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepWorkTypeWiseFinyear(Integer finyear);
+	
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepSanctionAuthWorkTypeWiseFinyear(Integer finyear);
+	
 }

@@ -72,4 +72,12 @@ public class AdminSanctionViewModel {
 	private Integer financialYear;
 	
 	private Integer hoaId;
+	
+	private long scCount;
+	
+	private BigDecimal scAmount;
+	
+	private long stCount;
+	
+	private BigDecimal stAmount;
 }
