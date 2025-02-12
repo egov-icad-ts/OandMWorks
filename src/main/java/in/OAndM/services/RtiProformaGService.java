@@ -28,4 +28,6 @@ public interface RtiProformaGService extends BaseService<RtiProformaGDto, Intege
 
 	BaseResponse<HttpStatus, List<UnitLevelDataDto>> getCircleLevelData(UnitLevelRequest request, Integer unitId);
 
+	BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id, String username);
+
 }

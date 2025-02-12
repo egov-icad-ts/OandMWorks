@@ -7,6 +7,7 @@ import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
 import in.OAndM.DTO.UnitLevelRequest;
+import in.OAndM.DTO.UserDetailsDto;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.services.RtiProformaGService;
 import in.OAndM.services.RtiRejectionStatusService;
@@ -17,6 +18,8 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -25,6 +28,8 @@ import java.util.List;
 @RequestMapping("/rti/prfmG")
 @CrossOrigin(origins = "http://localhost:3000")  // Adjust if needed
 public class RtiProformaGController extends BaseController<RtiProformaG, RtiProformaGDto, Integer> {
+	
+	 private static final Logger logger = LoggerFactory.getLogger(RTIController.class);
 
     private final RtiProformaGService rtiProformaGService;
     private final RtiRejectionStatusService rtiRejectionStatusService;
@@ -52,6 +57,14 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
     // Create a new RtiProformaG entry
     @PostMapping("/entry")
     public ResponseEntity<BaseResponse<HttpStatus, RtiProformaGDto>> create(@Valid @RequestBody RtiProformaGDto rtiProformaGDto) {
+    	
+    	// Extract user details
+        UserDetailsDto user = rtiProformaGDto.getUser();
+        String username = user != null ? user.getUsername() : "Unknown";
+
+       // java.lang.System.out.println("Received request from user: " + user);
+        logger.info("Received request from user: {}", user);
+        
         BaseResponse<HttpStatus, RtiProformaGDto> response = rtiProformaGService.create(rtiProformaGDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -65,8 +78,17 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
 
     // Delete an RtiProformaG entry by ID
     @DeleteMapping("/deleteById/{id}")
-    public ResponseEntity<BaseResponse<HttpStatus, RtiProformaGDto>> deleteProformaG(@PathVariable Integer id) {
-        BaseResponse<HttpStatus, RtiProformaGDto> response = rtiProformaGService.delete(id);
+    public ResponseEntity<BaseResponse<HttpStatus, RtiProformaGDto>> deleteProformaG(@PathVariable Integer id, @RequestParam String username, @RequestHeader(value = "Authorization", required = false) String token) {
+    	// java.lang.System.out.println("Received Token: " + token);
+    	//java.lang.System.out.println("Received delete request from user: " + username);
+        logger.info("Received delete request from user: {}", username);
+        logger.info("Authorization Token: {}", token); // Log token to verify it's received
+        if (token == null) {
+            logger.error("Authorization token is missing");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+        
+        BaseResponse<HttpStatus, RtiProformaGDto> response = rtiProformaGService.delete(id,username);
         if (response.isSuccess()) {
             return ResponseEntity.ok(response); // Return HTTP 200 for successful deletion
         } else {
@@ -89,8 +111,8 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
         return new ResponseEntity<>(response, HttpStatus.OK);
     	
     }
-    
-//    @GetMapping("/units")
+     
+    //    @GetMapping("/units")
 //    public ResponseEntity<List<Object[]>> getUnitData() {
 //        return ResponseEntity.ok(rtiProformaGService.getUnitLevelData());
 //    }

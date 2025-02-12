@@ -100,12 +100,14 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 
     @Override
     public BaseResponse<HttpStatus, RtiProformaGDto> create(RtiProformaGDto model) {
+    	
+    	//System.out.println("model "+model);
         RtiProformaG entity = rtiProformaGMapper.mapModelToEntity(model);
         entity.setIsLatest(true);
         entity.setDeleteFlag(false);
        
         entity.setCreatedTime(LocalDateTime.now());
-        System.out.println("entity "+entity);
+        //System.out.println("entity "+entity);
         RtiProformaG savedProforma = rtiProformaGRepository.save(entity);
         
         BaseResponse<HttpStatus, RtiProformaGDto> response = new BaseResponse<>();
@@ -121,12 +123,19 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
     public BaseResponse<HttpStatus, RtiProformaGDto> update(Integer id, RtiProformaGDto model) {
     	//System.out.println(" id "+id+ " model "+model);
         Optional<RtiProformaG> optionalProforma = rtiProformaGRepository.findByIdAndDeleteFlagFalse(id);
-        BaseResponse<HttpStatus, RtiProformaGDto> response = new BaseResponse<>();
-        
+        BaseResponse<HttpStatus, RtiProformaGDto> response = new BaseResponse<>();        
         if (optionalProforma.isPresent()) {
-            RtiProformaG entity = optionalProforma.get();
-            System.out.println("entity"+entity);
-            rtiProformaGMapper.mapModelToEntity(entity, model);  // Update entity with new data
+            RtiProformaG entity = optionalProforma.get();            
+            // Retain createdDate and isLatest
+           // LocalDateTime existingCreatedDate = entity.getCreatedTime(); 
+           // Boolean existingIsLatest = entity.getIsLatest();            
+            //System.out.println("entity"+entity);
+            rtiProformaGMapper.mapModelToEntity(entity, model);  // Update entity with new data         
+                     // Reassign the retained fields
+            //entity.setCreatedTime(existingCreatedDate);
+           // entity.setIsLatest(existingIsLatest);
+            entity.setEditedTime(LocalDateTime.now());
+            entity.setEditedBy( model.getUser().getUsername());
             RtiProformaG updatedProforma = rtiProformaGRepository.save(entity);
             
             response.setStatus(HttpStatus.OK);
@@ -142,7 +151,8 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
         return response;
     }
 
-//    @Override
+   
+    //    @Override
 //    public BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id) {
 //        Optional<RtiProformaG> optionalProforma = rtiProformaGRepository.findById(id);
 //        BaseResponse<HttpStatus, RtiProformaGDto> response = new BaseResponse<>();
@@ -162,10 +172,10 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 //    }
     
     @Override
-    public BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id) {
+    public BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id, String username) {
         //Optional<RtiProformaG> optionalProforma = rtiProformaGRepository.findById(id);
     	Optional<RtiProformaG> optionalProforma = rtiProformaGRepository.findByIdAndDeleteFlagFalse(id);
-    	System.out.println("optionalProforma "+optionalProforma);
+    	//System.out.println("optionalProforma "+optionalProforma);
         BaseResponse<HttpStatus, RtiProformaGDto> response = new BaseResponse<>();
         if (!optionalProforma.isPresent()) {
            // return createNotFoundResponse("Application not found.");
@@ -174,9 +184,10 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
             response.setSuccess(false);
         }
         RtiProformaG prfmG=optionalProforma.get();
-        System.out.println("prfmG "+prfmG);
+        //System.out.println("prfmG "+prfmG);
         prfmG.setDeleteFlag(true); // Soft delete
-        prfmG.setEditedTime(LocalDateTime.now());
+        prfmG.setDeletedTime(LocalDateTime.now());
+        prfmG.setDeletedBy( username);
         rtiProformaGRepository.save(prfmG);
         
       
@@ -549,6 +560,12 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 
 	@Override
 	public BaseResponse<HttpStatus, List<RtiProformaGDto>> delete(List<Integer> ids) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

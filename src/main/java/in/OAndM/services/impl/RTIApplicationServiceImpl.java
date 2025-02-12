@@ -52,7 +52,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
     public BaseResponse<HttpStatus, RtiApplicationDto> get(Integer id) {
        // Optional<RTIApplication> application = rtiApplicationRepository.findById(id)
     	 Optional<RTIApplication> application = rtiApplicationRepository.findByIdAndDeleteFlagFalse(id); // Use inherited method
-    	 System.out.println("application.size() "+application);
+    	// System.out.println("application.size() "+application);
     	 BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();
         
         if (application.isPresent()) {
@@ -78,7 +78,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         entity.setDeleteFlag(false);
        
         entity.setCreateDate(LocalDateTime.now());
-        System.out.println("entity "+entity);
+        //System.out.println("entity in service implca;"+entity);
         RTIApplication savedApplication = rtiApplicationRepository.save(entity);
         
         BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();
@@ -93,11 +93,9 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
     @Override
     public BaseResponse<HttpStatus, RtiApplicationDto> update(Integer id, RtiApplicationDto model) {
        // Optional<RTIApplication> optionalApplication = rtiApplicationRepository.findById(id);
-    	System.out.println(" id "+id+ " model "+model);
-    	Optional<RTIApplication> optionalApplication = rtiApplicationRepository.findByIdAndDeleteFlagFalse(id);
-    	
-        BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();
-        
+    	//System.out.println(" id "+id+ " model "+model);
+    	Optional<RTIApplication> optionalApplication = rtiApplicationRepository.findByIdAndDeleteFlagFalse(id);    	
+        BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();        
         if (optionalApplication.isPresent()) {
             RTIApplication entity = optionalApplication.get();
                         
@@ -111,7 +109,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 
             // Perform the update
             entity.setUpdatedDate(LocalDateTime.now());
-            //entity.setUpdatedBy(null);
+            entity.setUpdatedBy(model.getUser().getUsername());
             RTIApplication updatedApplication = rtiApplicationRepository.save(entity);
             
             response.setStatus(HttpStatus.OK);
@@ -122,12 +120,11 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             response.setStatus(HttpStatus.NOT_FOUND);
             response.setMessage("Application not found.");
             response.setSuccess(false);
-        }
-        
+        }        
         return response;
     }
 
-    
+   
     
 //    @Override
 //    public BaseResponse<HttpStatus, RtiApplicationDto> delete(Integer id) {
@@ -148,7 +145,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 //        return response;
 //    }
     @Override
-    public BaseResponse<HttpStatus, RtiApplicationDto> delete(Integer id) {
+    public BaseResponse<HttpStatus, RtiApplicationDto> delete(Integer id, String username) {
         //Optional<RTIApplication> optionalApplication = rtiApplicationRepository.findById(id);
     	Optional<RTIApplication> optionalApplication = rtiApplicationRepository.findByIdAndDeleteFlagFalse(id);
         if (!optionalApplication.isPresent()) {
@@ -158,7 +155,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         RTIApplication application = optionalApplication.get();
         application.setDeleteFlag(true); // Soft delete
         application.setDeletedDate(LocalDateTime.now());
-       // application.setDeletedBy(null);
+        application.setDeletedBy(username);
         rtiApplicationRepository.save(application);
 
         BaseResponse<HttpStatus, RtiApplicationDto> response = new BaseResponse<>();
@@ -222,6 +219,12 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 
 	@Override
 	public BaseResponse<HttpStatus, List<RtiApplicationDto>> get(PaginationRequest pagination) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, RtiApplicationDto> delete(Integer id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -50,11 +50,11 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         dto.setSecondAppealNoticeDate(entity.getSecondAppealNoticeDate());
         dto.setSecondAppealHearingDate(entity.getSecondAppealHearingDate());
         dto.setRemarks(entity.getRemarks());
-        dto.setUnitId(entity.getUnitId());
-        dto.setCircleId(entity.getCircleId());
-        dto.setDivisionId(entity.getDivisionId());
-        dto.setSubDivisionId(entity.getSubDivisionId());
-        dto.setPostId(entity.getPostId());
+        dto.setUnit(entity.getUnit());
+        dto.setCircle(entity.getCircle());
+        dto.setDivision(entity.getDivision());
+        dto.setSubDivision(entity.getSubDivision());
+        dto.setPost(entity.getPost());
         dto.setDeleteFlag(entity.getDeleteFlag());
         dto.setIsLatest(entity.getIsLatest());
         dto.setCreatedBy(entity.getCreatedBy());
@@ -96,7 +96,7 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
 //        	 entity.setRejectionSectionStatus(rejectionStatus);
 //        }
         if (model.getAppellateFirstDecisionAllowRejec() == null) {
-            System.out.println("Reject Section ID is null, assigning default value 0.");
+           // System.out.println("Reject Section ID is null, assigning default value 0.");
         }
         entity.setChargesCollectForFurnish(model.getChargeForInfo());
         entity.setSecondAppealMade193(model.getSecondAppealMade());
@@ -104,14 +104,26 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         entity.setSecondAppealNoticeDate(model.getSecondAppealNoticeDate());
         entity.setSecondAppealHearingDate(model.getSecondAppealHearingDate());
         entity.setRemarks(model.getRemarks());
-        entity.setUnitId(model.getUnitId());
-        entity.setCircleId(model.getCircleId());
-        entity.setDivisionId(model.getDivisionId());
-        entity.setSubDivisionId(model.getSubDivisionId());
-        entity.setPostId(model.getPostId());
+        if (model.getUser() != null) {
+            //System.out.println("user not null in G Dto1");
+            entity.setUnit(model.getUser().getUnit());
+            entity.setCircle(model.getUser().getCircle());
+            entity.setDivision(model.getUser().getDivision());
+            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setPost(model.getUser().getPost());
+            entity.setCreatedBy(model.getUser().getUsername());
+        }
+        if (model.getUser() == null) {
+        entity.setUnit(model.getUnit());
+        entity.setCircle(model.getCircle());
+        entity.setDivision(model.getDivision());
+        entity.setSubDivision(model.getSubDivision());
+        entity.setPost(model.getPost());
+        entity.setCreatedBy(model.getUser().getUsername());
+        }
         entity.setDeleteFlag(model.getDeleteFlag());
         entity.setIsLatest(model.getIsLatest());
-        entity.setCreatedBy(model.getCreatedBy());
+        
         entity.setCreatedTime(model.getCreatedTime());
         entity.setDeletedBy(model.getDeletedBy());
         entity.setDeletedTime(model.getDeletedTime());
@@ -163,14 +175,26 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         entity.setSecondAppealNoticeDate(model.getSecondAppealNoticeDate());
         entity.setSecondAppealHearingDate(model.getSecondAppealHearingDate());
         entity.setRemarks(model.getRemarks());
-        entity.setUnitId(model.getUnitId());
-        entity.setCircleId(model.getCircleId());
-        entity.setDivisionId(model.getDivisionId());
-        entity.setSubDivisionId(model.getSubDivisionId());
-        entity.setPostId(model.getPostId());
+        if (model.getUser() != null) {
+           // System.out.println("user not null in G Dto2");
+            entity.setUnit(model.getUser().getUnit());
+            entity.setCircle(model.getUser().getCircle());
+            entity.setDivision(model.getUser().getDivision());
+            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setPost(model.getUser().getPost());
+            entity.setCreatedBy(model.getUser().getUsername());
+        }
+                if (model.getUser() == null) {
+            entity.setUnit(model.getUnit());
+            entity.setCircle(model.getCircle());
+            entity.setDivision(model.getDivision());
+            entity.setSubDivision(model.getSubDivision());
+            entity.setPost(model.getPost());
+            entity.setCreatedBy(model.getUser().getUsername());
+            }
         entity.setDeleteFlag(model.getDeleteFlag());
         entity.setIsLatest(model.getIsLatest());
-        entity.setCreatedBy(model.getCreatedBy());
+       
         entity.setCreatedTime(model.getCreatedTime());
         entity.setDeletedBy(model.getDeletedBy());
         entity.setDeletedTime(model.getDeletedTime());
@@ -200,9 +224,9 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         //model.setAppellatefirstdecisiondate(entity.getAppellateFirstDecisionDate());
         model.setAppellateFirstDecisionAllowRejec(entity.getAppellateFirstDecisionAllowRejec());
         //model.setRejectsectionid(entity.getAppellateFirstDecisionRejSection());
-        System.out.println("section status is null2");
+       // System.out.println("section status is null2");
         if (entity.getRejectionSectionStatus() == null || entity.getRejectionSectionStatus().getRejectSectionId() ==0) {
-        	System.out.println("section status is null");
+        	//System.out.println("section status is null");
         	model.setRejectionSectionStatus(null);
         }
 
@@ -216,11 +240,11 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         model.setSecondAppealNoticeDate(entity.getSecondAppealNoticeDate());
         model.setSecondAppealHearingDate(entity.getSecondAppealHearingDate());
         model.setRemarks(entity.getRemarks());
-        model.setUnitId(entity.getUnitId());
-        model.setCircleId(entity.getCircleId());
-        model.setDivisionId(entity.getDivisionId());
-        model.setSubDivisionId(entity.getSubDivisionId());
-        model.setPostId(entity.getPostId());
+        model.setUnit(entity.getUnit());
+        model.setCircle(entity.getCircle());
+        model.setDivision(entity.getDivision());
+        model.setSubDivision(entity.getSubDivision());
+        model.setPost(entity.getPost());
         model.setDeleteFlag(entity.getDeleteFlag());
         model.setIsLatest(entity.getIsLatest());
         model.setCreatedBy(entity.getCreatedBy());

@@ -84,19 +84,19 @@ public class RtiProformaG {
     private String remarks;
     
     @Column(name = "unit_id")
-    private Integer unitId;
+    private Integer unit;
 
     @Column(name = "circle_id")
-    private Integer circleId;
+    private Integer circle;
 
     @Column(name = "division_id")
-    private Integer divisionId;
+    private Integer division;
 
     @Column(name = "sub_division_id")
-    private Integer subDivisionId;
+    private Integer subDivision;
 
     @Column(name = "post_id")
-    private Long postId;
+    private Long post;
 
     @Column(name = "delete_flag", nullable = false)
     private Boolean deleteFlag = false;
@@ -125,6 +125,7 @@ public class RtiProformaG {
     @Column(name = "application_fee")
     private Integer applicationFee;
     
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appellate_1st_desicion_rej_section", referencedColumnName = "reject_section_id", insertable = false, updatable = false,nullable = true)
     private RtiRejectionStatus rejectionSectionStatus;

@@ -51,11 +51,11 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         dto.setDeleteFlag(entity.getDeleteFlag());
         dto.setCreatedBy(entity.getCreatedBy());
         dto.setCreateDate(entity.getCreateDate());
-        dto.setUnitId(entity.getUnitId());
-        dto.setCircleId(entity.getCircleId());
-        dto.setDivisionId(entity.getDivisionId());
-        dto.setSubdivisionId(entity.getSubdivisionId());
-        dto.setDesignationId(entity.getDesignationId());
+        dto.setUnit(entity.getUnit());
+        dto.setCircle(entity.getCircle());
+        dto.setDivision(entity.getDivision());
+        dto.setSubdivision(entity.getSubDivision());
+        dto.setDesignation(entity.getDesignation());
         dto.setUpdatedBy(entity.getUpdatedBy());
         dto.setUpdateDate(entity.getUpdatedDate());
         dto.setDeletedBy(entity.getDeletedBy());
@@ -98,20 +98,38 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         entity.setRejectionDate(model.getRejectDate());
         entity.setRejectedSectionId(model.getRejectSectionId());
         if (model.getRejectSectionId() == null) {
-            System.out.println("Reject Section ID is null, assigning default value 0.");
+           // System.out.println("Reject Section ID is null, assigning default value 0.");
         }
         entity.setDeemedRefusal(model.getDeemedRefusal());
         entity.setAppealMade(model.getAppealMade());
         entity.setRemarks(model.getRemarks());
         entity.setIsLatest(model.getIsLatest());
         entity.setDeleteFlag(model.getDeleteFlag());
-        entity.setCreatedBy(model.getCreatedBy());
+       
         entity.setCreateDate(model.getCreateDate());
-        entity.setUnitId(model.getUnitId());
-        entity.setCircleId(model.getCircleId());
-        entity.setDivisionId(model.getDivisionId());
-        entity.setSubdivisionId(model.getSubdivisionId());
-        entity.setDesignationId(model.getDesignationId());
+        
+        if (model.getUser() != null) {
+           // System.out.println("user not null in G Dto1");
+            entity.setUnit(model.getUser().getUnit());
+            //System.out.println("user not null in G Dto 1"+ model.getUser().getUnit());
+            entity.setCircle(model.getUser().getCircle());
+            entity.setDivision(model.getUser().getDivision());
+            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setDesignation(model.getUser().getDesignation());
+            entity.setCreatedPostId(model.getUser().getPost());
+           // System.out.println("user not null in G Dto 2"+ model.getUser().getPost());
+            entity.setCreatedBy(model.getUser().getUsername());
+        }
+        if (model.getUser() == null) {
+        entity.setUnit(model.getUnit());
+        entity.setCircle(model.getCircle());
+        entity.setDivision(model.getDivision());
+        entity.setSubDivision(model.getSubdivision());
+        entity.setDesignation(model.getDesignation());
+        entity.setCreatedBy(model.getCreatedBy());
+        entity.setCreatedPostId(model.getCreatedPostId());
+        }
+       
         entity.setUpdatedBy(model.getUpdatedBy());
         entity.setUpdatedDate(model.getUpdateDate());
         entity.setDeletedBy(model.getDeletedBy());
@@ -119,7 +137,7 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         entity.setInfoFurnishedDate(model.getInfoFurnDate());
         entity.setInfoPartDate(model.getInfoPartDate());
         entity.setInfoFullDate(model.getInfoFullDate());
-        entity.setCreatedPostId(model.getCreatedPostId());
+       
         entity.setAppnnum(model.getAppnNum());
         entity.setTransferMode(model.getTransMode());
         entity.setTransferAmount(model.getTransAmt());
@@ -170,13 +188,27 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         entity.setRemarks(model.getRemarks());
         entity.setIsLatest(model.getIsLatest());
         entity.setDeleteFlag(model.getDeleteFlag());
-        entity.setCreatedBy(model.getCreatedBy());
-        entity.setCreateDate(model.getCreateDate());
-        entity.setUnitId(model.getUnitId());
-        entity.setCircleId(model.getCircleId());
-        entity.setDivisionId(model.getDivisionId());
-        entity.setSubdivisionId(model.getSubdivisionId());
-        entity.setDesignationId(model.getDesignationId());
+       
+        entity.setCreateDate(model.getCreateDate());        
+        if (model.getUser() != null) {
+           // System.out.println("user not null in G Dto 2");
+            entity.setUnit(model.getUser().getUnit());
+            //System.out.println("user not null in G Dto 2"+ model.getUser().getUnit());
+            entity.setCircle(model.getUser().getCircle());
+            entity.setDivision(model.getUser().getDivision());
+            entity.setSubDivision(model.getUser().getSubDivision());
+           // entity.setCreatedPostId(model.getUser().getPost());
+            entity.setCreatedBy(model.getUser().getUsername());
+        }
+        if (model.getUser() == null) {
+        entity.setUnit(model.getUnit());
+        entity.setCircle(model.getCircle());
+        entity.setDivision(model.getDivision());
+        entity.setSubDivision(model.getSubdivision());
+        entity.setDesignation(model.getDesignation());
+       // entity.setCreatedBy(model.getCreatedBy());
+        entity.setCreatedPostId(model.getCreatedPostId());
+        }
         entity.setUpdatedBy(model.getUpdatedBy());
         entity.setUpdatedDate(model.getUpdateDate());
         entity.setDeletedBy(model.getDeletedBy());
@@ -184,7 +216,7 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         entity.setInfoFurnishedDate(model.getInfoFurnDate());
         entity.setInfoPartDate(model.getInfoPartDate());
         entity.setInfoFullDate(model.getInfoFullDate());
-        entity.setCreatedPostId(model.getCreatedPostId());
+       
         entity.setAppnnum(model.getAppnNum());
         entity.setTransferMode(model.getTransMode());
         entity.setTransferAmount(model.getTransAmt());
@@ -216,7 +248,7 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         model.setRejectDate(entity.getRejectionDate());
         model.setRejectSectionId(entity.getRejectedSectionId());
         if (entity.getRejectionSectionStatus() == null || entity.getRejectionSectionStatus().getRejectSectionId() ==0) {
-        	System.out.println("section status is null");
+        	//System.out.println("section status is null");
         	model.setRejectionSectionStatus(null);
         }
 
@@ -231,11 +263,11 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         model.setDeleteFlag(entity.getDeleteFlag());
         model.setCreatedBy(entity.getCreatedBy());
         model.setCreateDate(entity.getCreateDate());
-        model.setUnitId(entity.getUnitId());
-        model.setCircleId(entity.getCircleId());
-        model.setDivisionId(entity.getDivisionId());
-        model.setSubdivisionId(entity.getSubdivisionId());
-        model.setDesignationId(entity.getDesignationId());
+        model.setUnit(entity.getUnit());
+        model.setCircle(entity.getCircle());
+        model.setDivision(entity.getDivision());
+        model.setSubdivision(entity.getSubDivision());
+        model.setDesignation(entity.getDesignation());
         model.setUpdatedBy(entity.getUpdatedBy());
         model.setUpdateDate(entity.getUpdatedDate());
         model.setDeletedBy(entity.getDeletedBy());

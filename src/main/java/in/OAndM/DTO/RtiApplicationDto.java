@@ -41,11 +41,11 @@ public class RtiApplicationDto {
 	    private Boolean deleteFlag;	    
 	    private String createdBy;
 	    private LocalDateTime createDate;	    
-	    private Integer unitId;
-	    private Integer circleId;
-	    private Integer divisionId;
-	    private Integer subdivisionId;
-	    private Integer designationId;
+	    private Integer unit;
+	    private Integer circle;
+	    private Integer division;
+	    private Integer subdivision;
+	    private Integer designation;
 	    private String updatedBy;
 	    private LocalDateTime updateDate;	    
 	    private String deletedBy;
@@ -57,7 +57,8 @@ public class RtiApplicationDto {
 	    
 	    private LocalDateTime infoPartDate;
 	    private LocalDateTime infoFullDate;
-	    private String createdPostId;
+	    private Long createdPostId;
+	    private String post;
 	    
 	    
 	    private String appnNum;
@@ -66,6 +67,8 @@ public class RtiApplicationDto {
 	    private LocalDate refusedDate;
 	    private String rejectionSectionStatus;
 	    private String rtiRejectionSection;
+	    
+	    private UserDetailsDto user;
 	
 //	    private Integer applicationId;	   
 //	    private LocalDateTime applicationDate;//timestamp without time zone,	   

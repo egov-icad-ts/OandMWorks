@@ -36,11 +36,11 @@ public class RtiProformaGDto {
     private LocalDate secondAppealNoticeDate;
     private LocalDate secondAppealHearingDate;
     private String remarks;
-    private Integer unitId;
-    private Integer circleId;
-    private Integer divisionId;
-    private Integer subDivisionId;
-    private Long postId;
+    private Integer unit;
+    private Integer circle;
+    private Integer division;
+    private Integer subDivision;
+    private Long post;
     
     private Boolean deleteFlag;
     private Boolean isLatest;
@@ -56,4 +56,7 @@ public class RtiProformaGDto {
     //private Integer rejectSectionId; // ID of the rejection section
     //private String rtiRejSecName; // Name of the rejection section  
     private String rtiRejectionSection;
+    
+ // Add User Details
+    private UserDetailsDto user;
 }

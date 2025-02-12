@@ -104,19 +104,19 @@ public class RTIApplication{
     private LocalDateTime createDate;
     
     @Column(name = "unit_id")
-    private Integer unitId;
+    private Integer unit;
 
     @Column(name = "circle_id")
-    private Integer circleId;
+    private Integer circle;
 
     @Column(name = "division_id")
-    private Integer divisionId;
+    private Integer division;
 
     @Column(name = "subdivision_id")
-    private Integer subdivisionId;
+    private Integer subDivision;
 
     @Column(name = "designation_id")
-    private Integer designationId;
+    private Integer designation;
 
     @Column(name = "update_by")
     private String updatedBy;
@@ -141,7 +141,7 @@ public class RTIApplication{
     private LocalDateTime infoFullDate;
 
     @Column(name = "created_postid")
-    private String createdPostId;
+    private Long createdPostId;
 
     @Column(name = "application_num")
     private String appnnum;
@@ -164,6 +164,8 @@ public class RTIApplication{
 
     public void RTIApplication() {
     }
+
+	
 
    
 
