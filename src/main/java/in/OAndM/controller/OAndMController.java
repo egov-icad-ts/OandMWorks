@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,17 +31,23 @@ import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.AgreementsModel;
 import in.OAndM.DTO.BillsModel;
+import in.OAndM.DTO.LiftsMasterModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.UploadGOsModel;
+import in.OAndM.DTO.WorkApprovedAuthorityModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
+import in.OAndM.DTO.WorksTypeMasterModel;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AdminSanctionViewService;
 import in.OAndM.services.AgreementsService;
 import in.OAndM.services.BillsService;
+import in.OAndM.services.LiftMasterService;
 import in.OAndM.services.TechnicalSanctionService;
 import in.OAndM.services.UploadGOsService;
+import in.OAndM.services.WorkApprovedAuthorityService;
 import in.OAndM.services.WorkDetailsViewService;
+import in.OAndM.services.WorkTypeMasterService;
 import in.OAndM.utils.DateUtil;
 
 @RestController
@@ -67,6 +75,21 @@ public class OAndMController {
 	
 	@Autowired
 	UploadGOsService gosService;
+	@Autowired
+	WorkTypeMasterService  workTypeMasterService;
+	
+	@Autowired
+	LiftMasterService  liftMasterService;
+	
+	
+@Autowired
+WorkApprovedAuthorityService workApprovedAuthorityService;
+
+Date date=new Date(System.currentTimeMillis());
+SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy"); 
+String formattedDate=formatter.format(date);
+
+
 
 	@GetMapping("/adminSanctions")
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctions(Integer unit,
@@ -138,7 +161,6 @@ public class OAndMController {
 			@RequestParam Integer workId, @RequestParam Integer agreementId) {
 		BaseResponse<HttpStatus, AgreementsModel> response = agreementsService.getAgmtAndBillDetailsByworkId(workId,
 				agreementId);
-
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -246,7 +268,6 @@ public class OAndMController {
 	}
 
 	@PostMapping(value = "/submitBillDetails")
-
 	public void submitBillDetails(@RequestBody BillsModel bills) {
 		billsService.insertBills(bills);
 	}
@@ -397,7 +418,9 @@ public class OAndMController {
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 	
-	@GetMapping("/getAbsRepUnitHOAWiseFinyear")
+	
+
+@GetMapping("/getAbsRepUnitHOAWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepUnitHOAWiseFinyear(
 			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
@@ -429,5 +452,74 @@ public class OAndMController {
 		
 		return new ResponseEntity<>(response,response.getStatus());
 	}
+
+
+	
+
+	@GetMapping("/getWorkTypeMst")
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorksTypeMasterModel>>> getWorkTypeMst() {
+		BaseResponse<HttpStatus, List<WorksTypeMasterModel>> response = workTypeMasterService.getworktypemaster();
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getLiftsByProjectId/{projectId}")
+	public ResponseEntity<BaseResponse<HttpStatus, List<LiftsMasterModel>>> getLiftsByProjectId(@PathVariable Integer projectId) {
+		BaseResponse<HttpStatus, List<LiftsMasterModel>> response = liftMasterService.findbyProjectId(projectId);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getUserSmallLifts/{unitId}")
+	public ResponseEntity<BaseResponse<HttpStatus, List<LiftsMasterModel>>> getUserSmallLifts(@PathVariable Integer unitId) {
+		BaseResponse<HttpStatus, List<LiftsMasterModel>> response = liftMasterService.findbyProjectId(unitId);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	
+	@GetMapping("/getAuthorityList")
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkApprovedAuthorityModel>>> getAuthorityList() {
+		BaseResponse<HttpStatus, List<WorkApprovedAuthorityModel>> response =workApprovedAuthorityService.getAuthorityList();
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+
+	@PostMapping(value = "/submitAdminSanctions")
+	public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> submitAdminSanctions(
+			@ModelAttribute AdminSanctionsModel admin) {
+		 String adminFileType = null;
+		    Date date = new Date(System.currentTimeMillis());
+		    
+	        String formattedDate =formatter.format(date);
+		    String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
+		    String[] temps = fileName.split(Pattern.quote("."));
+		    BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
+		    String rootPath = System.getProperty("catalina.home");
+		    File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
+					+ File.separator + "O&MWorks"+ File.separator + "AdminSanctionFiles" + File.separator);
+
+		    if (!dir.exists()) dir.mkdirs();
+		    
+		    String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
+		    try {
+		    	admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+		    } catch (IllegalStateException | IOException e) {
+		        e.printStackTrace();
+		    }
+
+		  
+		    String adminURL ="O&MWorks"+ File.separator + "AdminSanctionFiles"+  File.separator + saveFileName;
+		    adminFileType = temps[temps.length - 1].toLowerCase(); 
+		    
+	
+		    if ("pdf".equals(adminFileType)) {
+		        admin.setAaFileUrl(adminURL);
+		        response = adminSanctionService.insertAdminSanctions(admin);
+		    } else {
+		       
+		        response.setMessage("Only PDF files are allowed.");
+		        response.setStatus(HttpStatus.BAD_REQUEST);
+		    }
+
+		
+			return new ResponseEntity<>(response, response.getStatus());
+	}
+	
 
 }

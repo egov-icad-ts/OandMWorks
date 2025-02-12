@@ -162,12 +162,12 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		
 		if(admin!=null && workId >0) {
 			admin.setWorkId(workId);
-		create(admin);
-		responseJson.setMessage("Submitted SuccessFully");
-		responseJson.setStatus(HttpStatus.OK);
+			responseJson=create(admin);
+			responseJson.setMessage("Successfully Submitted");
 		}else {
+			logger.debug(appConstant.getValue(AppConstant.CREATE_SERVICE_FAILED));
 			responseJson.setMessage("Error in submission");
-			responseJson.setStatus(HttpStatus.OK);
+			responseJson.setStatus(HttpStatus.BAD_REQUEST);
 		}
 		return responseJson;
 	}

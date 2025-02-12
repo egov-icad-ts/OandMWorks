@@ -80,6 +80,7 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 	
 	public List<WorkDetailsViewModel> getWorksByWorkcategoryByFinyear(Integer finyear);
 
+
 	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(aa.unitId as unitId,aa.unitName as unitName,"
 			+ "count(distinct(aa.workId)) as adminCount, COALESCE(sum(aa.adminApprovedAmountLakh),0) as adminAmt,"
 			+ "count(distinct(aa.govtSanction)) as govtSanction, COALESCE(SUM(aa.govtSancAmount / 100000), 0) as govtSancAmount,"
@@ -130,5 +131,6 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 			+ " from AdminSanctionViewEntity  aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId where   aa.financialYear=:finyear "
 			+ " group by aa.authorityType,aa.workTypeId,aa.workTypeName")
 	public List<WorkDetailsViewModel> getAbsRepSanctionAuthWorkTypeWiseFinyear(Integer finyear);
+
 
 }

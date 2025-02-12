@@ -5,9 +5,10 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -96,7 +97,15 @@ public class AdminSanctionsModel {
 
 	private Integer projectResLiftName;
 	
+
 	private String projectName;
+
+	private MultipartFile adminFileUrl;
+
+	 
+	 private String adminFileType;
+	 
+
 	
 	private String unitName;
 	

@@ -1,12 +1,24 @@
 package in.OAndM.Entities;
 
-import jakarta.persistence.Column;
+import java.math.BigDecimal;
+import java.util.Date;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Entity
+@Table(name = "o_m_work_approved_authority_mst")
+@Data
 public class WorkApprovedAuthorityMst {
+	
 @Column(name="authority_name")
  
  private String  authorityName;
 
+@Id
 @Column(name="authority_id")
  
  private Integer  authorityId;
