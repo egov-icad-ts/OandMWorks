@@ -522,4 +522,20 @@ String formattedDate=formatter.format(date);
 	}
 	
 
+	    		@GetMapping("/O&MWorksAADetailedReport")
+	    		
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getOMWorksAADetailedReport( 
+	    			//	@ModelAttribute AdminSanctionViewModel admin ){
+	    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
+                        @RequestParam Integer scst, @RequestParam Integer financialYear, 
+                        @RequestParam Integer projectId){
+	    				
+	    		    			
+	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
+	    		 			
+	    			response= adminViewService.getOMWorksAADetailedReport(unitId,authorityId,scst,financialYear,projectId);
+	    			
+	    			return new ResponseEntity<>(response,response.getStatus());
+	    		}
+
 }

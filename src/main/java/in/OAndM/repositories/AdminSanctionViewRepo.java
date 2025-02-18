@@ -57,5 +57,17 @@ public interface AdminSanctionViewRepo extends BaseRepository<AdminSanctionViewE
 			+ " from AdminSanctionViewEntity where financialYear = :financialYear group by unitId,unitName order by unitId,unitName")
 	public List<AdminSanctionViewModel> getAbsRepUnitWiseSCSTSdfFinyear(Integer financialYear);
 	
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitId(Integer finYear, Integer unitId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndScstFunds(Integer finYear, Integer unitId, Integer scst);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndApprovedByIdIn(Integer financialYear, Integer unitId, List<Integer> authorityIds);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndProjectId(Integer financialYear,Integer unitId,Integer projectId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndProjectIdAndApprovedByIdIn(Integer financialYear,Integer unitId,Integer projectId,List<Integer> authorityIds);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndProjectIdAndApprovedById(Integer financialYear, Integer unitId, Integer projectId,Integer authorityId);
 
 }

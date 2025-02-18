@@ -80,4 +80,14 @@ public class AdminSanctionViewModel {
 	private long stCount;
 	
 	private BigDecimal stAmount;
+	
+	private Integer scstFunds;
+	
+	private Integer projectId;
+	
+	private Integer workTypeId;
+	
+	private String projectName;
+	
+	private String tankName;
 }

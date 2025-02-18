@@ -196,4 +196,7 @@ public class AdminSanctionViewEntity {
 	
 	@Column(name = "st_amount")
 	private BigDecimal stAmount;
+	
+	@Column(name = "sc_st_funds")
+	private Integer scstFunds;
 }
