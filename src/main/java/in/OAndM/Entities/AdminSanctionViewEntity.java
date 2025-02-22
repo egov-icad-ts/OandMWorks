@@ -199,4 +199,7 @@ public class AdminSanctionViewEntity {
 	
 	@Column(name = "sc_st_funds")
 	private Integer scstFunds;
+	
+	@Column(name="proj_sub_type_id")
+	private Integer projSubType;
 }

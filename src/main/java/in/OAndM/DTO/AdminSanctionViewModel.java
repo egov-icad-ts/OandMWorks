@@ -90,4 +90,8 @@ public class AdminSanctionViewModel {
 	private String projectName;
 	
 	private String tankName;
+	
+	private Integer projSubType;
+	
+	
 }

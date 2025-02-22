@@ -98,7 +98,7 @@ public class WorkDetailsViewModel {
 	private Integer workTypeId;
 	private String workTypeName;
 	private Integer finyear;
-	
+	private Integer hoaId;
 	private String referenceNumber;
 	private String headOfAccount;
 	private Integer designationId;

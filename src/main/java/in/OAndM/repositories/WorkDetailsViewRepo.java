@@ -15,7 +15,9 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 			+ "count(distinct(aa.workId)) as adminCount, COALESCE(sum(aa.adminApprovedAmountLakh),0) as adminAmt,"
 			+ "count(distinct(wd.techWorkId)) as techCount, COALESCE(sum(wd.tsApprovedAmountLakhs),0) as techAmt,"
 			+ "count(distinct(wd.agrWorkId)) as agreementCount, COALESCE(sum(wd.agreementAmountLakhs),0) as agreementAmt, "
-			+ "count(distinct(wd.actionToBeTakenCount)) as actionToBeTakenCount, COALESCE((sum(wd.actionToBeTakenAmt))/100000,0) as actionToBeTakenAmt,"
+		//	+ "count(distinct(wd.actionToBeTakenCount)) as actionToBeTakenCount, COALESCE((sum(wd.actionToBeTakenAmt))/100000,0) as actionToBeTakenAmt,"
+			+ " count(distinct case when aa.workId>0 and wd.techWorkId is null then aa.workId else null end ) as actionToBeTakenCount,"
+			+ " COALESCE( sum(case when aa.workId>0 and wd.techWorkId is null then aa.adminApprovedAmountLakh else null end ),0) as actionToBeTakenAmt,"
 			+ "count(distinct(wd.billsPaid)) as billsPaid, COALESCE(sum(wd.paidAmountLakh),0) as paidAmount, "
 			+ "count(distinct(wd.billsPending)) as billsPending, COALESCE(sum(wd.pendingAmountLakh),0) as pendingAmount) "
 			+ " from AdminSanctionViewEntity  aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId where   aa.financialYear = :finyear group by aa.approvedById,aa.approvedByName")
@@ -96,7 +98,7 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 			+ " group by aa.unitId,aa.unitName")
 	public List<WorkDetailsViewModel> getAbsRepUnitWiseFinyear(Integer finyear);
 	
-	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(aa.headOfAccount as headOfAccount,aa.workTypeId as workTypeId,aa.workTypeName as workTypeName,"
+	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(aa.hoaId as hoaId,aa.headOfAccount as headOfAccount,aa.workTypeId as workTypeId,aa.workTypeName as workTypeName,"
 			+ "count(distinct(aa.workId)) as adminCount, COALESCE(sum(aa.adminApprovedAmountLakh),0) as adminAmt,"
 			+ "count(distinct(wd.techWorkId)) as techCount, COALESCE(sum(wd.tsApprovedAmountLakhs),0) as techAmt,"
 			+ "count(distinct(wd.agrWorkId)) as agreementCount, COALESCE(sum(wd.agreementAmountLakhs),0) as agreementAmt, "
@@ -105,7 +107,7 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 			+ "count(distinct(wd.billsPaid)) as billsPaid, COALESCE(sum(wd.paidAmountLakh),0) as paidAmount, "
 			+ "count(distinct(wd.billsPending)) as billsPending, COALESCE(sum(wd.pendingAmountLakh),0) as pendingAmount) "
 			+ " from AdminSanctionViewEntity  aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId where   aa.financialYear=:finyear "
-			+ " group by aa.headOfAccount,aa.workTypeId,aa.workTypeName")
+			+ " group by aa.hoaId,aa.headOfAccount,aa.workTypeId,aa.workTypeName")
 	public List<WorkDetailsViewModel> getAbsRepWorkTypeHOAWiseFinyear(Integer finyear);
 	
 	@Query("select  new in.OAndM.DTO.WorkDetailsViewModel(aa.workTypeId as workTypeId,aa.workTypeName as workTypeName,"

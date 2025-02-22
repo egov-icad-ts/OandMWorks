@@ -1,5 +1,6 @@
 package in.OAndM.repositories;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
@@ -69,5 +70,29 @@ public interface AdminSanctionViewRepo extends BaseRepository<AdminSanctionViewE
 	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndProjectIdAndApprovedByIdIn(Integer financialYear,Integer unitId,Integer projectId,List<Integer> authorityIds);
 	
 	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndProjectIdAndApprovedById(Integer financialYear, Integer unitId, Integer projectId,Integer authorityId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndApprovedByIdAndHoaId(Integer financialYear,Integer unitId,Integer authorityId,Integer hoaId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndHoaId(Integer financialYear,Integer unitId,Integer hoaId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndApprovedByIdAndWorkTypeIdAndProjSubType(Integer financialYear,Integer unitId,Integer authorityId,Integer workTypeId,Integer projectSubType);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndUnitIdAndWorkTypeIdAndProjSubTypeAndApprovedByIdIn(Integer financialYear,Integer unitId,Integer workTypeId,Integer projectSubType,List<Integer> authorityIds);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndApprovedById(Integer financialYear,Integer authorityId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndProjSubType(Integer financialYear,Integer projectSubType);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndHoaIdAndWorkTypeId(Integer financialYear,Integer hoaId,Integer workTypeId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndApprovedByIdAndWorkTypeId(Integer financialYear,Integer authorityId,Integer workTypeId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndWorkTypeIdAndApprovedByIdIn(Integer financialYear,Integer workTypeId,List<Integer> authorityIds);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndHoaId(Integer financialYear,Integer hoaId);
+	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndHoaIdAndApprovedById(Integer financialYear,Integer hoaId, Integer authorityId);
+	
+	
 
 }

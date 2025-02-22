@@ -133,13 +133,13 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 
 	@Override
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(Integer unitId,
-			Integer authorityId, Integer scst, Integer financialYear, Integer projectId) {
+			Integer authorityId, Integer scst, Integer financialYear, Integer projectId ,Integer workTypeId,Integer projectSubType) {
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		List<AdminSanctionViewEntity> list = null;
 		
 		if(financialYear > 0) {
-			if (projectId == 0) {
+			if (projectId == 0 && workTypeId==0) {
 				if (authorityId == 0 && scst==0) {
 					list=adminRepo.findByFinancialYearAndUnitId(financialYear,unitId);
 				}else if (authorityId == 0 && scst!= 0 && scst!=3) {
@@ -149,7 +149,7 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				} else {
 					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedById(financialYear, unitId, authorityId);
 				}
-			}else {
+			}else if(projectId != 0 && workTypeId==0){
 				if (authorityId == 0) {
 					list = adminRepo.findByFinancialYearAndUnitIdAndProjectId(financialYear,unitId,projectId);
 							
@@ -159,6 +159,8 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				} else {
 					list = adminRepo.findByFinancialYearAndUnitIdAndProjectIdAndApprovedById(financialYear, unitId, projectId,authorityId);
 				}
+			}else {
+				//list = adminRepo.findByFinancialYearAndWorkTypeId(financialYear,)
 			}
 			}
 		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
@@ -191,6 +193,123 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		return responseJson;
 
 		
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksHoaAADetailedReport(Integer unitId,
+			Integer authorityId, Integer scst, Integer financialYear, Integer hoaId,Integer workTypeId,Integer projectSubType,Integer projectId) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
+		List<AdminSanctionViewEntity> list = null;
+		
+		if(!unitId.equals(0)) {
+		if(!hoaId.equals(0)) {
+			if (!authorityId.equals(0)) {
+					list=adminRepo.findByFinancialYearAndUnitIdAndApprovedByIdAndHoaId(financialYear,unitId,authorityId,hoaId);
+				} else {
+					list = adminRepo.findByFinancialYearAndUnitIdAndHoaId(financialYear, unitId, hoaId);
+				}
+			}else {
+				if (!workTypeId.equals(0) && !authorityId.equals(3)) {
+					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedByIdAndWorkTypeIdAndProjSubType(financialYear,unitId,authorityId,workTypeId,projectSubType);
+							
+				} else if (!workTypeId.equals(0) && authorityId.equals(3)) {
+					list = adminRepo.findByFinancialYearAndUnitIdAndWorkTypeIdAndProjSubTypeAndApprovedByIdIn(financialYear,unitId,workTypeId,projectSubType,Arrays.asList(3, 4, 5, 6));
+					
+				} else if(workTypeId.equals(0) && !authorityId.equals(3)){
+					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedById(financialYear, unitId,authorityId);
+				}else {
+					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedByIdIn(financialYear, unitId,Arrays.asList(3, 4, 5, 6));
+				}
+			}
+		}else if(!hoaId.equals(0)){
+			if (authorityId.equals(0) && workTypeId.equals(0) ) {
+				list = adminRepo.findByFinancialYearAndHoaId(financialYear, hoaId);
+			} else if (!authorityId.equals(0) && workTypeId.equals(0) ){
+				list = adminRepo.findByFinancialYearAndHoaIdAndApprovedById(financialYear, hoaId, authorityId);
+			}else if(!workTypeId.equals(0) ) {
+				list = adminRepo.findByFinancialYearAndHoaIdAndWorkTypeId(financialYear, hoaId, workTypeId);
+			}
+		}
+		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
+		if( list.size()>0) {
+			for(AdminSanctionViewEntity  work: list) {
+				
+				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
+				adminModel.setWorkId(work.getWorkId());
+				adminModel.setWorkName(work.getWorkName());
+				adminModel.setWorkTypeName(work.getWorkTypeName());
+				adminModel.setReferenceNumber(work.getReferenceNumber());
+				adminModel.setAdminSanctionAmt(work.getAdminSanctionAmt());
+				adminModel.setHeadOfAccount(work.getHeadOfAccount());
+				adminModel.setApprovedByName(work.getApprovedByName());
+				adminModel.setFinancialYear(work.getFinancialYear());
+				adminModel.setWorkTypeId(work.getWorkTypeId());
+				adminModel.setProjectName(work.getProjectResLiftName());
+				adminModel.setTankName(work.getTank_name());
+				adminViewModel.add(adminModel);
+			}
+			}
+			
+		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setSuccess(true);
+		responseJson.setData(adminViewModel);
+
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		//System.out.println("responseJson" +responseJson);
+		return responseJson;
+
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksSanctionAADetailedReport(Integer unitId,
+			Integer authorityId, Integer scst, Integer financialYear, Integer hoaId, Integer workTypeId,
+			Integer projectSubType, Integer projectId) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
+		List<AdminSanctionViewEntity> list = null;
+		if (workTypeId == 0 && authorityId != 0 && hoaId == 0) {
+			list = adminRepo.findByFinancialYearAndApprovedById(financialYear,authorityId);
+		}else if (workTypeId != 0 && authorityId == 0 && hoaId == 0) {
+			list = adminRepo.findByFinancialYearAndProjSubType(financialYear,projectSubType);
+		}else if ((workTypeId != 0 && authorityId == 0 && hoaId != 0)) {
+			list = adminRepo.findByFinancialYearAndHoaIdAndWorkTypeId(financialYear,hoaId,workTypeId);
+		}else if (workTypeId != 0 && authorityId != 0 && hoaId == 0) {
+			if (authorityId != 9999) {
+				list = adminRepo.findByFinancialYearAndApprovedByIdAndWorkTypeId(financialYear,authorityId,workTypeId);
+			}else {
+				list = adminRepo.findByFinancialYearAndWorkTypeIdAndApprovedByIdIn(financialYear,workTypeId,Arrays.asList(3, 4, 5, 6));
+			}
+		}
+		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
+		if( list.size()>0) {
+			for(AdminSanctionViewEntity  work: list) {
+				
+				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
+				adminModel.setWorkId(work.getWorkId());
+				adminModel.setWorkName(work.getWorkName());
+				adminModel.setWorkTypeName(work.getWorkTypeName());
+				adminModel.setReferenceNumber(work.getReferenceNumber());
+				adminModel.setAdminSanctionAmt(work.getAdminSanctionAmt());
+				adminModel.setHeadOfAccount(work.getHeadOfAccount());
+				adminModel.setApprovedByName(work.getApprovedByName());
+				adminModel.setFinancialYear(work.getFinancialYear());
+				adminModel.setWorkTypeId(work.getWorkTypeId());
+				adminModel.setProjectName(work.getProjectResLiftName());
+				adminModel.setTankName(work.getTank_name());
+				adminViewModel.add(adminModel);
+			}
+			}
+			
+		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setSuccess(true);
+		responseJson.setData(adminViewModel);
+
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		//System.out.println("responseJson" +responseJson);
+		return responseJson;
 	}
 
 	
