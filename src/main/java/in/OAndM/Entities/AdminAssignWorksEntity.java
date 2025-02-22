@@ -1,7 +1,6 @@
 package in.OAndM.Entities;
 
-import java.math.BigDecimal;
-import java.util.List;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,24 +8,25 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Entity
-@Table(name="o_m_admin_sanction")
+@Table(name="o_m_admin_assign_works")
 @Data
 public class AdminAssignWorksEntity {
 	
 	
 	@Column(name = "slno")
 	@Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "assign_seq")
+	@SequenceGenerator(name="assign_seq",sequenceName ="o_m_admin_assign_works_slno_seq",allocationSize = 1 )
 	@NotNull
- 
- private Integer  slno;
-
+	private Integer  slno;
+	
 @Column(name="work_id")
  
  private Integer  workId;
@@ -59,9 +59,13 @@ public class AdminAssignWorksEntity {
  
  private String  updatedBy;
 
+@OneToOne
+@JoinColumn(name = "work_id",referencedColumnName = "work_id" ,insertable = false,updatable = false)
+private AdminSanctionsEntity assignAdminSanction;
 
-
-
+//@ManyToOne
+//@JoinColumn(name = "work_id", referencedColumnName = "work_id",insertable=false, updatable=false)
+//private AdminSanctionsEntity adminSanctions ;
 
   
 }

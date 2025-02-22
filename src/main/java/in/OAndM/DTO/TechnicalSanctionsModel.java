@@ -39,4 +39,6 @@ private Integer workId ;
 
 private List<TechnicalSanctionsModel> techList=new ArrayList<>();
 
+
+
 }

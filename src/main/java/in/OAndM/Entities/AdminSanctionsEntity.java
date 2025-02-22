@@ -3,15 +3,19 @@ package in.OAndM.Entities;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -142,28 +146,29 @@ public class AdminSanctionsEntity {
 	@Column(name = "work_type_id")
 	private Integer workTypeId;
 	
+	@OneToOne(fetch = FetchType.LAZY)
+	 @JoinColumn(name = "approved_by_id", referencedColumnName = "authority_id",insertable=false, updatable=false)
+	  private WorkApprovedAuthorityMst authoritymst ;
 	
-//	  @OneToMany(mappedBy = "adminSanction", fetch = FetchType.LAZY)
-//	  private List<TechnicalSanctionEntity> technEntries;
-//	  
-		
-	  @OneToMany	 
-	  @JoinColumn(name = "work_id", referencedColumnName = "work_id")
+	  @OneToMany(mappedBy = "adminSanctions" ,fetch = FetchType.LAZY)
 	  private List<TechnicalSanctionEntity> technEntries;
 	  
-		/*
-		 * @JoinColumn(name = "approved_by_id") private WorkApprovedAuthorityMst
-		 * workApprovedAuthorityMst ;
-		 */
-		
-		
-		
-		/*
-		 * @OneToMany(mappedBy = "adminSanctionAssign", fetch = FetchType.LAZY) private
-		 * List<AdminAssignWorksEntity> adminAssignWorksEntities ;
-		 */
-		 
-	 
+//	  @OneToOne(mappedBy = "assignAdminSanction", fetch = FetchType.LAZY) 
+//		private AdminAssignWorksEntity adminAssignWorksEntities ;
+	  
+	  @Column(name = "updated_on", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	  private LocalDateTime updatedOn;
+
+	  @PrePersist
+	  public void prePersist() {
+	      LocalDateTime now = LocalDateTime.now(); // Get the current timestamp
+	      this.updatedOn = now; // Optionally set updatedAt to the current timestamp as well
+	      this.isLatest = true; 
+	      this.deleteFlag = false; 
+	      this.isAssigned=false;
+	      
+	    
+	  }
 	 
 	 
 }
