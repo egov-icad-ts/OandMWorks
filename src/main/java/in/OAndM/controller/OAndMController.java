@@ -27,22 +27,27 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import in.OAndM.DTO.AdminAssignWorksModel;
 import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.AgreementsModel;
 import in.OAndM.DTO.BillsModel;
 import in.OAndM.DTO.LiftsMasterModel;
+import in.OAndM.DTO.SmallLiftsMasterModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.UploadGOsModel;
 import in.OAndM.DTO.WorkApprovedAuthorityModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.DTO.WorksTypeMasterModel;
+import in.OAndM.Entities.SmallLiftsMaster;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AdminSanctionViewService;
 import in.OAndM.services.AgreementsService;
+import in.OAndM.services.AssignAdminSanctionService;
 import in.OAndM.services.BillsService;
 import in.OAndM.services.LiftMasterService;
+import in.OAndM.services.SmallLiftService;
 import in.OAndM.services.TechnicalSanctionService;
 import in.OAndM.services.UploadGOsService;
 import in.OAndM.services.WorkApprovedAuthorityService;
@@ -66,30 +71,33 @@ public class OAndMController {
 
 	@Autowired
 	WorkDetailsViewService workDetailsService;
-	
+
 	@Autowired
 	AdminSanctionViewService adminViewService;
 
 	@Autowired
 	BillsService billsService;
-	
+
 	@Autowired
 	UploadGOsService gosService;
 	@Autowired
-	WorkTypeMasterService  workTypeMasterService;
+	WorkTypeMasterService workTypeMasterService;
+
+	@Autowired
+	LiftMasterService liftMasterService;
+
+	@Autowired
+	SmallLiftService smallLiftMasterService;
+
+	@Autowired
+	WorkApprovedAuthorityService workApprovedAuthorityService;
 	
 	@Autowired
-	LiftMasterService  liftMasterService;
-	
-	
-@Autowired
-WorkApprovedAuthorityService workApprovedAuthorityService;
+	AssignAdminSanctionService assignAdminSanctionService; 
 
-Date date=new Date(System.currentTimeMillis());
-SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy"); 
-String formattedDate=formatter.format(date);
-
-
+	Date date = new Date(System.currentTimeMillis());
+	SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy");
+	String formattedDate = formatter.format(date);
 
 	@GetMapping("/adminSanctions")
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctions(Integer unit,
@@ -100,12 +108,11 @@ String formattedDate=formatter.format(date);
 	}
 
 	@GetMapping("/adminSanctionsByworkId")
-	@CrossOrigin(origins = "http://localhost:3000")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = adminSanctionService.findbyWorkId(workId);
-		//System.out.println("response" + response);
+		// System.out.println("response" + response);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
@@ -118,11 +125,12 @@ String formattedDate=formatter.format(date);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
+	/* for getting workname */
 	@GetMapping("/O&MWorksTechnicalSanction")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionsForDEE(
 			@ModelAttribute AdminSanctionsModel admin) {
-		
+
 		Integer finyear, unitId, circleId, divisionId, subDivisionId, designationId = 0;
 
 		finyear = admin.getFinancialYear() != null ? admin.getFinancialYear() : 0;
@@ -131,12 +139,16 @@ String formattedDate=formatter.format(date);
 		divisionId = admin.getDivisionId() != null ? admin.getDivisionId() : 0;
 		subDivisionId = admin.getSubDivisionId() != null ? admin.getSubDivisionId() : 0;
 
-		designationId = admin.getDesignationId()!= null ? admin.getDesignationId() : 0;
-
-		
-		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = adminSanctionService.getAdminSanctionForDEE(
-				admin.getUnitId(),admin.getCircleId(), admin.getDivisionId(), admin.getSubDivisionId(), admin.getFinancialYear());
-
+		designationId = admin.getDesignationId() != null ? admin.getDesignationId() : 0;
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response = new BaseResponse<>();
+				if(designationId==4 && subDivisionId>0) {
+					response=adminSanctionService.getAdminSanctionForDEE(
+				admin.getUnitId(), admin.getCircleId(), admin.getDivisionId(), admin.getSubDivisionId(),
+				admin.getFinancialYear());
+			}
+			else  {
+				response=adminSanctionService.getAdminSanctions(unitId, finyear);
+			}
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
@@ -163,9 +175,7 @@ String formattedDate=formatter.format(date);
 				agreementId);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-
 	@PostMapping(value = "/submitTechnicalSanctions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-
 	public ResponseEntity<BaseResponse<HttpStatus, List<TechnicalSanctionsModel>>> submitTechnicalSanctions(
 			@ModelAttribute TechnicalSanctionsModel techlist) {
 
@@ -271,34 +281,34 @@ String formattedDate=formatter.format(date);
 	public void submitBillDetails(@RequestBody BillsModel bills) {
 		billsService.insertBills(bills);
 	}
-	
+
 	@PostMapping(value = "/submitGos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<BaseResponse<HttpStatus, UploadGOsModel>> submitGos( @ModelAttribute UploadGOsModel gos ) {
-	    BaseResponse<HttpStatus, UploadGOsModel> response = new BaseResponse<>();
-	    String goValidFile = null;
-	    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-	    Long uploadTime = timestamp.getTime();
-	    String fileName = gos.getGoFileUrl().getOriginalFilename().replaceAll("\\s+", "");
-	    String[] temps = fileName.split(Pattern.quote("."));
-	    
-	    String rootPath = System.getProperty("catalina.home");
-	    File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-	            + File.separator + "O&MWorks" + File.separator + "OandMGos");
+	public ResponseEntity<BaseResponse<HttpStatus, UploadGOsModel>> submitGos(@ModelAttribute UploadGOsModel gos) {
+		BaseResponse<HttpStatus, UploadGOsModel> response = new BaseResponse<>();
+		String goValidFile = null;
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		Long uploadTime = timestamp.getTime();
+		String fileName = gos.getGoFileUrl().getOriginalFilename().replaceAll("\\s+", "");
+		String[] temps = fileName.split(Pattern.quote("."));
 
-	    if (!dir.exists()) dir.mkdirs();
-	    
-	    String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
-	    try {
-	    	gos.getGoFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-	    } catch (IllegalStateException | IOException e) {
-	        e.printStackTrace();
-	    }
+		String rootPath = System.getProperty("catalina.home");
+		File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp" + File.separator
+				+ "O&MWorks" + File.separator + "OandMGos");
 
-	  
-	    String goUrl = "O&MWorks" + File.separator + "OandMGos" + File.separator + saveFileName;
-	    goValidFile = temps[temps.length - 1].toLowerCase(); 
-	    
-	    java.sql.Date sqlDate = null;
+		if (!dir.exists())
+			dir.mkdirs();
+
+		String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
+		try {
+			gos.getGoFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+
+		String goUrl = "O&MWorks" + File.separator + "OandMGos" + File.separator + saveFileName;
+		goValidFile = temps[temps.length - 1].toLowerCase();
+
+		java.sql.Date sqlDate = null;
 		if (gos.getGoDate() != null) {
 			try {
 				sqlDate = DateUtil.getSQLDate1(gos.getGoDate());
@@ -310,33 +320,29 @@ String formattedDate=formatter.format(date);
 				e.printStackTrace();
 			}
 		}
-	    
-	    
 
-	    if ("pdf".equals(goValidFile)) {
-	        gos.setGoUrl(goUrl);
-	        gos.setGoFileType(goValidFile);
-	      
+		if ("pdf".equals(goValidFile)) {
+			gos.setGoUrl(goUrl);
+			gos.setGoFileType(goValidFile);
 
-	        response = gosService.insertGOs(gos);
-	    } else {
-	        response.setStatus(HttpStatus.BAD_REQUEST);
-	        response.setMessage("Only PDF files are allowed.");
-	    }
-	    return new ResponseEntity<>(response, response.getStatus());
-	}
-
-	
-	@GetMapping("/getGosCirculars")
-	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<UploadGOsModel>>> getGosCirculars(@ModelAttribute UploadGOsModel uploadGOsModel) {
-		BaseResponse<HttpStatus, List<UploadGOsModel>> response;
-		String type = uploadGOsModel.getUploadType()!=null ? uploadGOsModel.getUploadType() : "";
-		response= gosService.getGosCirculars(type);
+			response = gosService.insertGOs(gos);
+		} else {
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			response.setMessage("Only PDF files are allowed.");
+		}
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
-	
+
+	@GetMapping("/getGosCirculars")
+	@ResponseBody
+	public ResponseEntity<BaseResponse<HttpStatus, List<UploadGOsModel>>> getGosCirculars(
+			@ModelAttribute UploadGOsModel uploadGOsModel) {
+		BaseResponse<HttpStatus, List<UploadGOsModel>> response;
+		String type = uploadGOsModel.getUploadType() != null ? uploadGOsModel.getUploadType() : "";
+		response = gosService.getGosCirculars(type);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+
 	@GetMapping("/getAbsRepSanctionAuthorityWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorksByFinyear(
@@ -350,95 +356,97 @@ String formattedDate=formatter.format(date);
 		subDivisionId = workDetailsViewModel.getSubDivisionId() != null ? workDetailsViewModel.getSubDivisionId() : 0;
 		designationId = workDetailsViewModel.getDesignationId() != null ? workDetailsViewModel.getDesignationId() : 0;
 		response = workDetailsService.getAbsRepSanctionAuthorityWiseByFinyear(finyear, unitId, circleId, divisionId,
-				subDivisionId,designationId);
+				subDivisionId, designationId);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepHOAWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepHOAWiseFinyear(
 			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-		Integer finyear= 0;
+		Integer finyear = 0;
 		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
-		
+
 		response = adminViewService.getAbsRepHOAWiseByFinancialyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepUnitWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepUnitWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepUnitWiseFinyear(
+			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
-		Integer finyear=0;
-		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		Integer finyear = 0;
+		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
 		response = workDetailsService.getAbsRepUnitWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepUnitWiseSCSTSdfFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepUnitWiseSCSTSdfFinyear(
 			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-		Integer finyear= 0;
+		Integer finyear = 0;
 		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
-		
+
 		response = adminViewService.getAbsRepUnitWiseSCSTSdfFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepWorkTypeHOAWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeHOAWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeHOAWiseFinyear(
+			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
-		Integer finyear=0;
-		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		Integer finyear = 0;
+		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
 		response = workDetailsService.getAbsRepWorkTypeHOAWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepSanctionAuthWorkTypeWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepSanctionAuthWorkTypeWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepSanctionAuthWorkTypeWiseFinyear(
+			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
-		Integer finyear=0;
-		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		Integer finyear = 0;
+		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
 		response = workDetailsService.getAbsRepSanctionAuthWorkTypeWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAbsRepWorkTypeWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeWiseFinyear(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsRepWorkTypeWiseFinyear(
+			@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
-		Integer finyear=0;
-		finyear = workDetailsViewModel.getFinyear()!=null ? workDetailsViewModel.getFinyear() : 0;
+		Integer finyear = 0;
+		finyear = workDetailsViewModel.getFinyear() != null ? workDetailsViewModel.getFinyear() : 0;
 		response = workDetailsService.getAbsRepWorkTypeWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
-	
 
-@GetMapping("/getAbsRepUnitHOAWiseFinyear")
+	@GetMapping("/getAbsRepUnitHOAWiseFinyear")
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getAbsRepUnitHOAWiseFinyear(
 			@ModelAttribute AdminSanctionViewModel adminSanctionsModel) {
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-		Integer finyear= 0;
+		Integer finyear = 0;
 		finyear = adminSanctionsModel.getFinancialYear() != null ? adminSanctionsModel.getFinancialYear() : 0;
-		
+
 		response = adminViewService.getAbsRepUnitHOAWiseFinyear(finyear);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
-		
 	@GetMapping("/getAbsRepSanctionAuthorityAndOfcWiseFinyear")
 	@ResponseBody
-	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getWorksByFinYearAndOffice(@ModelAttribute AdminSanctionViewModel works) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getWorksByFinYearAndOffice(
+			@ModelAttribute AdminSanctionViewModel works) {
 
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-		
+
 		Integer finyear, unitId, circleId, divisionId, subDivisionId, approvedId = 0;
 
 		finyear = works.getFinancialYear() != null ? works.getFinancialYear() : 0;
@@ -447,83 +455,101 @@ String formattedDate=formatter.format(date);
 		divisionId = works.getDivisionId() != null ? works.getDivisionId() : 0;
 		subDivisionId = works.getSubDivisionId() != null ? works.getSubDivisionId() : 0;
 		approvedId = works.getApprovedById() != null ? works.getApprovedById() : 0;
-		
-		response= adminViewService.getWorksByFinancialyearAndOffice(unitId,circleId,divisionId,subDivisionId,finyear,approvedId);
-		
-		return new ResponseEntity<>(response,response.getStatus());
+
+		response = adminViewService.getWorksByFinancialyearAndOffice(unitId, circleId, divisionId, subDivisionId,
+				finyear, approvedId);
+
+		return new ResponseEntity<>(response, response.getStatus());
 	}
-
-
-	
 
 	@GetMapping("/getWorkTypeMst")
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorksTypeMasterModel>>> getWorkTypeMst() {
 		BaseResponse<HttpStatus, List<WorksTypeMasterModel>> response = workTypeMasterService.getworktypemaster();
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getLiftsByProjectId/{projectId}")
-	public ResponseEntity<BaseResponse<HttpStatus, List<LiftsMasterModel>>> getLiftsByProjectId(@PathVariable Integer projectId) {
+	public ResponseEntity<BaseResponse<HttpStatus, List<LiftsMasterModel>>> getLiftsByProjectId(
+			@PathVariable Integer projectId) {
 		BaseResponse<HttpStatus, List<LiftsMasterModel>> response = liftMasterService.findbyProjectId(projectId);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getUserSmallLifts/{unitId}")
-	public ResponseEntity<BaseResponse<HttpStatus, List<LiftsMasterModel>>> getUserSmallLifts(@PathVariable Integer unitId) {
-		BaseResponse<HttpStatus, List<LiftsMasterModel>> response = liftMasterService.findbyProjectId(unitId);
+	public ResponseEntity<BaseResponse<HttpStatus, List<SmallLiftsMasterModel>>> getUserSmallLifts(
+			@PathVariable Integer unitId) {
+		BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> response = smallLiftMasterService.findbyUnitId(unitId);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+
 	@GetMapping("/getAuthorityList")
 	public ResponseEntity<BaseResponse<HttpStatus, List<WorkApprovedAuthorityModel>>> getAuthorityList() {
-		BaseResponse<HttpStatus, List<WorkApprovedAuthorityModel>> response =workApprovedAuthorityService.getAuthorityList();
+		BaseResponse<HttpStatus, List<WorkApprovedAuthorityModel>> response = workApprovedAuthorityService
+				.getAuthorityList();
 		return new ResponseEntity<>(response, response.getStatus());
 	}
 
 	@PostMapping(value = "/submitAdminSanctions")
-	public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> submitAdminSanctions(
+	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> submitAdminSanctions(
 			@ModelAttribute AdminSanctionsModel admin) {
-		 String adminFileType = null;
-		    Date date = new Date(System.currentTimeMillis());
-		    
-	        String formattedDate =formatter.format(date);
-		    String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
-		    String[] temps = fileName.split(Pattern.quote("."));
-		    BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
-		    String rootPath = System.getProperty("catalina.home");
-		    File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-					+ File.separator + "O&MWorks"+ File.separator + "AdminSanctionFiles" + File.separator);
+		String adminFileType = null;
+		Date date = new Date(System.currentTimeMillis());
 
-		    if (!dir.exists()) dir.mkdirs();
-		    
-		    String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
-		    try {
-		    	admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-		    } catch (IllegalStateException | IOException e) {
-		        e.printStackTrace();
-		    }
+		String formattedDate = formatter.format(date);
+		String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
+		String[] temps = fileName.split(Pattern.quote("."));
+		BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
+		String rootPath = System.getProperty("catalina.home");
+		File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp" + File.separator
+				+ "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator);
 
-		  
-		    String adminURL ="O&MWorks"+ File.separator + "AdminSanctionFiles"+  File.separator + saveFileName;
-		    adminFileType = temps[temps.length - 1].toLowerCase(); 
-		    
-	
-		    if ("pdf".equals(adminFileType)) {
-		        admin.setAaFileUrl(adminURL);
-		        response = adminSanctionService.insertAdminSanctions(admin);
-		    } else {
-		       
-		        response.setMessage("Only PDF files are allowed.");
-		        response.setStatus(HttpStatus.BAD_REQUEST);
-		    }
+		if (!dir.exists())
+			dir.mkdirs();
 
-		
-			return new ResponseEntity<>(response, response.getStatus());
+		String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
+		try {
+			admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		String adminURL = "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator + saveFileName;
+		adminFileType = temps[temps.length - 1].toLowerCase();
+		if ("pdf".equals(adminFileType)) {
+			admin.setAaFileUrl(adminURL);
+			response = adminSanctionService.insertAdminSanctions(admin);
+		} else {
+			response.setMessage("Only PDF files are allowed.");
+			response.setStatus(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(response, response.getStatus());
 	}
-	
+	@GetMapping("/getAdminSanctionAmounts")
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionByUserByAuthorityByFinyear(
+			@RequestParam Integer unit,@RequestParam Integer circle,@RequestParam Integer division,@RequestParam Integer subdivision,@RequestParam Integer approvedId, Integer finyear) {
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response;
+		finyear = finyear!=null ? finyear : 0;
+		unit = unit != null ? unit: 0;
+		circle =circle != null ? circle : 0;
+		division = division != null ?division : 0;
+		subdivision = subdivision != null ? subdivision : 0;
+		approvedId =approvedId != null ? approvedId: 0;
+		response =  adminSanctionService.getAdminSanctionByUserByAuthorityByFinyear(unit,circle, division, subdivision,
+				approvedId,finyear);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
+	@GetMapping("/getUnAssignedWorks")
+	public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getUnAssignedWorks(
+			@RequestParam Integer unit,@RequestParam Integer circle,@RequestParam Integer division,@RequestParam Integer subdivision) {
+		BaseResponse<HttpStatus, List<AdminSanctionsModel>> response= new BaseResponse<>();
+		unit = unit != null ? unit: 0;
+		circle =circle != null ? circle : 0;
+		division = division != null ?division : 0;
+		subdivision = subdivision != null ? subdivision : 0;
+		response =  adminSanctionService.getUnAssignedAdminSanctions(unit, circle, division, subdivision);
+		return new ResponseEntity<>(response, response.getStatus());
+	}
 
 	    		@GetMapping("/O&MWorksAADetailedReport")
-	    		
 	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getOMWorksAADetailedReport( 
 	    			//	@ModelAttribute AdminSanctionViewModel admin ){
 	    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
@@ -565,5 +591,20 @@ String formattedDate=formatter.format(date);
 	    			
 	    			return new ResponseEntity<>(response,response.getStatus());
 	    		}
+
+
+	@PostMapping("/submitAssignAdminSanction")
+	public ResponseEntity<BaseResponse<HttpStatus, AdminAssignWorksModel>> submitAssignAdmiSanction(@RequestBody AdminAssignWorksModel assignModel){
+		
+		BaseResponse<HttpStatus, AdminAssignWorksModel>  response=new BaseResponse<>();
+		if(assignModel!=null) {
+			response=assignAdminSanctionService.insertAssignAdminSanctions(assignModel);
+		}else {
+			response.setMessage("Error in submission");
+			response.setStatus(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(response, response.getStatus());
+		
+	}
 
 }

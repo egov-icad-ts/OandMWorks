@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import in.OAndM.DTO.AdminSanctionsModel;
+import in.OAndM.DTO.LiftsMasterModel;
 import in.OAndM.DTO.SmallLiftsMasterModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.Entities.AdminSanctionsEntity;
+import in.OAndM.Entities.LiftMasterEntity;
 import in.OAndM.Entities.SmallLiftsMaster;
 import in.OAndM.Entities.TechnicalSanctionEntity;
 import in.OAndM.config.AppConstant;
@@ -30,14 +32,23 @@ import jakarta.transaction.Transactional;
 public class SmallLiftsServiceImpl extends BaseServiceImpl<SmallLiftsMaster, SmallLiftsMasterModel, Integer>
 		implements SmallLiftService {
 	@Autowired
-	SmallLiftMasterRepo adminSanctionRepo;
+	SmallLiftMasterRepo smallLiftMasterRepo;
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
-
 	@Override
-	public BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> findbyProjectId(Integer projectId) {
+	public BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> findbyUnitId(Integer unitId) {
 		// TODO Auto-generated method stub
-		return null;
+		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_STARTED));
+		BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> responseJson = new BaseResponse<>();
+		List<SmallLiftsMaster> entities = smallLiftMasterRepo.findByUnitIdAndDeleteFlagFalse(unitId);
+		List<SmallLiftsMasterModel> models = mapper.mapEntityToModel(entities);
+		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setSuccess(true);
+		responseJson.setData(models);
+
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		return responseJson;
 	}
 }

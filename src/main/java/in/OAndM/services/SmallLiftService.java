@@ -14,6 +14,6 @@ import in.OAndM.core.BaseResponse;
 
 public interface SmallLiftService  {
 													
-	public BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> findbyProjectId(Integer projectId);
+	public BaseResponse<HttpStatus, List<SmallLiftsMasterModel>> findbyUnitId(Integer unitId);
 	
 }
