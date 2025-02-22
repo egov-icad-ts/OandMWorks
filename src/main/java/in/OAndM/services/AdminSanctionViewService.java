@@ -19,7 +19,7 @@ public interface AdminSanctionViewService {
 	
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getAbsRepUnitWiseSCSTSdfFinyear(Integer financialYear);
 	
-	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(Integer unitId,Integer authorityId,Integer scst,Integer financialYear,Integer projectId,Integer workTypeId,Integer projectSubType);
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(Integer unitId,Integer authorityId,Integer scst,Integer financialYear,Integer projectId);
 	
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksHoaAADetailedReport(Integer unitId,Integer authorityId,Integer scst,Integer financialYear,Integer hoaId,Integer workTypeId,Integer projectSubType,Integer projectId);
 	

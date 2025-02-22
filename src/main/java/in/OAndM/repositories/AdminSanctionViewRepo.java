@@ -93,6 +93,6 @@ public interface AdminSanctionViewRepo extends BaseRepository<AdminSanctionViewE
 	
 	public List<AdminSanctionViewEntity> findByFinancialYearAndHoaIdAndApprovedById(Integer financialYear,Integer hoaId, Integer authorityId);
 	
-	
+	public List<AdminSanctionViewEntity> findByFinancialYearAndWorkTypeId(Integer financialYear,Integer workTypeId);
 
 }

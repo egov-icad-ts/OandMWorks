@@ -133,13 +133,13 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 
 	@Override
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(Integer unitId,
-			Integer authorityId, Integer scst, Integer financialYear, Integer projectId ,Integer workTypeId,Integer projectSubType) {
+			Integer authorityId, Integer scst, Integer financialYear, Integer projectId) {
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		List<AdminSanctionViewEntity> list = null;
 		
 		if(financialYear > 0) {
-			if (projectId == 0 && workTypeId==0) {
+			if (projectId == 0) {
 				if (authorityId == 0 && scst==0) {
 					list=adminRepo.findByFinancialYearAndUnitId(financialYear,unitId);
 				}else if (authorityId == 0 && scst!= 0 && scst!=3) {
@@ -149,7 +149,7 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				} else {
 					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedById(financialYear, unitId, authorityId);
 				}
-			}else if(projectId != 0 && workTypeId==0){
+			}else {
 				if (authorityId == 0) {
 					list = adminRepo.findByFinancialYearAndUnitIdAndProjectId(financialYear,unitId,projectId);
 							
@@ -159,8 +159,6 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				} else {
 					list = adminRepo.findByFinancialYearAndUnitIdAndProjectIdAndApprovedById(financialYear, unitId, projectId,authorityId);
 				}
-			}else {
-				//list = adminRepo.findByFinancialYearAndWorkTypeId(financialYear,)
 			}
 			}
 		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
@@ -271,10 +269,12 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		List<AdminSanctionViewEntity> list = null;
 		if (workTypeId == 0 && authorityId != 0 && hoaId == 0) {
 			list = adminRepo.findByFinancialYearAndApprovedById(financialYear,authorityId);
-		}else if (workTypeId != 0 && authorityId == 0 && hoaId == 0) {
+		}else if (workTypeId != 0 && authorityId == 0 && hoaId == 0 && projectSubType!=0) {
 			list = adminRepo.findByFinancialYearAndProjSubType(financialYear,projectSubType);
 		}else if ((workTypeId != 0 && authorityId == 0 && hoaId != 0)) {
 			list = adminRepo.findByFinancialYearAndHoaIdAndWorkTypeId(financialYear,hoaId,workTypeId);
+		}else if((workTypeId != 0 && authorityId == 0 && hoaId == 0)) {
+			list = adminRepo.findByFinancialYearAndWorkTypeId(financialYear,workTypeId);
 		}else if (workTypeId != 0 && authorityId != 0 && hoaId == 0) {
 			if (authorityId != 9999) {
 				list = adminRepo.findByFinancialYearAndApprovedByIdAndWorkTypeId(financialYear,authorityId,workTypeId);
