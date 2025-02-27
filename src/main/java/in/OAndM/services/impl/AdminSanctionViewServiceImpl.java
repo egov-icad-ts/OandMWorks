@@ -132,13 +132,13 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 
 	@Override
-	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(Integer unitId,
-			Integer authorityId, Integer scst, Integer financialYear, Integer projectId) {
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksAADetailedReport(AdminSanctionViewModel admin) {
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		List<AdminSanctionViewEntity> list = null;
-		
-		if(financialYear > 0) {
+		Integer financialYear = admin.getFinancialYear(), type=admin.getType(), projectId=admin.getProjectId(),
+				authorityId=admin.getApprovedById(),scst = admin.getScstFunds(),unitId=admin.getUnitId();
+		if(financialYear > 0 && type==1) { //Admin Sanctions
 			if (projectId == 0) {
 				if (authorityId == 0 && scst==0) {
 					list=adminRepo.findByFinancialYearAndUnitId(financialYear,unitId);
@@ -161,6 +161,14 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				}
 			}
 			}
+		
+		else if(financialYear > 0 && type!=1) {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
+			
+				if (authorityId == 0 && projectId==0) {
+					list=adminRepo.findAdminSanctionViewEntityByFinancialYearAndUnitId(financialYear,unitId, type);
+				}
+			
+		}
 		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
 		if( list.size()>0) {
 			for(AdminSanctionViewEntity  work: list) {
@@ -194,12 +202,13 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 
 	@Override
-	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksHoaAADetailedReport(Integer unitId,
-			Integer authorityId, Integer scst, Integer financialYear, Integer hoaId,Integer workTypeId,Integer projectSubType,Integer projectId) {
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksHoaAADetailedReport(AdminSanctionViewModel admin) {
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		List<AdminSanctionViewEntity> list = null;
-		
+		Integer financialYear = admin.getFinancialYear(), type=admin.getType(), projectId=admin.getProjectId(),projectSubType=admin.getProjSubType(),
+				authorityId=admin.getApprovedById(),scst = admin.getScstFunds(),unitId=admin.getUnitId(),hoaId=admin.getHoaId(), workTypeId=admin.getWorkTypeId();
+	if(type==1) { //Admin Sancions
 		if(!unitId.equals(0)) {
 		if(!hoaId.equals(0)) {
 			if (!authorityId.equals(0)) {
@@ -220,15 +229,26 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 					list = adminRepo.findByFinancialYearAndUnitIdAndApprovedByIdIn(financialYear, unitId,Arrays.asList(3, 4, 5, 6));
 				}
 			}
-		}else if(!hoaId.equals(0)){
-			if (authorityId.equals(0) && workTypeId.equals(0) ) {
+		}else {
+			if (!hoaId.equals(0)&& authorityId.equals(0) && workTypeId.equals(0) ) {
 				list = adminRepo.findByFinancialYearAndHoaId(financialYear, hoaId);
-			} else if (!authorityId.equals(0) && workTypeId.equals(0) ){
+			} else if (!hoaId.equals(0) && !authorityId.equals(0) && workTypeId.equals(0) ){
 				list = adminRepo.findByFinancialYearAndHoaIdAndApprovedById(financialYear, hoaId, authorityId);
-			}else if(!workTypeId.equals(0) ) {
+			}else if(!hoaId.equals(0) && !workTypeId.equals(0) ) {
 				list = adminRepo.findByFinancialYearAndHoaIdAndWorkTypeId(financialYear, hoaId, workTypeId);
 			}
 		}
+		
+	}
+	
+	else {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
+		if(!unitId.equals(0)&& !hoaId.equals(0) && !workTypeId.equals(0) ) {
+				list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndHoaIdAndWorkTypeId(financialYear, hoaId, workTypeId,type);
+		
+		}
+	}
+
+	
 		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
 		if( list.size()>0) {
 			for(AdminSanctionViewEntity  work: list) {
@@ -261,12 +281,14 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 
 	@Override
-	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksSanctionAADetailedReport(Integer unitId,
-			Integer authorityId, Integer scst, Integer financialYear, Integer hoaId, Integer workTypeId,
-			Integer projectSubType, Integer projectId) {
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksSanctionAADetailedReport(AdminSanctionViewModel admin) {
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<AdminSanctionViewModel>> responseJson = new BaseResponse<>();
 		List<AdminSanctionViewEntity> list = null;
+		Integer financialYear = admin.getFinancialYear(), type=admin.getType(), projectId=admin.getProjectId(),projectSubType=admin.getProjSubType(),
+				authorityId=admin.getApprovedById(),scst = admin.getScstFunds(),unitId=admin.getUnitId(),hoaId=admin.getHoaId(), workTypeId=admin.getWorkTypeId();
+	if (type==1) {// Admin Sanctions
+		
 		if (workTypeId == 0 && authorityId != 0 && hoaId == 0) {
 			list = adminRepo.findByFinancialYearAndApprovedById(financialYear,authorityId);
 		}else if (workTypeId != 0 && authorityId == 0 && hoaId == 0 && projectSubType!=0) {
@@ -282,6 +304,24 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				list = adminRepo.findByFinancialYearAndWorkTypeIdAndApprovedByIdIn(financialYear,workTypeId,Arrays.asList(3, 4, 5, 6));
 			}
 		}
+		
+	}else {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
+			
+		if (workTypeId == 0 && authorityId != 0 && hoaId == 0) {
+			list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndApprovedById(financialYear,authorityId,type);
+		}
+		else if(workTypeId != 0 && authorityId == 0 && hoaId == 0) {
+			list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndWorkTypeId(financialYear,workTypeId, type);
+		}else if (workTypeId != 0 && authorityId != 0 && hoaId == 0) {
+			if (authorityId != 9999) {
+			list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndWorkTypeIdAndApprovedById(financialYear,workTypeId,authorityId,type);
+			}else {
+				list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndWorkTypeIdAndApprovedByIdIn(financialYear,workTypeId,Arrays.asList(3, 4, 5, 6),type);
+			}
+		}
+		
+	}
+		
 		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
 		if( list.size()>0) {
 			for(AdminSanctionViewEntity  work: list) {

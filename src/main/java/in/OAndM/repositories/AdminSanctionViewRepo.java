@@ -94,5 +94,66 @@ public interface AdminSanctionViewRepo extends BaseRepository<AdminSanctionViewE
 	public List<AdminSanctionViewEntity> findByFinancialYearAndHoaIdAndApprovedById(Integer financialYear,Integer hoaId, Integer authorityId);
 	
 	public List<AdminSanctionViewEntity> findByFinancialYearAndWorkTypeId(Integer financialYear,Integer workTypeId);
+	
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ("
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ " and aa.financialYear=:financialYear and aa.approvedById=:authorityId ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndApprovedById(Integer financialYear,Integer authorityId, Integer type);
+	
+
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ("
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ "and aa.financialYear=:financialYear and aa.workTypeId=:workTypeId ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndWorkTypeId(Integer financialYear,Integer workTypeId, Integer type);
+	
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ("
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ " and aa.financialYear=:financialYear and aa.hoaId=:hoaId and aa.workTypeId=:workTypeId ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndHoaIdAndWorkTypeId(Integer financialYear,Integer hoaId,Integer workTypeId, Integer type);
+	
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ( "
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ " and aa.financialYear=:financialYear and aa.unitId=:unitId ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndUnitId (Integer financialYear,Integer unitId, Integer type);
+	
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ( "
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ " and aa.financialYear=:financialYear and aa.workTypeId=:workTypeId  and aa.approvedById=:authorityId ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndWorkTypeIdAndApprovedById(Integer financialYear,Integer workTypeId,Integer authorityId,Integer type);
+	
+	@Query("SELECT aa FROM AdminSanctionViewEntity aa left join  WorkDetailsViewEntity wd on aa.workId =wd.techWorkId WHERE ( "
+			+ "(:type = 2 AND aa.workId > 0 AND wd.techWorkId > 0) OR"
+			+ "(:type = 3 AND aa.workId > 0 AND wd.agrWorkId > 0) OR "
+			+ "(:type = 4 AND aa.workId > 0 AND wd.techWorkId is null) OR "
+			+ "(:type = 5 AND aa.workId > 0 AND wd.billsPaid > 0) OR "
+			+ "(:type = 6 AND aa.workId > 0 AND wd.billsPending > 0) "
+			+ ")"
+			+ " and aa.financialYear=:financialYear and aa.workTypeId=:workTypeId  and aa.approvedById IN :authorityIds ")
+	public List<AdminSanctionViewEntity> findAdminSanctionViewEntityByFinancialYearAndWorkTypeIdAndApprovedByIdIn(Integer financialYear,Integer workTypeId,List<Integer> authorityIds,Integer type);
 
 }

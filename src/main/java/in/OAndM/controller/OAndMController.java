@@ -525,44 +525,38 @@ String formattedDate=formatter.format(date);
 	    		@GetMapping("/O&MWorksAADetailedReport")
 	    		
 	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getOMWorksAADetailedReport( 
-	    			//	@ModelAttribute AdminSanctionViewModel admin ){
-	    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
-                        @RequestParam Integer scst, @RequestParam Integer financialYear, 
-                        @RequestParam Integer projectId,  @RequestParam Integer workType, @RequestParam Integer ProjSubType){
+	    				//	@RequestBody AdminSanctionViewModel admin ){
+	    			
+	    				@ModelAttribute AdminSanctionViewModel admin ){
+//	    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
+//                        @RequestParam Integer scst, @RequestParam Integer financialYear, 
+//                        @RequestParam Integer hoaId,  @RequestParam Integer workType, @RequestParam Integer ProjSubType, 
+//                        @RequestParam Integer projectId, @RequestParam Integer type){
 	    				
 	    		    			
-	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-	    		 			
-	    			response= adminViewService.getOMWorksAADetailedReport(unitId,authorityId,scst,financialYear,projectId);
+	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response = null;
+	    			response= adminViewService.getOMWorksAADetailedReport(admin);
 	    			
 	    			return new ResponseEntity<>(response,response.getStatus());
 	    		}
 	    		
 	    		@GetMapping("/O&MWorksHoaAADetailedReport")
 	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getOMWorksHoaAADetailedReport( 
-		    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
-	                        @RequestParam Integer scst, @RequestParam Integer financialYear, 
-	                        @RequestParam Integer hoaId,  @RequestParam Integer workType, @RequestParam Integer ProjSubType, 
-	                        @RequestParam Integer projectId){
+	    				@ModelAttribute AdminSanctionViewModel admin){
 		    						
-		    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-		    		 			
-		    			response= adminViewService.getOMWorksHoaAADetailedReport(unitId,authorityId,scst,financialYear,hoaId,workType,ProjSubType,projectId);
+		    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response = null;
+		    			response= adminViewService.getOMWorksHoaAADetailedReport(admin);
 		    			
 		    			return new ResponseEntity<>(response,response.getStatus());
 		    		}
 	    		
 	    		@GetMapping("/O&MWorksSanctionAADetailedReport")
 	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getOMWorksSanctionAADetailedReport( 
-	    				@RequestParam Integer unitId, @RequestParam Integer authorityId, 
-                        @RequestParam Integer scst, @RequestParam Integer financialYear, 
-                        @RequestParam Integer hoaId,  @RequestParam Integer workType, @RequestParam Integer ProjSubType, 
-                        @RequestParam Integer projectId){
+	    				@ModelAttribute AdminSanctionViewModel admin){
 	    						
-	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
-	    		 			
-	    			response= adminViewService.getOMWorksSanctionAADetailedReport(unitId,authorityId,scst,financialYear,hoaId,workType,ProjSubType,projectId);
-	    			
+	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response = null;
+	    		 	response= adminViewService.getOMWorksSanctionAADetailedReport(admin);
+	    		 	
 	    			return new ResponseEntity<>(response,response.getStatus());
 	    		}
 
