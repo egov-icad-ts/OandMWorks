@@ -28,7 +28,8 @@ public class RtiProformaGDto {
     private String appellateAuthorityName;
     private String appellateAuthorityAddre;
     private LocalDate appellateFirstDecisionDate;
-    private Integer appellateFirstDecisionAllowRejec;	
+    private Integer appellateFirstDecisionAllowRejec;
+    private String appellateFirstDecisionAllowOrRejec;	
     private Integer rejectSectionId;
     private Integer chargeForInfo;
     private String secondAppealMade;
@@ -37,6 +38,7 @@ public class RtiProformaGDto {
     private LocalDate secondAppealHearingDate;
     private String remarks;
     private Integer unit;
+    private String unitName;
     private Integer circle;
     private Integer division;
     private Integer subDivision;
@@ -52,6 +54,10 @@ public class RtiProformaGDto {
     private LocalDateTime editedTime;
     private Integer applicationFee;
     private String rejectionSectionStatus;
+    private Integer year;
+    private Integer quarter;
+    
+    
     
     //private Integer rejectSectionId; // ID of the rejection section
     //private String rtiRejSecName; // Name of the rejection section  

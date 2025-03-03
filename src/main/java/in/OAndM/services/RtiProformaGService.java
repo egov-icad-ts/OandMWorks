@@ -1,11 +1,13 @@
 package in.OAndM.services;
 
+import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
 import in.OAndM.DTO.UnitLevelRequest;
-
+import in.OAndM.DTO.UserDetailsDto;
 import jakarta.validation.Valid;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -29,5 +31,13 @@ public interface RtiProformaGService extends BaseService<RtiProformaGDto, Intege
 	BaseResponse<HttpStatus, List<UnitLevelDataDto>> getCircleLevelData(UnitLevelRequest request, Integer unitId);
 
 	BaseResponse<HttpStatus, RtiProformaGDto> delete(Integer id, String username);
+
+	
+
+	BaseResponse<HttpStatus, List<RtiProformaGDto>> getRTIAppealEditList(@Valid UserDetailsDto user,
+			LocalDate firstDayInPreviousQuarter, LocalDate lastDayInPreviousQuarter);
+
+	BaseResponse<HttpStatus, List<RtiProformaGDto>> getAppealYrQtrEEReport(UserDetailsDto user, Integer year,
+			Integer quarter);
 
 }

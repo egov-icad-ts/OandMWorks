@@ -37,7 +37,20 @@ public class UnitLevelDataDto {
     private Integer rstot;
     private Integer rs15;
     private Integer amount;
-    private Integer rej6;
+    private Integer rej6;//trans
     private Integer circleId;
+    private Integer divisionId;
+    private Integer appreceived;
+   
+    private Integer deemrefus;
+
+	public String divisionName; 
+	public String circleName; 
+	private Double totAmt;	
+		// TODO Auto-generated method stub
+		
+	
+    
+    
     
 }
