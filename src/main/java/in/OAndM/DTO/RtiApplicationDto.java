@@ -69,6 +69,10 @@ public class RtiApplicationDto {
 	    private String rtiRejectionSection;
 	    
 	    private UserDetailsDto user;
+	    
+	    private Integer year;
+	    
+	    private Integer quarter;
 	
 //	    private Integer applicationId;	   
 //	    private LocalDateTime applicationDate;//timestamp without time zone,	   

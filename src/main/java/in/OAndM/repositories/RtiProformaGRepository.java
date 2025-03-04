@@ -88,8 +88,59 @@ group by unit_id,appellate_1st_desicion_rej_section,appellate_1st_desicion_date,
 	  
 	
 List<Map<String, Object>> getCircleGroupedData(@Param("year1") Integer year, @Param("quarter1") Integer quarter,@Param("date1") Timestamp timestamp,@Param("unitid1") Integer UnitId);
+	  
+//	  @Query(value = """
+//			
+//		   
+//		""", nativeQuery = true)
+//			  
+//			
+//		List<Map<String, Object>> getUnitGroupedData(@Param("year1") Integer year, @Param("quarter1") Integer quarter,@Param("date1") Timestamp timestamp);
 
-			
+	  @Query(value = """
+				select appeal_no,appeal_date,name_of_appellant,appellant_address,appeal_receipt_date,pio_name,pio_designation,application_no,application_date,name_of_appellate ,appellate_address, appellate_1st_desicion_date,
+(case when appellate_1st_desicion_allow_rejec=1 then 'Allowed' when appellate_1st_desicion_allow_rejec=2 then 'Rejected' else '' end) as decision,
+rti_rejection_section,charges_collect_forfurnish,second_appeal_made_19_3,remarks,
+rtg.unit_id, circle_id, division_id,unit_name,pro_g_id 
+from rti_proforma_g rtg 
+left join rti_rejection_status rt on rtg.appellate_1st_desicion_rej_section=rt.reject_section_id 
+left join unit_mst u on u.unit_id=rtg.unit_id 
+where rtg.delete_flag='f' and division_id=:divId and circle_id=:circleId and rtg.unit_id=:unitId and appeal_receipt_date>=:fdate
+union 
+select appeal_no,appeal_date,name_of_appellant,appellant_address,appeal_receipt_date,pio_name,pio_designation,application_no,application_date,name_of_appellate ,appellate_address, appellate_1st_desicion_date,
+(case when appellate_1st_desicion_allow_rejec=1 then 'Allowed' when appellate_1st_desicion_allow_rejec=2 then 'Rejected' else '' end) as decision, rti_rejection_section,charges_collect_forfurnish,second_appeal_made_19_3,remarks, rtg.unit_id, circle_id, division_id,unit_name,pro_g_id 
+from rti_proforma_g rtg left join rti_rejection_status rt on rtg.appellate_1st_desicion_rej_section=rt.reject_section_id
+left join unit_mst u on u.unit_id=rtg.unit_id where rtg.delete_flag='f' and division_id=:divId and circle_id=:circleId and rtg.unit_id=:unitId and appellate_1st_desicion_date is null and appeal_receipt_date<=:date order by appeal_receipt_date
+	 		   
+	    		""", nativeQuery = true)
+	    			  
+	    			
+	    		List<Map<String, Object>> getRTIAppealEditList( @Param("divId") Integer divId,@Param("circleId") Integer circleId,@Param("unitId") Integer unitId, @Param("fdate") Date fdate,@Param("date") Date date);		
 
-
+	  @Query(value = """
+	    	   select appeal_no,appeal_date,name_of_appellant,appellant_address,appeal_receipt_date,pio_name,pio_designation,application_no,application_date,name_of_appellate ,
+appellate_address, appellate_1st_desicion_date,
+(case when appellate_1st_desicion_allow_rejec=1 then 'Allowed' when appellate_1st_desicion_allow_rejec=2 then 'Rejected' else '' end) as decision,rti_rejection_section,charges_collect_forfurnish,second_appeal_made_19_3,remarks, rtg.unit_id, 
+circle_id, division_id,unit_name,pro_g_id 
+from rti_proforma_g rtg 
+left join rti_rejection_status rt on rtg.appellate_1st_desicion_rej_section=rt.reject_section_id 
+left join unit_mst u on u.unit_id=rtg.unit_id where rtg.delete_flag='f'  and division_id=:divId and circle_id=:circleId and rtg.unit_id=:unitId 
+and EXTRACT(year FROM rtg.appeal_receipt_date)::int=:year  order by appeal_receipt_date 
+	    	    	""", nativeQuery = true)	    	    		
+	    	    		
+	    List<Map<String, Object>> getAppealYrEEReport   (@Param("divId") Integer divId,  @Param("circleId") Integer circleId,   @Param("unitId") Integer unitId, @Param("year") Integer year);
+	  
+	  @Query(value = """
+	    	   select appeal_no,appeal_date,name_of_appellant,appellant_address,appeal_receipt_date,pio_name,pio_designation,application_no,application_date,name_of_appellate ,
+appellate_address, appellate_1st_desicion_date,
+(case when appellate_1st_desicion_allow_rejec=1 then 'Allowed' when appellate_1st_desicion_allow_rejec=2 then 'Rejected' else '' end) as decision,rti_rejection_section,charges_collect_forfurnish,second_appeal_made_19_3,remarks, rtg.unit_id, 
+circle_id, division_id,unit_name,pro_g_id 
+from rti_proforma_g rtg 
+left join rti_rejection_status rt on rtg.appellate_1st_desicion_rej_section=rt.reject_section_id 
+left join unit_mst u on u.unit_id=rtg.unit_id where rtg.delete_flag='f' and division_id=:divId and circle_id=:circleId and rtg.unit_id=:unitId  
+and EXTRACT(year FROM rtg.appeal_receipt_date)::int=:year  and EXTRACT(quarter FROM rtg.appeal_receipt_date)::int=:quarter order by appeal_receipt_date
+	    	    	""", nativeQuery = true)	 
+	  List<Map<String, Object>> getAppealYrQtrEEReport   (@Param("divId") Integer divId,  @Param("circleId") Integer circleId,
+              @Param("unitId") Integer unitId, @Param("year") Integer year,@Param("quarter") Integer quarter);
+	  
 }

@@ -1,8 +1,10 @@
 package in.OAndM.services.impl;
 
+import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
 import in.OAndM.DTO.UnitLevelRequest;
+import in.OAndM.DTO.UserDetailsDto;
 import in.OAndM.Entities.RtiProformaG;
 import in.OAndM.mappers.RtiProformaGMapper;
 import in.OAndM.repositories.RtiProformaGRepository;
@@ -19,6 +21,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -575,5 +579,229 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
+	
+	
+	@Override
+	public BaseResponse<HttpStatus, List<RtiProformaGDto>> getRTIAppealEditList(UserDetailsDto u,
+			LocalDate firstDayInPreviousQuarter, LocalDate lastDayInPreviousQuarter) {
+		BaseResponse<HttpStatus, List<RtiProformaGDto>> response = new BaseResponse<>();
+		
+		  try {
+		Integer unitId = u.getUnit();
+        Integer circleId = u.getCircle();
+        Integer divId = u.getDivision();
+        Integer desgId = u.getDesignation();
+
+        // Adjust for special user scenario
+        if ("Kavit070381".equals(u.getUsername()) && unitId == 9815 && circleId == 21588) {
+            desgId = 5;
+        }
+
+        // Convert LocalDate to Date
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+        Date date = Date.from(lastDayInPreviousQuarter.atStartOfDay(defaultZoneId).toInstant());
+        Date fdate = Date.from(firstDayInPreviousQuarter.atStartOfDay(defaultZoneId).toInstant());
+        //System.out.println("fdate "+fdate);
+
+        log.info("Fetching EE edit data for quarter desgId: {}, divId: {}, circleId: {}, unitId: {},fdate: {},date: {}",desgId,divId,circleId,unitId,fdate,date);
+        List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
+        List<Map<String, Object>> rawData = rtiProformaGRepository.getRTIAppealEditList(divId,circleId,unitId,fdate,date);
+        System.out.println("rawData "+rawData);
+
+       
+      	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+      	
+       List<RtiProformaGDto> rtiEdit=new ArrayList<>(); 
+       for(int i=0;i<rawData.size();i++) {
+    	   RtiProformaGDto dto = new RtiProformaGDto();  
+    	   
+    	   dto.setAppealNum(rawData.get(i).get(("appeal_no")).toString());
+    		Timestamp appealDateTimestamp = (Timestamp) rawData.get(i).get("appeal_date");
+            LocalDate appealDate = appealDateTimestamp.toLocalDateTime().toLocalDate();            
+    	   dto.setAppealDate(appealDate);
+    	   dto.setNameOfAppellant(rawData.get(i).get(("name_of_appellant")).toString());
+    	   dto.setAppellantAddress(rawData.get(i).get(("appellant_address")).toString());
+    	   Timestamp appealRecDateTimestamp = (Timestamp) rawData.get(i).get("appeal_receipt_date");
+           LocalDate appealRecDate = appealRecDateTimestamp.toLocalDateTime().toLocalDate();      
+   	  	   dto.setAppealReceiptDate(appealRecDate);
+   	  	   
+    	   dto.setPioName(rawData.get(i).get(("pio_name")).toString());
+    	   dto.setPioDesignation(rawData.get(i).get(("pio_designation")).toString());
+    	   dto.setAppnNum(rawData.get(i).get(("application_no")).toString());
+    	   Timestamp appnDateTimestamp = (Timestamp) rawData.get(i).get("application_date");
+           LocalDate appnDate = appnDateTimestamp.toLocalDateTime().toLocalDate();
+           dto.setAppnDate(appnDate);
+           dto.setAppellateAuthorityName(rawData.get(i).get(("name_of_appellate")).toString());    	
+    	  dto.setAppellateAuthorityAddre(rawData.get(i).get(("appellate_address")).toString()); 
+          Timestamp fDecDateTimestamp = (Timestamp) rawData.get(i).get("appellate_1st_desicion_date");
+          if (fDecDateTimestamp != null) {
+              dto.setAppellateFirstDecisionDate(fDecDateTimestamp.toLocalDateTime().toLocalDate());
+          } else {
+              dto.setAppellateFirstDecisionDate(null); // Or set a default value if required
+          }
+          //LocalDate fDecDate = fDecDateTimestamp.toLocalDateTime().toLocalDate();
+    	 // dto.setAppellateFirstDecisionDate(fDecDate);
+    	  dto.setAppellateFirstDecisionAllowOrRejec(rawData.get(i).get(("decision")).toString());
+    	  dto.setRtiRejectionSection(Optional.ofNullable(rawData.get(i).get("rti_rejection_section")).map(Object::toString).orElse(null));
+    	  
+    	  Object chargeForFurnish = rawData.get(i).get("charges_collect_forfurnish");
+    	  if (chargeForFurnish != null) {
+    	      dto.setChargeForInfo(Integer.parseInt(chargeForFurnish.toString()));
+    	  } else {
+    	      // Handle the case where the value is null, e.g., set to a default value or log an error
+    	      dto.setChargeForInfo(0); // Set to a default value (you can adjust based on your requirements)
+    	  }
+    	 // dto.setChargeForInfo(Integer.parseInt(rawData.get(i).get(("charges_collect_forfurnish")).toString()));
+    	  dto.setSecondAppealMade(Optional.ofNullable(rawData.get(i).get("second_appeal_made_19_3")).map(Object::toString).orElse(null));
+    	 // dto.setSecondAppealMade(rawData.get(i).get(("second_appeal_made_19_3")).toString());
+    	  dto.setRemarks(rawData.get(i).get(("remarks")).toString());
+        dto.setUnit(Integer.parseInt(rawData.get(i).get("unit_id").toString()));
+        dto.setCircle(Integer.parseInt(rawData.get(i).get("circle_id").toString()));
+        dto.setDivision(Integer.parseInt(rawData.get(i).get("division_id").toString()));
+        dto.setUnitName(rawData.get(i).get(("unit_name")).toString());
+        dto.setProGId(Integer.parseInt(rawData.get(i).get(("pro_g_id")).toString()));
+        
+      
+       
+           rtiEdit.add(dto);
+       }
+       
+       response.setStatus(HttpStatus.OK);
+       response.setMessage("Rti Appeal edit data List retrieved successfully.");
+       response.setData(rtiEdit);
+       response.setSuccess(true);
+   } catch (IllegalArgumentException e) {
+       log.error("Validation error: {}", e.getMessage());
+       response.setStatus(HttpStatus.BAD_REQUEST);
+       response.setMessage(e.getMessage());
+       response.setSuccess(false);
+       response.setData(Collections.emptyList());
+   } catch (Exception e) {
+       log.error("Unexpected error while fetching Rti Appeal edit data List", e);
+       response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+       response.setMessage("An unexpected error occurred.");
+       response.setSuccess(false);
+       response.setData(Collections.emptyList());
+   }
+
+   return response;
+	}   
+   @Override
+	public BaseResponse<HttpStatus, List<RtiProformaGDto>> getAppealYrQtrEEReport(UserDetailsDto u,Integer year, Integer Quarter) {
+		{ 		BaseResponse<HttpStatus, List<RtiProformaGDto>> response = new BaseResponse<>();
+		
+		  try {
+		Integer unit = u.getUnit();
+       Integer circle = u.getCircle();
+       Integer div = u.getDivision();
+       Integer desg = u.getDesignation();
+
+       // Adjust for special user scenario
+       if ("Kavit070381".equals(u.getUsername()) && unit == 9815 && circle == 21588) {
+           desg = 5;
+       }
+
+
+       List<Map<String, Object>> rawData;
+       List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
+   	if(Quarter==5)
+   	{
+   		rawData = rtiProformaGRepository.getAppealYrEEReport(  div,  circle,  unit,  year );
+   		
+   	}
+   	else{
+   		rawData = rtiProformaGRepository.getAppealYrQtrEEReport(  div,  circle,  unit,  year, Quarter );	
+   	}
+       // Convert LocalDate to Date
+       ZoneId defaultZoneId = ZoneId.systemDefault();
+     //  Date date = Date.from(lastDayInPreviousQuarter.atStartOfDay(defaultZoneId).toInstant());
+    //   Date fdate = Date.from(firstDayInPreviousQuarter.atStartOfDay(defaultZoneId).toInstant());
+       //System.out.println("fdate "+fdate);
+
+       log.info("Fetching EE edit data for quarter desgId: {}, divId: {}, circleId: {}, unitId: {},year: {},Qtr: {}",desg,div,circle,unit,year,Quarter);
+       System.out.println("rawData "+rawData);
+
+      
+     	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+     	
+      List<RtiProformaGDto> rtiEdit=new ArrayList<>(); 
+      for(int i=0;i<rawData.size();i++) {
+   	   RtiProformaGDto dto = new RtiProformaGDto();  
+   	   
+   	   dto.setAppealNum(rawData.get(i).get(("appeal_no")).toString());
+   		Timestamp appealDateTimestamp = (Timestamp) rawData.get(i).get("appeal_date");
+           LocalDate appealDate = appealDateTimestamp.toLocalDateTime().toLocalDate();            
+   	   dto.setAppealDate(appealDate);
+   	   dto.setNameOfAppellant(rawData.get(i).get(("name_of_appellant")).toString());
+   	   dto.setAppellantAddress(rawData.get(i).get(("appellant_address")).toString());
+   	   Timestamp appealRecDateTimestamp = (Timestamp) rawData.get(i).get("appeal_receipt_date");
+          LocalDate appealRecDate = appealRecDateTimestamp.toLocalDateTime().toLocalDate();      
+  	  	   dto.setAppealReceiptDate(appealRecDate);
+  	  	   
+   	   dto.setPioName(rawData.get(i).get(("pio_name")).toString());
+   	   dto.setPioDesignation(rawData.get(i).get(("pio_designation")).toString());
+   	   dto.setAppnNum(rawData.get(i).get(("application_no")).toString());
+   	   Timestamp appnDateTimestamp = (Timestamp) rawData.get(i).get("application_date");
+          LocalDate appnDate = appnDateTimestamp.toLocalDateTime().toLocalDate();
+          dto.setAppnDate(appnDate);
+          dto.setAppellateAuthorityName(rawData.get(i).get(("name_of_appellate")).toString());    	
+   	  dto.setAppellateAuthorityAddre(rawData.get(i).get(("appellate_address")).toString()); 
+         Timestamp fDecDateTimestamp = (Timestamp) rawData.get(i).get("appellate_1st_desicion_date");
+         if (fDecDateTimestamp != null) {
+             dto.setAppellateFirstDecisionDate(fDecDateTimestamp.toLocalDateTime().toLocalDate());
+         } else {
+             dto.setAppellateFirstDecisionDate(null); // Or set a default value if required
+         }
+         //LocalDate fDecDate = fDecDateTimestamp.toLocalDateTime().toLocalDate();
+   	 // dto.setAppellateFirstDecisionDate(fDecDate);
+   	  dto.setAppellateFirstDecisionAllowOrRejec(rawData.get(i).get(("decision")).toString());
+   	  dto.setRtiRejectionSection(Optional.ofNullable(rawData.get(i).get("rti_rejection_section")).map(Object::toString).orElse(null));
+   	  
+   	  Object chargeForFurnish = rawData.get(i).get("charges_collect_forfurnish");
+   	  if (chargeForFurnish != null) {
+   	      dto.setChargeForInfo(Integer.parseInt(chargeForFurnish.toString()));
+   	  } else {
+   	      // Handle the case where the value is null, e.g., set to a default value or log an error
+   	      dto.setChargeForInfo(0); // Set to a default value (you can adjust based on your requirements)
+   	  }
+   	 // dto.setChargeForInfo(Integer.parseInt(rawData.get(i).get(("charges_collect_forfurnish")).toString()));
+   	  dto.setSecondAppealMade(Optional.ofNullable(rawData.get(i).get("second_appeal_made_19_3")).map(Object::toString).orElse(null));
+   	 // dto.setSecondAppealMade(rawData.get(i).get(("second_appeal_made_19_3")).toString());
+   	  dto.setRemarks(rawData.get(i).get(("remarks")).toString());
+       dto.setUnit(Integer.parseInt(rawData.get(i).get("unit_id").toString()));
+       dto.setCircle(Integer.parseInt(rawData.get(i).get("circle_id").toString()));
+       dto.setDivision(Integer.parseInt(rawData.get(i).get("division_id").toString()));
+       dto.setUnitName(rawData.get(i).get(("unit_name")).toString());
+       dto.setProGId(Integer.parseInt(rawData.get(i).get(("pro_g_id")).toString()));
+       
+     
+      
+          rtiEdit.add(dto);
+      }
+      
+      response.setStatus(HttpStatus.OK);
+      response.setMessage("Rti Appeal edit data List retrieved successfully.");
+      response.setData(rtiEdit);
+      response.setSuccess(true);
+  } catch (IllegalArgumentException e) {
+      log.error("Validation error: {}", e.getMessage());
+      response.setStatus(HttpStatus.BAD_REQUEST);
+      response.setMessage(e.getMessage());
+      response.setSuccess(false);
+      response.setData(Collections.emptyList());
+  } catch (Exception e) {
+      log.error("Unexpected error while fetching Rti Appeal edit data List", e);
+      response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+      response.setMessage("An unexpected error occurred.");
+      response.setSuccess(false);
+      response.setData(Collections.emptyList());
+  }
+
+  return response;
+
+
 }
+
+	
+   }}
 

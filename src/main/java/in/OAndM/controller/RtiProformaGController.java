@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.Date;
 import java.util.List;
 
@@ -47,6 +49,35 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/getGYrQtrEEReport")
+    public ResponseEntity<BaseResponse<HttpStatus, List<RtiProformaGDto>>> getAppealYrQtrEEReport(@Valid @RequestBody RtiProformaGDto rtiProformaGDto ) {
+    	if (rtiProformaGDto.getUser() == null) {
+    	    logger.error("User details are null in the request payload: {}", rtiProformaGDto);
+    	    throw new IllegalArgumentException("User details are null");
+    	}
+    	 UserDetailsDto	user = rtiProformaGDto.getUser();
+         java.lang.System.out.println("Received user details: " + user);
+    	if (user.getUnit() == null) {
+    	    logger.error("Unit is null in user details: {}", rtiProformaGDto.getUser());
+    	    throw new IllegalArgumentException("Unit is null");
+    	}
+    	// Extract user details
+    	Integer year = rtiProformaGDto.getYear();
+        Integer quarter =  rtiProformaGDto.getQuarter();
+       
+        java.lang.System.out.println("Received RtiProformaGDto details: " + rtiProformaGDto.getYear() + rtiProformaGDto.getQuarter());
+			// String username = user != null ? user.getUsername() : "Unknown";
+
+		        //java.lang.System.out.println("Received request from user: " + user);
+		       // logger.info("Received request from user: {}", user);
+		
+       
+		        BaseResponse<HttpStatus, List<RtiProformaGDto>> response = rtiProformaGService.getAppealYrQtrEEReport(user,year,quarter);
+		        return new ResponseEntity<>(response, HttpStatus.OK);
+       // return ResponseEntity.status(HttpStatus.CREATED).body(rtiApplicationService.create(rtiApplicationDto));
+    }
+    
+    
     // Retrieve an RtiProformaG entry by ID
     @GetMapping("/getById/{id}")
     public ResponseEntity<BaseResponse<HttpStatus, RtiProformaGDto>> getById(@PathVariable Integer id) {
@@ -111,7 +142,30 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
         return new ResponseEntity<>(response, HttpStatus.OK);
     	
     }
-     
+    
+    @PostMapping("/getEditList")
+    public ResponseEntity<BaseResponse<HttpStatus, List<RtiProformaGDto>>> getAllEditApplications(@Valid @RequestBody UserDetailsDto user) {
+    LocalDate myLocal = LocalDate.now();
+    java.lang.System.out.println("Received user details: " + user);
+	LocalDate previousQuarter = myLocal.minus(1, IsoFields.QUARTER_YEARS);
+	long lastDayOfQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMaximum();
+	LocalDate lastDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, lastDayOfQuarter);
+	 java.lang.System.out.println("last "+lastDayInPreviousQuarter);
+
+	long firstDayOfpreQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMinimum();
+	LocalDate firstDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, firstDayOfpreQuarter);
+	// System.out.println("firstDayInPreviousQuarter"+firstDayInPreviousQuarter);
+	//UserDetailsDto user;
+	//User u = (User) session.getAttribute("userObj");
+
+	BaseResponse<HttpStatus,  List<RtiProformaGDto>> response = rtiProformaGService.getRTIAppealEditList(user, firstDayInPreviousQuarter, lastDayInPreviousQuarter);
+    
+	
+	
+	  // Return the response with HTTP status
+    return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
     //    @GetMapping("/units")
 //    public ResponseEntity<List<Object[]>> getUnitData() {
 //        return ResponseEntity.ok(rtiProformaGService.getUnitLevelData());
