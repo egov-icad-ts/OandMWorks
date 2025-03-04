@@ -42,6 +42,8 @@ public class WorkDetailsViewModel {
 	
 	private Integer tenderType;
 	
+	private String tenderTypeName;
+	
 	private BigDecimal tenderPercentage;
 	
 	private String agreementNumber;
@@ -121,5 +123,7 @@ private long govtSanction;
 	private BigDecimal go45SancAmount;
 	
 	private String authorityType;
+	
+	private Integer type;
 
 }

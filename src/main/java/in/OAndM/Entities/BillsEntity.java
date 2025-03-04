@@ -33,10 +33,6 @@ public class BillsEntity {
 	 
 	 private Double  workDoneAmount;
 
-	@Column(name="status_id")
-	 
-	 private Integer  statusId;
-
 	@Column(name="cum_work_done_amount")
 	 
 	 private Double  cumWorkDoneAmount;
@@ -75,6 +71,14 @@ public class BillsEntity {
 	@Column(name="loc_released_amt")
 	 
 	 private Double  locReleasedAmt;
+	
+	@ManyToOne
+	@JoinColumn(name = "status_id", referencedColumnName = "status_id", insertable=false, updatable=false)  // "parent_id" is the FK column in the child table
+	private BillStatusEntity billStatusEntity;
+
+	@Column(name="status_id" , insertable = true, updatable = true)
+
+	private Integer  statusId;
 
 	@ManyToOne
 	@JoinColumn(name = "agreement_id", referencedColumnName = "agreement_id", insertable=false, updatable=false)  // "parent_id" is the FK column in the child table

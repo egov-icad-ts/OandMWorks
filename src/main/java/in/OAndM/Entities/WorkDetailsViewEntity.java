@@ -56,6 +56,9 @@ public class WorkDetailsViewEntity {
 	@Column(name = "tender_type")
 	private Integer tenderType;
 	
+	@Column(name = "tender_type_name")
+	private String tenderTypeName;
+	
 	@Column(name = "tender_percentage")
 	private BigDecimal tenderPercentage;
 	
@@ -83,11 +86,11 @@ public class WorkDetailsViewEntity {
 	@Column(name = "bills_pending")
 	private Integer billsPending;
 
-	@Column(name = "action_to_be_taken_cnt")
-	private Integer actionToBeTakenCount;
-
-	@Column(name = "action_to_be_taken_amt")
-	private BigDecimal actionToBeTakenAmt;
+//	@Column(name = "action_to_be_taken_cnt")
+//	private Integer actionToBeTakenCount;
+//
+//	@Column(name = "action_to_be_taken_amt")
+//	private BigDecimal actionToBeTakenAmt;
 
 	@Column(name = "paid_amount")
 	private BigDecimal paidAmount;

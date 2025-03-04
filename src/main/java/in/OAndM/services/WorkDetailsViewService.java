@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
+import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.core.BaseResponse;
@@ -22,4 +23,9 @@ public interface WorkDetailsViewService  {
 	
 	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsRepSanctionAuthWorkTypeWiseFinyear(Integer finyear);
 	
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getOMWorksTSAgmtBillsDetailedReport(Integer unitId,Integer approvedById,Integer scstFunds,Integer financialYear,Integer hoaId,Integer workTypeId,Integer ProjSubType,Integer projectId,Integer type);
+	
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getOMWorksHoaTSAgmtBillsDetailedReport(Integer unitId,Integer approvedById,Integer scstFunds,Integer financialYear,Integer hoaId,Integer workTypeId,Integer ProjSubType,Integer projectId,Integer type);
+	
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getOMWorksSanctionTSAgmtBillsDetailedReport(Integer unitId,Integer approvedById,Integer scstFunds,Integer financialYear,Integer hoaId,Integer workTypeId,Integer ProjSubType,Integer projectId,Integer type);
 }

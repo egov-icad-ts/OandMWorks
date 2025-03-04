@@ -242,7 +242,7 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 	
 	else {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
-		if(!unitId.equals(0)&& !hoaId.equals(0) && !workTypeId.equals(0) ) {
+		if(unitId.equals(0)&& !hoaId.equals(0) && !workTypeId.equals(0) ) {
 				list = adminRepo.findAdminSanctionViewEntityByFinancialYearAndHoaIdAndWorkTypeId(financialYear, hoaId, workTypeId,type);
 		
 		}

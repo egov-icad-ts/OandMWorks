@@ -559,5 +559,67 @@ String formattedDate=formatter.format(date);
 	    		 	
 	    			return new ResponseEntity<>(response,response.getStatus());
 	    		}
+	    		
+	    		@GetMapping("/O&MWorksTSAgmtBillsDetailedReport")
+	    		public ResponseEntity<BaseResponse<HttpStatus, ?>> getOMWorksTSAgmtBillsDetailedReport( 
+	    				@RequestParam Integer unitId, @RequestParam Integer approvedById, 
+                        @RequestParam Integer scstFunds, @RequestParam Integer financialYear, 
+                        @RequestParam Integer hoaId,  @RequestParam Integer workTypeId, @RequestParam Integer ProjSubType, 
+                        @RequestParam Integer projectId, @RequestParam Integer type ){
+	    		
+	    			//BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response = null;
+	    			BaseResponse<HttpStatus, ?> response;
+	    			ResponseEntity<BaseResponse<HttpStatus, ?>> responseEntity;
+
+	    			if (type == 5 || type == 6) {
+	    			    response = billsService.getOMWorkBillsDetailedReport(unitId, approvedById, scstFunds, financialYear, hoaId, workTypeId, ProjSubType, projectId, type);
+	    			    responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			} else {
+	    			    response = workDetailsService.getOMWorksTSAgmtBillsDetailedReport(unitId, approvedById, scstFunds, financialYear, hoaId, workTypeId, ProjSubType, projectId, type);
+	    			    responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			}
+
+	    			return responseEntity;
+
+	    			
+	    		}
+	    		
+	    		@GetMapping("/O&MWorksHoaTSAgmtBillsDetailedReport")
+	    		public ResponseEntity<BaseResponse<HttpStatus, ?>> getOMWorksHoaTSAgmtBillsDetailedReport( 
+	    				@RequestParam Integer unitId, @RequestParam Integer approvedById, 
+                        @RequestParam Integer scstFunds, @RequestParam Integer financialYear, 
+                        @RequestParam Integer hoaId,  @RequestParam Integer workTypeId, @RequestParam Integer ProjSubType, 
+                        @RequestParam Integer projectId, @RequestParam Integer type ){
+	    		
+	    			BaseResponse<HttpStatus, ?> response;
+	    			ResponseEntity<BaseResponse<HttpStatus, ?>> responseEntity;
+	    			if (type == 5 || type == 6) {
+	    				 response = billsService.getOMWorkHoaBillsDetailedReport(unitId, approvedById, scstFunds, financialYear, hoaId, workTypeId, ProjSubType, projectId, type);
+	    				responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			}else {
+	    		 	response= workDetailsService.getOMWorksHoaTSAgmtBillsDetailedReport(unitId,approvedById,scstFunds,financialYear,hoaId,workTypeId,ProjSubType,projectId,type);
+	    		 	responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			}
+	    			return responseEntity;
+	    		}
+	    		
+	    		@GetMapping("/O&MWorksSanctionTSAgmtBillsDetailedReport")
+	    		public ResponseEntity<BaseResponse<HttpStatus, ?>> getOMWorksSanctionTSAgmtBillsDetailedReport( 
+	    				@RequestParam Integer unitId, @RequestParam Integer approvedById, 
+                        @RequestParam Integer scstFunds, @RequestParam Integer financialYear, 
+                        @RequestParam Integer hoaId,  @RequestParam Integer workTypeId, @RequestParam Integer ProjSubType, 
+                        @RequestParam Integer projectId, @RequestParam Integer type ){
+	    		
+	    			BaseResponse<HttpStatus, ?> response;
+	    			ResponseEntity<BaseResponse<HttpStatus, ?>> responseEntity;
+	    			if (type == 5 || type == 6) {
+	    		 	response= billsService.getOMWorkSanctionBillsDetailedReport(unitId,approvedById,scstFunds,financialYear,hoaId,workTypeId,ProjSubType,projectId,type);
+	    		 	responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			}else {
+	    				response= workDetailsService.getOMWorksSanctionTSAgmtBillsDetailedReport(unitId,approvedById,scstFunds,financialYear,hoaId,workTypeId,ProjSubType,projectId,type);
+		    		 	responseEntity = new ResponseEntity<>(response, response.getStatus());
+	    			}
+	    			return responseEntity;
+	    		}
 
 }

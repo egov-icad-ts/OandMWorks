@@ -24,7 +24,10 @@ public class BillsModel {
 	 private boolean  isLatest;
 	 private String  updatedBy;
 	 private Date updatedOn;
-	 private String billStatus;
+	 private String statusName;
+	 private Integer type;
+	 private String workName;
+	 private String agreementNumber;
 	 
 	 private List<BillsModel> billList=new ArrayList<>();
 }
