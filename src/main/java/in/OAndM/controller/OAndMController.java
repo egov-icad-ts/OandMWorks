@@ -483,42 +483,40 @@ String formattedDate=formatter.format(date);
 	@PostMapping(value = "/submitAdminSanctions")
 	public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> submitAdminSanctions(
 			@ModelAttribute AdminSanctionsModel admin) {
-		 String adminFileType = null;
-		    Date date = new Date(System.currentTimeMillis());
-		    
-	        String formattedDate =formatter.format(date);
-		    String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
-		    String[] temps = fileName.split(Pattern.quote("."));
-		    BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
-		    String rootPath = System.getProperty("catalina.home");
-		    File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-					+ File.separator + "O&MWorks"+ File.separator + "AdminSanctionFiles" + File.separator);
+		String adminFileType = null;
+		Date date = new Date(System.currentTimeMillis());
 
-		    if (!dir.exists()) dir.mkdirs();
-		    
-		    String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
-		    try {
-		    	admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-		    } catch (IllegalStateException | IOException e) {
-		        e.printStackTrace();
-		    }
+		String formattedDate = formatter.format(date);
+		String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
+		String[] temps = fileName.split(Pattern.quote("."));
+		BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
+		String rootPath = System.getProperty("catalina.home");
+		File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp" + File.separator
+				+ "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator);
 
-		  
-		    String adminURL ="O&MWorks"+ File.separator + "AdminSanctionFiles"+  File.separator + saveFileName;
-		    adminFileType = temps[temps.length - 1].toLowerCase(); 
-		    
-	
-		    if ("pdf".equals(adminFileType)) {
-		        admin.setAaFileUrl(adminURL);
-		        response = adminSanctionService.insertAdminSanctions(admin);
-		    } else {
-		       
-		        response.setMessage("Only PDF files are allowed.");
-		        response.setStatus(HttpStatus.BAD_REQUEST);
-		    }
+		if (!dir.exists())
+			dir.mkdirs();
 
-		
-			return new ResponseEntity<>(response, response.getStatus());
+		String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
+		try {
+			admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+
+		String adminURL = "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator + saveFileName;
+		adminFileType = temps[temps.length - 1].toLowerCase();
+
+		if ("pdf".equals(adminFileType)) {
+			admin.setAaFileUrl(adminURL);
+			response = adminSanctionService.insertAdminSanctions(admin);
+		} else {
+
+			response.setMessage("Only PDF files are allowed.");
+			response.setStatus(HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(response, response.getStatus());
 	}
 	
 
