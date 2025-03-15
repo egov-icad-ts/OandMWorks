@@ -2,6 +2,8 @@ package in.OAndM.controller;
 
 import in.OAndM.core.BaseController;
 import in.OAndM.Entities.RTIApplication;
+import in.OAndM.DTO.CircleListForUnitId;
+import in.OAndM.DTO.DivisionListForCircleId;
 import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
@@ -144,13 +146,24 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
         // Validate and process the incoming data
     	Integer year = rtiApplicationDto.getYear();
         Integer quarter =  rtiApplicationDto.getQuarter();
+        Integer clickedUnitId=0;
+        if ( rtiApplicationDto.getSelectedUnitId()!= null) {
+        	clickedUnitId  =  rtiApplicationDto.getSelectedUnitId();
+        System.out.println("Received clickedUnitId1 : " + clickedUnitId);
+        rtiApplicationDto.getUser().setUnit(clickedUnitId);
+        System.out.println("Received clickedUnitId2 : " + rtiApplicationDto.getUser().getUnit());
+        }
         System.out.println("Received circleConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
         if (rtiApplicationDto.getUser() == null) {
     	    logger.error("User details are null in the request payload: {}", rtiApplicationDto);
     	    throw new IllegalArgumentException("User details are null");
     	}
     	 UserDetailsDto	user = rtiApplicationDto.getUser();
+    	 List<CircleListForUnitId> circles =rtiApplicationDto.getCircles();
+    	 List<DivisionListForCircleId> divisions =rtiApplicationDto.getDivisions();
          System.out.println("Received user details: " + user);
+         System.out.println("Received circles details: " + circles);
+         System.out.println("Received division details: " + divisions);
     	 
 //    	if (u.getUnitId() != 4) {
 //			if (u.getDesignationId() == 12) {
@@ -164,7 +177,7 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
        
 
         // Call the service layer to fetch data  getrtiAppnConsolidatedProformaC
-        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiApplicationService.getrtiAppnCircleConsolidatedProformaC(user,year,quarter);
+        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiApplicationService.getrtiAppnCircleConsolidatedProformaC(user,year,quarter,circles,divisions);
 
         // Return the response with HTTP status
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -174,32 +187,35 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
     @PostMapping("/divisionConsolidated")
     public ResponseEntity<BaseResponse<HttpStatus, List<UnitLevelDataDto>>> getDivisionLevelData(
     		@RequestBody RtiApplicationDto rtiApplicationDto ) {
-    	System.out.println("Received divisionConsolidated rtiApplicationDto details: ");
+    	//System.out.println("Received divisionConsolidated rtiApplicationDto details: ");
         // Validate and process the incoming data
     	Integer year = rtiApplicationDto.getYear();
         Integer quarter =  rtiApplicationDto.getQuarter();
-        System.out.println("Received divisionConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
+        Integer clickedCircleId=0;
+        if ( rtiApplicationDto.getSelectedCircleId()!= null) {
+        	clickedCircleId  =  rtiApplicationDto.getSelectedCircleId();
+        System.out.println("Received clickedCircleId : " + clickedCircleId);
+        rtiApplicationDto.getUser().setCircle(clickedCircleId);
+        }
+       // System.out.println("Received divisionConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
         if (rtiApplicationDto.getUser() == null) {
     	    logger.error("User details are null in the request payload: {}", rtiApplicationDto);
     	    throw new IllegalArgumentException("User details are null");
     	}
     	 UserDetailsDto	user = rtiApplicationDto.getUser();
-         System.out.println("Received user details: " + user);
+    	 List<CircleListForUnitId> circles =rtiApplicationDto.getCircles();
+    	 List<DivisionListForCircleId> divisions =rtiApplicationDto.getDivisions();
     	 
-//    	if (u.getUnitId() != 4) {
-//			if (u.getDesignationId() == 12) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiCircleAppnConsolidatedProformaC(rtiar, status, session);
-//			} else if (u.getDesignationId() == 7 || u.getDesignationId() == 5) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiDivisionAppnConsolidatedProformaC(rtiar, status, session);
-//			}
-//		}
-       
+        // System.out.println("Received user details: " + user);
+         System.out.println("Received user details: " + user);
+         System.out.println("Received circles details: " + circles);
+         System.out.println("Received division details: " + divisions);
+         
+         
 
         // Call the service layer to fetch data  getrtiAppnConsolidatedProformaC
-        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiApplicationService.getrtiAppnDivisionConsolidatedProformaC(user,year,quarter);
-
+        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiApplicationService.getrtiAppnDivisionConsolidatedProformaC(user,year,quarter,circles,divisions);
+        System.out.println("response " + response);
         // Return the response with HTTP status
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

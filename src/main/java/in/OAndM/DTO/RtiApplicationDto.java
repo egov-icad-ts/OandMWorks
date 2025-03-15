@@ -2,6 +2,7 @@ package in.OAndM.DTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -70,9 +71,19 @@ public class RtiApplicationDto {
 	    
 	    private UserDetailsDto user;
 	    
+	    private List<CircleListForUnitId> circles;
+	    private List<DivisionListForCircleId> divisions;
+	    
 	    private Integer year;
 	    
 	    private Integer quarter;
+	    
+	    private Integer selectedCircleId;
+	    
+	    private Integer selectedUnitId;
+;
+	    
+	    
 	
 //	    private Integer applicationId;	   
 //	    private LocalDateTime applicationDate;//timestamp without time zone,	   

@@ -1,5 +1,7 @@
 package in.OAndM.services;
 
+import in.OAndM.DTO.CircleListForUnitId;
+import in.OAndM.DTO.DivisionListForCircleId;
 import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.UnitLevelDataDto;
 import in.OAndM.DTO.UnitLevelRequest;
@@ -31,8 +33,8 @@ public interface RTIApplicationService extends BaseService<RtiApplicationDto, In
 			Integer quarter);
 
 	BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnDivisionConsolidatedProformaC(UserDetailsDto user,
-			Integer year, Integer quarter);
+			Integer year, Integer quarter, List<CircleListForUnitId> circles, List<DivisionListForCircleId> divisions);
 
 	BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnCircleConsolidatedProformaC(UserDetailsDto user,
-			Integer year, Integer quarter);
+			Integer year, Integer quarter, List<CircleListForUnitId> circles, List<DivisionListForCircleId> divisions);
 }

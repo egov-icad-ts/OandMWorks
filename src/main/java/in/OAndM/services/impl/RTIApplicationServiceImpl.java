@@ -1,5 +1,7 @@
 package in.OAndM.services.impl;
 
+import in.OAndM.DTO.CircleListForUnitId;
+import in.OAndM.DTO.DivisionListForCircleId;
 import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
@@ -633,166 +635,272 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         return response;
     }
 	
+//	@Override
+//    public BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnDivisionConsolidatedProformaC(UserDetailsDto u, Integer year,
+//			Integer quarter) {
+//        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = new BaseResponse<>();
+//
+//        try {
+//            //int year =year
+//           // int qtr = rtiar.getQuarter();
+//            int month = getMonthForQuarter(quarter);
+//           
+//            Integer unit=u.getUnit();
+//        	Integer circle=u.getCircle();
+//        	Integer	 division=u.getDivision();
+//        	
+//            // Calculate the last day of the previous quarter
+//            LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
+//            LocalDate previousQuarter = currentQuarterDate.minus(1, IsoFields.QUARTER_YEARS);
+//            long lastDayOfQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMaximum();
+//            LocalDate lastDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, lastDayOfQuarter);
+//            java.sql.Date dt = java.sql.Date.valueOf(lastDayInPreviousQuarter);
+//           // System.out.print("dt"+dt);
+//            LocalDateTime lastDayWithTime = lastDayInPreviousQuarter.atStartOfDay(); // This gives 00:00:00 time
+//            //System.out.print("lastDayWithTime"+lastDayWithTime);
+//            // Convert to java.sql.Timestamp (which includes time)
+//            Timestamp timestamp = Timestamp.valueOf(lastDayWithTime);
+//            //System.out.print("timestamp"+timestamp);
+//            log.info("Fetching unit-level data for Year: {}, Quarter: {}, Date: {}", year, quarter, timestamp);
+//            List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
+//            List<Map<String, Object>> rawData = null;
+//        	if(u.getUnit()!=4){
+//        		if (u.getDesignation()==12){
+//        			unit=u.getUnit();//this was rtiar.unitId
+//        			 circle=u.getCircle();//this was rtiar.circleId
+//        			 System.out.print("1    Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
+//        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
+//        		}
+//        		if (u.getDesignation()==7){        			
+//        			 System.out.print("2  Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
+//        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
+//        		}
+//        		if (u.getDesignation()==5){        			        			 
+//        			  System.out.print("3   Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle+"division"+division);
+//        			//  System.out.println("Desg  "+u.getDesignationId()+"did"+divisionId+"dt "+dt);
+//        			 //sql=sql+ " where n.unit_id=" +unitId +" and n.circle_id="+circleId+" and n.division_id="+divisionId ;
+//        			  rawData = rtiApplicationRepository.getrtiAppnDivisionUCDConsolidatedProformaC(year,quarter,timestamp,unit,circle,division);
+//        		}
+//        		
+//        	}
+//        	if(u.getUnit()==4){
+//        		  rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
+//        	System.out.print("4   Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
+//        	
+//        	}
+//                        
+//            log.debug("Raw data retrieved: {}", rawData);
+////            rawData.forEach(row -> row.forEach((key, value) -> 
+////           log.info("Key: {}, Value: {}, Type: {}", key, value, (value != null ? value.getClass() : "null")) ));
+//         
+//           // rawData.forEach(row -> log.info("Row keys: {}", row.keySet()));
+//    
+//            for(int i=0;i<rawData.size();i++) {
+//            	UnitLevelDataDto dto = new UnitLevelDataDto();
+//            	dto.setQpending(Integer.parseInt(rawData.get(i).get("pending").toString()));
+//            	
+//            	dto.setTotapp(Integer.parseInt(rawData.get(i).get(("appreceived")).toString()));
+//            	//System.out.print("appreceived "+rawData.get(i).get(("appreceived")).toString());
+//            	
+//            	Object appReceivedValue = rawData.get(i).get("appreceived");
+//            	log.info("Raw value for appreceived: {}", appReceivedValue);
+//            	
+//            	dto.setTotdispo(Integer.parseInt(rawData.get(i).get("disposed").toString()));
+//            	dto.setTotPending(
+//            		    Integer.parseInt(rawData.get(i).get("pending").toString()) +
+//            		    Integer.parseInt(rawData.get(i).get("appreceived").toString()) -
+//            		    Integer.parseInt(rawData.get(i).get("disposed").toString())
+//            		);
+//            	dto.setInfor(Integer.parseInt(rawData.get(i).get("infofur").toString()));
+//            	dto.setDeemrefus(Integer.parseInt(rawData.get(i).get("deemrefus").toString()));            	
+//            	Object amountValue = rawData.get(i).get("sumtotamt");
+//                if (amountValue != null) {
+//                    try {
+//                        dto.setTotAmt(Double.parseDouble(amountValue.toString()));
+//                    } catch (NumberFormatException e) {
+//                        log.error("Invalid value for amount: {}", amountValue);
+//                        dto.setTotAmt(0.0); // Default to 0 in case of invalid number format
+//                    }
+//                } else {
+//                    dto.setTotAmt(0.0); // Default to 0 if "amount" is null
+//                }
+//            	dto.setRs1(Integer.parseInt(rawData.get(i).get("rs1").toString()));
+//            	dto.setRs2(Integer.parseInt(rawData.get(i).get("rs2").toString()));
+//            	dto.setRs3(Integer.parseInt(rawData.get(i).get("rs3").toString()));
+//            	dto.setRs4(Integer.parseInt(rawData.get(i).get("rs4").toString()));
+//            	dto.setRs5(Integer.parseInt(rawData.get(i).get("rs5").toString()));
+//            	dto.setRs6(Integer.parseInt(rawData.get(i).get("rs6").toString()));
+//            	dto.setRs7(Integer.parseInt(rawData.get(i).get("rs7").toString()));
+//            	dto.setRs8(Integer.parseInt(rawData.get(i).get("rs8").toString()));
+//            	dto.setRs9(Integer.parseInt(rawData.get(i).get("rs9").toString()));
+//            	dto.setRs10(Integer.parseInt(rawData.get(i).get("rs10").toString()));
+//            	dto.setRs11(Integer.parseInt(rawData.get(i).get("rs11").toString()));
+//            	dto.setRs12(Integer.parseInt(rawData.get(i).get("rs12").toString()));
+//            	dto.setRs13(Integer.parseInt(rawData.get(i).get("rs13").toString()));
+//            	dto.setRstot(Integer.parseInt(rawData.get(i).get("rstot").toString()));
+//            	dto.setUnitName((rawData.get(i).get(("unit_name")).toString()));
+//            	dto.setRej6(Integer.parseInt(rawData.get(i).get("six").toString()));
+//            	dto.setUnitId(Integer.parseInt(rawData.get(i).get(("unitId")).toString()));
+//            	dto.setCircleId(Integer.parseInt(rawData.get(i).get(("circle_id")).toString()));
+//            	dto.setDivisionId(Integer.parseInt(rawData.get(i).get(("division_id")).toString()));   
+//            	
+//            	 if (dto.getDivisionId() != 0) {
+//                    
+//                         dto.setDivisionName(u.getDivisionName());
+//                     
+//                 } else {
+//                     dto.setDivisionName("circle office"); // Default to 0 if "amount" is null
+//                 }
+//            	dto.setRs15(Integer.parseInt(rawData.get(i).get("rs15").toString()));
+//                unitLevelData.add(dto);
+//            }
+//            
+//            response.setStatus(HttpStatus.OK);
+//            response.setMessage("division-level data retrieved successfully.");
+//            response.setData(unitLevelData);
+//            response.setSuccess(true);
+//        } catch (IllegalArgumentException e) {
+//            log.error("Validation error: {}", e.getMessage());
+//            response.setStatus(HttpStatus.BAD_REQUEST);
+//            response.setMessage(e.getMessage());
+//            response.setSuccess(false);
+//            response.setData(Collections.emptyList());
+//        } catch (Exception e) {
+//            log.error("Unexpected error while fetching unit-level data", e);
+//            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+//            response.setMessage("An unexpected error occurred.");
+//            response.setSuccess(false);
+//            response.setData(Collections.emptyList());
+//        }
+//
+//        return response;
+//    }
+	
 	@Override
-    public BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnDivisionConsolidatedProformaC(UserDetailsDto u, Integer year,
-			Integer quarter) {
-        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = new BaseResponse<>();
+	public BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnDivisionConsolidatedProformaC(
+	        UserDetailsDto u, Integer year, Integer quarter, List<CircleListForUnitId> circles, 
+	        List<DivisionListForCircleId> divisions) {
+	    
+	    BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = new BaseResponse<>();
+	    
+	    try {
+	        int month = getMonthForQuarter(quarter);
+	        Integer unit = u.getUnit();
+	        Integer circle = u.getCircle();
+	        Integer division = u.getDivision();
+	        
+	        LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
+	        LocalDate previousQuarter = currentQuarterDate.minus(1, IsoFields.QUARTER_YEARS);
+	        long lastDayOfQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMaximum();
+	        LocalDate lastDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, lastDayOfQuarter);
+	        Timestamp timestamp = Timestamp.valueOf(lastDayInPreviousQuarter.atStartOfDay());
+	        
+	        log.info("Fetching unit-level data for Year: {}, Quarter: {}, Date: {}", year, quarter, timestamp);
+	        
+	        List<Map<String, Object>> rawData = null;
+	        if (unit != 4) {
+	            if (u.getDesignation() == 12 || u.getDesignation() == 7||u.getDesignation() == 9||u.getDesignation() == 10) {
+	                rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year, quarter, timestamp, unit, circle);
+	            } else if (u.getDesignation() == 5) {
+	                rawData = rtiApplicationRepository.getrtiAppnDivisionUCDConsolidatedProformaC(year, quarter, timestamp, unit, circle, division);
+	            }
+	        } else {
+	            rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year, quarter, timestamp, unit, circle);
+	        }
+	        
+	        if (rawData == null || rawData.isEmpty()) {
+	            response.setStatus(HttpStatus.NOT_FOUND);
+	            response.setMessage("No records found to display");
+	            response.setData(null);
+	            return response;
+	        }
+	        
+	        List<UnitLevelDataDto> unitLevelData = new ArrayList<>();
+	        for (Map<String, Object> row : rawData) {
+	            UnitLevelDataDto dto = new UnitLevelDataDto();
+	            dto.setQpending(Integer.parseInt(row.get("pending").toString()));
+	            dto.setTotapp(Integer.parseInt(row.get("appreceived").toString()));
+	            dto.setTotdispo(Integer.parseInt(row.get("disposed").toString()));
+	            dto.setTotPending(dto.getQpending() + dto.getTotapp() - dto.getTotdispo());
+	            dto.setInfor(Integer.parseInt(row.get("infofur").toString()));
+	            dto.setDeemrefus(Integer.parseInt(row.get("deemrefus").toString()));
+	            dto.setTotAmt(row.get("sumtotamt") != null ? Double.parseDouble(row.get("sumtotamt").toString()) : 0.0);
+	            dto.setRs1(Integer.parseInt(row.get("rs1").toString()));
+	            dto.setRs2(Integer.parseInt(row.get("rs2").toString()));
+	            dto.setRs3(Integer.parseInt(row.get("rs3").toString()));
+	            dto.setRs4(Integer.parseInt(row.get("rs4").toString()));
+	            dto.setRs5(Integer.parseInt(row.get("rs5").toString()));
+	            dto.setRs6(Integer.parseInt(row.get("rs6").toString()));
+	            dto.setRs7(Integer.parseInt(row.get("rs7").toString()));
+	            dto.setRs8(Integer.parseInt(row.get("rs8").toString()));
+	            dto.setRs9(Integer.parseInt(row.get("rs9").toString()));
+	            dto.setRs10(Integer.parseInt(row.get("rs10").toString()));
+	            dto.setRs11(Integer.parseInt(row.get("rs11").toString()));
+	            dto.setRs12(Integer.parseInt(row.get("rs12").toString()));
+	            dto.setRs13(Integer.parseInt(row.get("rs13").toString()));
+	            dto.setRstot(Integer.parseInt(row.get("rstot").toString()));
+	            dto.setUnitName(row.get("unit_name").toString());
+	            dto.setRej6(Integer.parseInt(row.get("six").toString()));
+	            dto.setUnitId(Integer.parseInt(row.get("unitId").toString()));
+	            dto.setCircleId(Integer.parseInt(row.get("circle_id").toString()));
+	            dto.setDivisionId(Integer.parseInt(row.get("division_id").toString()));
+	            dto.setRs15(Integer.parseInt(row.get("rs15").toString()));
+	            unitLevelData.add(dto);
+	        }
+	              
+         //for unitId !=4 and deg=5 0r 7 we straight away use user unit and circle id ( for assigning names)  when unit =4 we are using rtiar circle id have to check for unit=4 case
+	        
+	        
+	        
+	        
+	        for (UnitLevelDataDto data : unitLevelData) {
+	            for (CircleListForUnitId circleObj : circles) {
+	                if (circleObj.getCircleId().equals(data.getCircleId())) {
+	                    data.setCircleName(circleObj.getCircleName());
+	                    break;
+	                }
+	            }
+	            
+	            for (DivisionListForCircleId divisionObj : divisions) {
+	                if (divisionObj.getDivisionId().equals(data.getDivisionId())) {
+	                    data.setDivisionName(divisionObj.getDivisionName());
+	                    break;
+	                }
+	            }
+	            
+	            if (data.getDivisionId().equals(0)) {
+	                data.setDivisionName("Circle Office");
+	            }
+	        }
+	        
+	        response.setStatus(HttpStatus.OK);
+	        response.setMessage("Success");
+	        response.setData(unitLevelData);
+	        return response;
+	        
+	    } catch (Exception e) {
+	        log.error("Unexpected error while fetching Division-level data", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+	        response.setMessage("An unexpected error occurred.");
+	        response.setData(null);
+	        return response;
+	    }
+	}
 
-        try {
-            //int year =year
-           // int qtr = rtiar.getQuarter();
-            int month = getMonthForQuarter(quarter);
-            Integer unitId=u.getUnit();
-            Integer unit=u.getUnit();
-        	Integer circle=u.getCircle();
-        	Integer	 division;
-        	
-            // Calculate the last day of the previous quarter
-            LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
-            LocalDate previousQuarter = currentQuarterDate.minus(1, IsoFields.QUARTER_YEARS);
-            long lastDayOfQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMaximum();
-            LocalDate lastDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, lastDayOfQuarter);
-            java.sql.Date dt = java.sql.Date.valueOf(lastDayInPreviousQuarter);
-           // System.out.print("dt"+dt);
-            LocalDateTime lastDayWithTime = lastDayInPreviousQuarter.atStartOfDay(); // This gives 00:00:00 time
-            //System.out.print("lastDayWithTime"+lastDayWithTime);
-            // Convert to java.sql.Timestamp (which includes time)
-            Timestamp timestamp = Timestamp.valueOf(lastDayWithTime);
-            //System.out.print("timestamp"+timestamp);
-            log.info("Fetching unit-level data for Year: {}, Quarter: {}, Date: {}", year, quarter, timestamp);
-            List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
-            List<Map<String, Object>> rawData = null;
-        	if(u.getUnit()!=4){
-        		if (u.getDesignation()==12){
-        			unit=u.getUnit();
-        			 circle=u.getCircle();
-        			 System.out.print("1    Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
-        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
-        		}
-        		if (u.getDesignation()==7){
-        			 unit=u.getUnit();
-        			 circle=u.getCircle();
-        			 System.out.print("2  Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
-        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
-        		}
-        		if (u.getDesignation()==5){
-        			 unitId=u.getUnit();
-        			 circle=u.getCircle();
-        			  division=u.getDivision();
-        			 
-        			  System.out.print("3   Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle+"division"+division);
-        			//  System.out.println("Desg  "+u.getDesignationId()+"did"+divisionId+"dt "+dt);
-        			 //sql=sql+ " where n.unit_id=" +unitId +" and n.circle_id="+circleId+" and n.division_id="+divisionId ;
-        			  rawData = rtiApplicationRepository.getrtiAppnDivisionUCDConsolidatedProformaC(year,quarter,timestamp,unit,circle,division);
-        		}
-        		
-        	}
-        	if(u.getUnit()==4){
-        		  rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
-        	System.out.print("4   Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
-        	
-        	}
-                        
-            log.debug("Raw data retrieved: {}", rawData);
-            rawData.forEach(row -> row.forEach((key, value) -> 
-           log.info("Key: {}, Value: {}, Type: {}", key, value, (value != null ? value.getClass() : "null")) ));
-         
-            rawData.forEach(row -> log.info("Row keys: {}", row.keySet()));
-    
-            for(int i=0;i<rawData.size();i++) {
-            	UnitLevelDataDto dto = new UnitLevelDataDto();
-            	dto.setQpending(Integer.parseInt(rawData.get(i).get("pending").toString()));
-            	
-            	dto.setTotapp(Integer.parseInt(rawData.get(i).get(("appreceived")).toString()));
-            	System.out.print("appreceived "+rawData.get(i).get(("appreceived")).toString());
-            	
-            	Object appReceivedValue = rawData.get(i).get("appreceived");
-            	log.info("Raw value for appreceived: {}", appReceivedValue);
-            	
-            	dto.setTotdispo(Integer.parseInt(rawData.get(i).get("disposed").toString()));
-            	dto.setTotPending(
-            		    Integer.parseInt(rawData.get(i).get("pending").toString()) +
-            		    Integer.parseInt(rawData.get(i).get("appreceived").toString()) -
-            		    Integer.parseInt(rawData.get(i).get("disposed").toString())
-            		);
-            	dto.setInfor(Integer.parseInt(rawData.get(i).get("infofur").toString()));
-            	dto.setDeemrefus(Integer.parseInt(rawData.get(i).get("deemrefus").toString()));            	
-            	Object amountValue = rawData.get(i).get("sumtotamt");
-                if (amountValue != null) {
-                    try {
-                        dto.setTotAmt(Double.parseDouble(amountValue.toString()));
-                    } catch (NumberFormatException e) {
-                        log.error("Invalid value for amount: {}", amountValue);
-                        dto.setTotAmt(0.0); // Default to 0 in case of invalid number format
-                    }
-                } else {
-                    dto.setTotAmt(0.0); // Default to 0 if "amount" is null
-                }
-            	dto.setRs1(Integer.parseInt(rawData.get(i).get("rs1").toString()));
-            	dto.setRs2(Integer.parseInt(rawData.get(i).get("rs2").toString()));
-            	dto.setRs3(Integer.parseInt(rawData.get(i).get("rs3").toString()));
-            	dto.setRs4(Integer.parseInt(rawData.get(i).get("rs4").toString()));
-            	dto.setRs5(Integer.parseInt(rawData.get(i).get("rs5").toString()));
-            	dto.setRs6(Integer.parseInt(rawData.get(i).get("rs6").toString()));
-            	dto.setRs7(Integer.parseInt(rawData.get(i).get("rs7").toString()));
-            	dto.setRs8(Integer.parseInt(rawData.get(i).get("rs8").toString()));
-            	dto.setRs9(Integer.parseInt(rawData.get(i).get("rs9").toString()));
-            	dto.setRs10(Integer.parseInt(rawData.get(i).get("rs10").toString()));
-            	dto.setRs11(Integer.parseInt(rawData.get(i).get("rs11").toString()));
-            	dto.setRs12(Integer.parseInt(rawData.get(i).get("rs12").toString()));
-            	dto.setRs13(Integer.parseInt(rawData.get(i).get("rs13").toString()));
-            	dto.setRstot(Integer.parseInt(rawData.get(i).get("rstot").toString()));
-            	dto.setUnitName((rawData.get(i).get(("unit_name")).toString()));
-            	dto.setRej6(Integer.parseInt(rawData.get(i).get("six").toString()));
-            	dto.setUnitId(Integer.parseInt(rawData.get(i).get(("unitId")).toString()));
-            	dto.setCircleId(Integer.parseInt(rawData.get(i).get(("circle_id")).toString()));
-            	dto.setDivisionId(Integer.parseInt(rawData.get(i).get(("division_id")).toString()));   
-            	
-            	 if (dto.getDivisionId() != 0) {
-                    
-                         dto.setDivisionName(u.getDivisionName());
-                     
-                 } else {
-                     dto.setDivisionName("circle office"); // Default to 0 if "amount" is null
-                 }
-            	dto.setRs15(Integer.parseInt(rawData.get(i).get("rs15").toString()));
-                unitLevelData.add(dto);
-            }
-            
-            response.setStatus(HttpStatus.OK);
-            response.setMessage("division-level data retrieved successfully.");
-            response.setData(unitLevelData);
-            response.setSuccess(true);
-        } catch (IllegalArgumentException e) {
-            log.error("Validation error: {}", e.getMessage());
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessage(e.getMessage());
-            response.setSuccess(false);
-            response.setData(Collections.emptyList());
-        } catch (Exception e) {
-            log.error("Unexpected error while fetching unit-level data", e);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setMessage("An unexpected error occurred.");
-            response.setSuccess(false);
-            response.setData(Collections.emptyList());
-        }
 
-        return response;
-    }
+	
 	
 	@Override
     public BaseResponse<HttpStatus, List<UnitLevelDataDto>> getrtiAppnCircleConsolidatedProformaC(UserDetailsDto u, Integer year,
-			Integer quarter) {
+			Integer quarter, List<CircleListForUnitId> circles, 
+	        List<DivisionListForCircleId> divisions) {
         BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = new BaseResponse<>();
 
         try {
             //int year =year
            // int qtr = rtiar.getQuarter();
             int month = getMonthForQuarter(quarter);
-            Integer unitId=u.getUnit();
             Integer unit=u.getUnit();
-        	Integer circle=u.getCircle();
-        	Integer	 division;
         	
             // Calculate the last day of the previous quarter
             LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
@@ -810,7 +918,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
             List<Map<String, Object>> rawData = null;
         	if(u.getUnit()!=4){
-        		if (u.getDesignation()==12){
+        		if (u.getDesignation()==12||u.getDesignation()==9||u.getDesignation()==10){
         			unit=u.getUnit();  
         		}
         	}
@@ -820,7 +928,14 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         	log.debug("Raw data retrieved: {}", rawData);
             rawData.forEach(row -> row.forEach((key, value) -> 
            log.info("Key: {}, Value: {}, Type: {}", key, value, (value != null ? value.getClass() : "null")) ));
-         
+        	 
+        	if (rawData == null || rawData.isEmpty()) {
+	            response.setStatus(HttpStatus.NOT_FOUND);
+	            response.setMessage("No records found to display");
+	            response.setData(null);
+	            return response;
+	        }
+        	
             rawData.forEach(row -> log.info("Row keys: {}", row.keySet()));
     
             for(int i=0;i<rawData.size();i++) {
@@ -828,10 +943,10 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             	dto.setQpending(Integer.parseInt(rawData.get(i).get("pending").toString()));
             	
             	dto.setTotapp(Integer.parseInt(rawData.get(i).get(("appreceived")).toString()));
-            	System.out.print("appreceived "+rawData.get(i).get(("appreceived")).toString());
+            	//System.out.print("appreceived "+rawData.get(i).get(("appreceived")).toString());
             	
             	Object appReceivedValue = rawData.get(i).get("appreceived");
-            	log.info("Raw value for appreceived: {}", appReceivedValue);
+            	//log.info("Raw value for appreceived: {}", appReceivedValue);
             	
             	dto.setTotdispo(Integer.parseInt(rawData.get(i).get("disposed").toString()));
             	dto.setTotPending(
@@ -872,39 +987,38 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             	dto.setRej6(Integer.parseInt(rawData.get(i).get("six").toString()));
             	dto.setUnitId(Integer.parseInt(rawData.get(i).get(("unitId")).toString()));
             	dto.setCircleId(Integer.parseInt(rawData.get(i).get(("circle_id")).toString()));
-            	dto.setDivisionId(0);   
-            	
-            	 if (dto.getCircleId() != 0) {
-                    
-                         dto.setCircleName(u.getDivisionName());
-                    
-                 } else {
-                     dto.setCircleName("Unit office"); // Default to 0 if "amount" is null
-                 }
+            	dto.setDivisionId(0);
             	dto.setRs15(Integer.parseInt(rawData.get(i).get("rs15").toString()));
                 unitLevelData.add(dto);
             }
             
-            response.setStatus(HttpStatus.OK);
-            response.setMessage("division-level data retrieved successfully.");
-            response.setData(unitLevelData);
-            response.setSuccess(true);
-        } catch (IllegalArgumentException e) {
-            log.error("Validation error: {}", e.getMessage());
-            response.setStatus(HttpStatus.BAD_REQUEST);
-            response.setMessage(e.getMessage());
-            response.setSuccess(false);
-            response.setData(Collections.emptyList());
-        } catch (Exception e) {
-            log.error("Unexpected error while fetching unit-level data", e);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
-            response.setMessage("An unexpected error occurred.");
-            response.setSuccess(false);
-            response.setData(Collections.emptyList());
-        }
-
-        return response;
-    }
+            for (UnitLevelDataDto data : unitLevelData) {
+	            for (CircleListForUnitId circleObj : circles) {
+	                if (circleObj.getCircleId().equals(data.getCircleId())) {
+	                    data.setCircleName(circleObj.getCircleName());
+	                    System.out.print("circleName "+data.getCircleName());
+	                    break;
+	                }
+	            }
+	            
+	            if (data.getCircleId().equals(0)) {
+	                data.setCircleName("Unit Office");
+	            }
+	        }
+	        
+	        response.setStatus(HttpStatus.OK);
+	        response.setMessage("Success");
+	        response.setData(unitLevelData);
+	        return response;
+	        
+	    } catch (Exception e) {
+	        log.error("Unexpected error while fetching Circle-level data", e);
+	        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+	        response.setMessage("An unexpected error occurred.");
+	        response.setData(null);
+	        return response;
+	    }
+	}
 	   private int getMonthForQuarter(int quarter) {
 	        switch (quarter) {
 	            case 1: return 2;  // February
