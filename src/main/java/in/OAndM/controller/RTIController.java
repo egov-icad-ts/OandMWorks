@@ -192,6 +192,13 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
     	Integer year = rtiApplicationDto.getYear();
         Integer quarter =  rtiApplicationDto.getQuarter();
         Integer clickedCircleId=0;
+        Integer clickedUnitId=0;
+        if ( rtiApplicationDto.getSelectedUnitId()!= null) {
+        	clickedUnitId  =  rtiApplicationDto.getSelectedUnitId();
+        System.out.println("Received clickedUnitId : " + clickedUnitId);
+        rtiApplicationDto.getUser().setUnit(clickedUnitId);
+        }
+        
         if ( rtiApplicationDto.getSelectedCircleId()!= null) {
         	clickedCircleId  =  rtiApplicationDto.getSelectedCircleId();
         System.out.println("Received clickedCircleId : " + clickedCircleId);
