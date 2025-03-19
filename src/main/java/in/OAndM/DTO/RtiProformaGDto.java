@@ -2,6 +2,7 @@ package in.OAndM.DTO;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -63,6 +64,16 @@ public class RtiProformaGDto {
     //private String rtiRejSecName; // Name of the rejection section  
     private String rtiRejectionSection;
     
+    
  // Add User Details
     private UserDetailsDto user;
+    
+    private List<CircleListForUnitId> circles;
+    private List<DivisionListForCircleId> divisions;
+    
+    
+    
+    private Integer selectedCircleId;
+    
+    private Integer selectedUnitId;
 }

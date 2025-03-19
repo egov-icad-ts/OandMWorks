@@ -3,6 +3,8 @@ package in.OAndM.controller;
 import in.OAndM.core.BaseController;
 import in.OAndM.Entities.RtiProformaG;
 import in.OAndM.Entities.RtiRejectionStatus;
+import in.OAndM.DTO.CircleListForUnitId;
+import in.OAndM.DTO.DivisionListForCircleId;
 import in.OAndM.DTO.RtiApplicationDto;
 import in.OAndM.DTO.RtiProformaGDto;
 import in.OAndM.DTO.UnitLevelDataDto;
@@ -183,30 +185,22 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
     
     @PostMapping("/unitConsolidated")
     public ResponseEntity<BaseResponse<HttpStatus, List<UnitLevelDataDto>>> getUnitLevelData(
-            @RequestBody UnitLevelRequest request) {
+    		@RequestBody RtiProformaGDto rtiProformaGDto) {
         // Validate and process the incoming data
-        if (request.getYear() != null && request.getQuarter() != null) {
-            Integer year = request.getYear();
-            Integer quarter = request.getQuarter();
-            Integer prevYear;
-            Integer prevQuarter;
-
-            // Determine the previous quarter and year
-            if (quarter == 1) {
-                prevQuarter = 4; // Previous quarter is 4 if current quarter is 1
-                prevYear = year - 1; // Previous year is one less than the current year
-            } else {
-                prevQuarter = quarter - 1; // Otherwise, subtract 1 from the current quarter
-                prevYear = year; // The year remains the same
-            }
-
-            // Set the calculated values back into the request
-            request.setPreviousQtr(prevQuarter);
-            request.setPreviousYear(prevYear);
-        }
+       
+    	Integer year = rtiProformaGDto.getYear();
+        Integer quarter =  rtiProformaGDto.getQuarter();
+        java.lang.System.out.println("Received rtiProformaGDto details: " + rtiProformaGDto.getYear() + rtiProformaGDto.getQuarter());
+        if (rtiProformaGDto.getUser() == null) {
+    	    logger.error("User details are null in the request payload: {}", rtiProformaGDto);
+    	    throw new IllegalArgumentException("User details are null");
+    	}
+    	 UserDetailsDto	user = rtiProformaGDto.getUser();
+    	 java.lang. System.out.println("Received user details: " + user);
+            
 
         // Call the service layer to fetch data
-        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiProformaGService.getUnitLevelData(request);
+        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiProformaGService.getUnitLevelData(user,year,quarter);
 
         // Return the response with HTTP status
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -215,81 +209,82 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
     
     @PostMapping("/circleConsolidated")
     public ResponseEntity<BaseResponse<HttpStatus, List<UnitLevelDataDto>>> getCircleLevelData(
-            @RequestBody UnitLevelRequest request) {
-           	
-		/*
-		 * User u = (User) session.getAttribute("userObj"); List<RTIappnRegister>
-		 * rlist=null; List<RTIappnRegister> rlist1=new ArrayList<RTIappnRegister>();
-		 * String err="";
-		 * if(u.getUnitId()!=4){
-		if (u.getDesignationId()==12){
-		 * 
-		 */
-    	Integer unitId=request.getUnitId();
-        if (request.getYear() != null && request.getQuarter() != null) {
-            Integer year = request.getYear();
-            Integer quarter = request.getQuarter();
-            Integer prevYear;
-            Integer prevQuarter;
-
-            // Determine the previous quarter and year
-            if (quarter == 1) {
-                prevQuarter = 4; // Previous quarter is 4 if current quarter is 1
-                prevYear = year - 1; // Previous year is one less than the current year
-            } else {
-                prevQuarter = quarter - 1; // Otherwise, subtract 1 from the current quarter
-                prevYear = year; // The year remains the same
-            }
-
-            // Set the calculated values back into the request
-            request.setPreviousQtr(prevQuarter);
-            request.setPreviousYear(prevYear);
+    		@RequestBody RtiProformaGDto rtiProformaGDto) {
+    	java.lang.System.out.println("Received circleConsolidated rtiProformaGDto details: ");
+        // Validate and process the incoming data
+    	Integer year = rtiProformaGDto.getYear();
+        Integer quarter =  rtiProformaGDto.getQuarter();
+        Integer clickedUnitId=0;
+        if ( rtiProformaGDto.getSelectedUnitId()!= null) {
+        	clickedUnitId  =  rtiProformaGDto.getSelectedUnitId();
+        	java.lang.System.out.println("Received clickedUnitId1 : " + clickedUnitId);
+        rtiProformaGDto.getUser().setUnit(clickedUnitId);
+        java.lang.System.out.println("Received clickedUnitId2 : " + rtiProformaGDto.getUser().getUnit());
         }
-
-//    }}
-        
-        
+        java.lang.System.out.println("Received circleConsolidated rtiProformaGDto details: " + rtiProformaGDto.getYear() + rtiProformaGDto.getQuarter());
+        if (rtiProformaGDto.getUser() == null) {
+    	    logger.error("User details are null in the request payload: {}", rtiProformaGDto);
+    	    throw new IllegalArgumentException("User details are null");
+    	}
+    	 UserDetailsDto	user = rtiProformaGDto.getUser();
+    	 List<CircleListForUnitId> circles =rtiProformaGDto.getCircles();
+    	 List<DivisionListForCircleId> divisions =rtiProformaGDto.getDivisions();
+    	 java.lang.System.out.println("Received user details: " + user);
+    	 java.lang.System.out.println("Received circles details: " + circles);
+    	 java.lang.System.out.println("Received division details: " + divisions);	
+    	 
         // Call the service layer to fetch data
-        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiProformaGService.getCircleLevelData(request,unitId);
+        BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiProformaGService.getCircleLevelData(user,year,quarter,circles,divisions);
 
         // Return the response with HTTP status
         return new ResponseEntity<>(response, HttpStatus.OK);
         
-        /*if(rlist1!=null){
-        	
-        	if(u.getUnitId()!=4){
-        		if (u.getDesignationId()==12){
-        			rtiar.setUnitId(u.getUnitId());
-        		}}
-        	
-        	List<Circle> cl=pmsmigManager.getCirclesListWithPostId(rtiar.getUnitId());
-        	if(cl!=null){
-        		for(int i =0;i<rlist1.size();i++){
-        			for(int j=0;j<cl.size();j++){
-        			if(rlist1.get(i).getCircleId().equals(cl.get(j).getCircleId())){
-        				rlist1.get(i).setCircle(cl.get(j).getCircleName());
-        			}
-        			if(rlist1.get(i).getCircleId().equals(0)){
-        				rlist1.get(i).setCircle("Unit Office");
-        			}
-        			}
-        		}
-        	}
-        	mav.addObject("rlist", rlist1);
-        	mav.addObject("previousQtr", rtiar.getPreviousQtr());
-        	mav.addObject("previousyr", rtiar.getPreviousyr());
-        	mav.addObject("appnrptyear", rtiar.getAppnrptyear());
-        	mav.addObject("quarter", rtiar.getQuarter());
-        	mav.addObject("getcircle4Unit", rtiar.getUnitId());
-        	}
-        	if(rlist1.size()==0){
-        		err="No records found to display";
-        		mav.addObject("err", err);
-        	}*/
         
     }
 
-	
 
+
+@PostMapping("/divisionConsolidated")
+public ResponseEntity<BaseResponse<HttpStatus, List<UnitLevelDataDto>>> getDivisionLevelData(
+		@RequestBody RtiProformaGDto rtiProformaGDto ) {
+	//System.out.println("Received divisionConsolidated rtiApplicationDto details: ");
+    // Validate and process the incoming data
+	Integer year = rtiProformaGDto.getYear();
+    Integer quarter =  rtiProformaGDto.getQuarter();
+    Integer clickedCircleId=0;
+    Integer clickedUnitId=0;
+    if ( rtiProformaGDto.getSelectedUnitId()!= null) {
+    	clickedUnitId  =  rtiProformaGDto.getSelectedUnitId();
+    	java.lang.System.out.println("Received clickedUnitId : " + clickedUnitId);
+    rtiProformaGDto.getUser().setUnit(clickedUnitId);
+    }
+    
+    if ( rtiProformaGDto.getSelectedCircleId()!= null) {
+    	clickedCircleId  =  rtiProformaGDto.getSelectedCircleId();
+    	java.lang.System.out.println("Received clickedCircleId : " + clickedCircleId);
+    rtiProformaGDto.getUser().setCircle(clickedCircleId);
+    }
+   // System.out.println("Received divisionConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
+    if (rtiProformaGDto.getUser() == null) {
+	    logger.error("User details are null in the request payload: {}", rtiProformaGDto);
+	    throw new IllegalArgumentException("User details are null");
+	}
+	 UserDetailsDto	user = rtiProformaGDto.getUser();
+	 List<CircleListForUnitId> circles =rtiProformaGDto.getCircles();
+	 List<DivisionListForCircleId> divisions =rtiProformaGDto.getDivisions();
+	 
+    // System.out.println("Received user details: " + user);
+	 java.lang.System.out.println("Received user details: " + user);
+	 java.lang.System.out.println("Received circles details: " + circles);
+	 java.lang.System.out.println("Received division details: " + divisions);
+     
+     
+
+    // Call the service layer to fetch data  getrtiAppnConsolidatedProformaC
+    BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiProformaGService.getrtiDivisionAppealConsolidatedProformaG(user,year,quarter,circles,divisions);
+    java.lang.System.out.println("response " + response);
+    // Return the response with HTTP status
+    return new ResponseEntity<>(response, HttpStatus.OK);
+}
 
 }

@@ -539,7 +539,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             //int year =year
            // int qtr = rtiar.getQuarter();
             int month = getMonthForQuarter(quarter);
-            Integer unitId=user.getUnit();
+            //Integer unitId=user.getUnit();
             
             // Calculate the last day of the previous quarter
             LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
@@ -615,7 +615,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             }
             
             response.setStatus(HttpStatus.OK);
-            response.setMessage("Division-level data retrieved successfully.");
+            response.setMessage("Unit-level data retrieved successfully.");
             response.setData(unitLevelData);
             response.setSuccess(true);
         } catch (IllegalArgumentException e) {
@@ -850,9 +850,6 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 	              
          //for unitId !=4 and deg=5 0r 7 we straight away use user unit and circle id ( for assigning names)  when unit =4 we are using rtiar circle id have to check for unit=4 case
 	        
-	        
-	        
-	        
 	        for (UnitLevelDataDto data : unitLevelData) {
 	            for (CircleListForUnitId circleObj : circles) {
 	                if (circleObj.getCircleId().equals(data.getCircleId())) {
@@ -897,8 +894,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = new BaseResponse<>();
 
         try {
-            //int year =year
-           // int qtr = rtiar.getQuarter();
+           
             int month = getMonthForQuarter(quarter);
             Integer unit=u.getUnit();
         	
@@ -915,6 +911,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             Timestamp timestamp = Timestamp.valueOf(lastDayWithTime);
             //System.out.print("timestamp"+timestamp);
             log.info("Fetching unit-level data for Year: {}, Quarter: {}, Date: {}", year, quarter, timestamp);
+            
             List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
             List<Map<String, Object>> rawData = null;
         	if(u.getUnit()!=4){

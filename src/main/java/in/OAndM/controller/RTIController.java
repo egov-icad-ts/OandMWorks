@@ -105,32 +105,7 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
     	 UserDetailsDto	user = rtiApplicationDto.getUser();
          System.out.println("Received user details: " + user);
     	 
-//    	if (u.getUnitId() != 4) {
-//			if (u.getDesignationId() == 12) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiCircleAppnConsolidatedProformaC(rtiar, status, session);
-//			} else if (u.getDesignationId() == 7 || u.getDesignationId() == 5) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiDivisionAppnConsolidatedProformaC(rtiar, status, session);
-//			}
-//		}
-        if (year != null && quarter!= null) {
-         
-            Integer prevYear;
-            Integer prevQuarter;
 
-            // Determine the previous quarter and year
-            if (quarter == 1) {
-                prevQuarter = 4; // Previous quarter is 4 if current quarter is 1
-                prevYear = year - 1; // Previous year is one less than the current year
-            } else {
-                prevQuarter = quarter - 1; // Otherwise, subtract 1 from the current quarter
-                prevYear = year; // The year remains the same
-            }
-            // Set the calculated values back into the request
-            //request.setPreviousQtr(prevQuarter);
-           // request.setPreviousYear(prevYear);
-        }
 
         // Call the service layer to fetch data  getrtiAppnConsolidatedProformaC
         BaseResponse<HttpStatus, List<UnitLevelDataDto>> response = rtiApplicationService.getrtiAppnConsolidatedProformaC(user,year,quarter);
@@ -165,15 +140,7 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
          System.out.println("Received circles details: " + circles);
          System.out.println("Received division details: " + divisions);
     	 
-//    	if (u.getUnitId() != 4) {
-//			if (u.getDesignationId() == 12) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiCircleAppnConsolidatedProformaC(rtiar, status, session);
-//			} else if (u.getDesignationId() == 7 || u.getDesignationId() == 5) {
-//				// System.out.print("rtiar"+u.getDesignationId());
-//				mav = rtiDivisionAppnConsolidatedProformaC(rtiar, status, session);
-//			}
-//		}
+
        
 
         // Call the service layer to fetch data  getrtiAppnConsolidatedProformaC
