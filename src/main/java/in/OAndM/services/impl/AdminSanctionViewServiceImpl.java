@@ -169,29 +169,11 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				}
 			
 		}
-		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
-		if( list.size()>0) {
-			for(AdminSanctionViewEntity  work: list) {
-				
-				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
-				adminModel.setWorkId(work.getWorkId());
-				adminModel.setWorkName(work.getWorkName());
-				adminModel.setWorkTypeName(work.getWorkTypeName());
-				adminModel.setReferenceNumber(work.getReferenceNumber());
-				adminModel.setAdminSanctionAmt(work.getAdminSanctionAmt());
-				adminModel.setHeadOfAccount(work.getHeadOfAccount());
-				adminModel.setApprovedByName(work.getApprovedByName());
-				adminModel.setFinancialYear(work.getFinancialYear());
-				adminModel.setWorkTypeId(work.getWorkTypeId());
-				adminModel.setProjectName(work.getProjectResLiftName());
-				adminModel.setTankName(work.getTank_name());
-				adminViewModel.add(adminModel);
-			}
-			}
+		List<AdminSanctionViewModel> models = mapper.mapEntityToModel(list);
 			
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setSuccess(true);
-		responseJson.setData(adminViewModel);
+		responseJson.setData(models);
 
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
@@ -249,30 +231,11 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 	}
 
 	
-		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
-		if( list.size()>0) {
-			for(AdminSanctionViewEntity  work: list) {
-				
-				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
-				adminModel.setWorkId(work.getWorkId());
-				adminModel.setWorkName(work.getWorkName());
-				adminModel.setWorkTypeName(work.getWorkTypeName());
-				adminModel.setReferenceNumber(work.getReferenceNumber());
-				adminModel.setAdminSanctionAmt(work.getAdminSanctionAmt());
-				adminModel.setHeadOfAccount(work.getHeadOfAccount());
-				adminModel.setApprovedByName(work.getApprovedByName());
-				adminModel.setFinancialYear(work.getFinancialYear());
-				adminModel.setWorkTypeId(work.getWorkTypeId());
-				adminModel.setProjectName(work.getProjectResLiftName());
-				adminModel.setTankName(work.getTank_name());
-				adminViewModel.add(adminModel);
-			}
-			}
+	List<AdminSanctionViewModel> models = mapper.mapEntityToModel(list);
 			
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setSuccess(true);
-		responseJson.setData(adminViewModel);
-
+		responseJson.setData(models);
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
 		//System.out.println("responseJson" +responseJson);
@@ -322,30 +285,10 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 		
 	}
 		
-		List<AdminSanctionViewModel> adminViewModel=new ArrayList<>();
-		if( list.size()>0) {
-			for(AdminSanctionViewEntity  work: list) {
-				
-				AdminSanctionViewModel adminModel=new AdminSanctionViewModel();
-				adminModel.setWorkId(work.getWorkId());
-				adminModel.setWorkName(work.getWorkName());
-				adminModel.setWorkTypeName(work.getWorkTypeName());
-				adminModel.setReferenceNumber(work.getReferenceNumber());
-				adminModel.setAdminSanctionAmt(work.getAdminSanctionAmt());
-				adminModel.setHeadOfAccount(work.getHeadOfAccount());
-				adminModel.setApprovedByName(work.getApprovedByName());
-				adminModel.setFinancialYear(work.getFinancialYear());
-				adminModel.setWorkTypeId(work.getWorkTypeId());
-				adminModel.setProjectName(work.getProjectResLiftName());
-				adminModel.setTankName(work.getTank_name());
-				adminViewModel.add(adminModel);
-			}
-			}
-			
+		List<AdminSanctionViewModel> models = mapper.mapEntityToModel(list);
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setSuccess(true);
-		responseJson.setData(adminViewModel);
-
+		responseJson.setData(models);
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
 		//System.out.println("responseJson" +responseJson);
