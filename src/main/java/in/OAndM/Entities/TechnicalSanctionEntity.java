@@ -28,10 +28,6 @@ import lombok.Data;
 
 @Table(name = "o_m_technical_sanction")
 
-@FilterDef(name = "technicalSanctionFilter", parameters = {
-	    @ParamDef(name = "isLatest", type=Boolean.class)
-	})
-@Filter(name = "technicalSanctionFilter", condition = "is_latest = :isLatest")
 public class TechnicalSanctionEntity {
 	
 	

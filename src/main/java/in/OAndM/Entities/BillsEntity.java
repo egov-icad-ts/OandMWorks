@@ -3,6 +3,8 @@ package in.OAndM.Entities;
 import java.time.LocalDateTime;
 import java.util.Date;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -74,6 +76,7 @@ public class BillsEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "status_id", referencedColumnName = "status_id", insertable=false, updatable=false)  // "parent_id" is the FK column in the child table
+	  @SQLRestriction("delete_flag = 'false' AND is_latest='true'")
 	private BillStatusEntity billStatusEntity;
 
 	@Column(name="status_id" , insertable = true, updatable = true)
@@ -82,6 +85,7 @@ public class BillsEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "agreement_id", referencedColumnName = "agreement_id", insertable=false, updatable=false)  // "parent_id" is the FK column in the child table
+	  @SQLRestriction("delete_flag = 'false' AND is_latest='true'")
 	private AgreementsEntity agreementsEntity;
 
 	@Column(name="agreement_id" , insertable = true, updatable = true)

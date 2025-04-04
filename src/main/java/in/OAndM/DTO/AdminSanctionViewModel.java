@@ -30,6 +30,9 @@ public class AdminSanctionViewModel {
 	private String workTypeName;
 	
 	private String unitName;
+	private String circleName;
+	private String divisionName;
+	private String subDivisionName;
 	
 	private long govtSanction;
 	

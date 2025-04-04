@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
@@ -23,6 +24,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+
+
 @Service
 @Transactional
 
@@ -30,6 +33,8 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		implements AdminSanctionService {
 	@Autowired
 	AdminSanctionRepo adminSanctionRepo;
+	
+
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
@@ -55,41 +60,53 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 	public BaseResponse<HttpStatus, AdminSanctionsModel> findbyWorkId(Integer workId) {
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_STARTED));
 		BaseResponse<HttpStatus, AdminSanctionsModel> responseJson = new BaseResponse<>();
-
-Session session = entityManager.unwrap(Session.class);
-session.clear(); 
-		session.enableFilter("technicalSanctionFilter")
-		       .setParameter("isLatest", Boolean.TRUE);
-		       //.setParameter("deleteFlag", false);
 		AdminSanctionsEntity entities = adminSanctionRepo
-				.findByworkIdAndIsLatestAndDeleteFlagAndTechnEntriesIsLatestTrueAndTechnEntriesDeleteFlagFalse(workId, true,
+				.findByworkIdAndIsLatestAndDeleteFlag(workId, true,
 						false);
-		AdminSanctionsModel model = new AdminSanctionsModel();
-		model.setWorkId(entities.getWorkId());
-		model.setAdminSanctionAmt(entities.getAdminSanctionAmt());
-		model.setWorkName(entities.getWorkName());
-		model.setAaFileUrl(entities.getAaFileUrl());
-		model.setApprovedById(entities.getApprovedById());
-		model.setApprovedByName(entities.getAuthoritymst().getAuthorityName());
-		model.setHoaId(entities.getHoaId());
-		model.setWorkTypeId(entities.getWorkTypeId());
-		model.setFinancialYear(entities.getFinancialYear());
-		model.setReferenceNumber(entities.getReferenceNumber());
-		model.setReferenceDate(entities.getReferenceDate());
+		AdminSanctionsModel models =new AdminSanctionsModel();
+		if(entities!=null) {
+			models= mapper.mapEntityToModel(entities);
 		List<TechnicalSanctionsModel> techSanctionModels = new ArrayList<>();
-		for (TechnicalSanctionEntity tech : entities.getTechnEntries()) {
+		for (int i=0;i<entities.getTechnEntries().size();i++) {
 			TechnicalSanctionsModel techmodel = new TechnicalSanctionsModel();
-			techmodel.setTsApprovedAmount(tech.getTsApprovedAmount());
-			techmodel.setTsApprovedDate(tech.getTsApprovedDate());
-			techmodel.setTsDate(tech.getTsApprovedDate().toString());
-			techmodel.setTsNumber(tech.getTsNumber());
-			techSanctionModels.add(techmodel);
+			techmodel.setTsApprovedAmount(entities.getTechnEntries().get(i).getTsApprovedAmount());
+			techmodel.setTsApprovedDate(entities.getTechnEntries().get(i).getTsApprovedDate());
+			techmodel.setTsDate(entities.getTechnEntries().get(i).getTsApprovedDate().toString());
+			techmodel.setTsNumber(entities.getTechnEntries().get(i).getTsNumber());
+		techSanctionModels.add(techmodel);
 		}
-		model.setTechlist(techSanctionModels);
+		models.setTechlist(techSanctionModels);
+		}
+		
+		
+
+		
+//		AdminSanctionsModel model = new AdminSanctionsModel();
+//		model.setWorkId(entities.getWorkId());
+//		model.setAdminSanctionAmt(entities.getAdminSanctionAmt());
+//		model.setWorkName(entities.getWorkName());
+//		model.setAaFileUrl(entities.getAaFileUrl());
+//		model.setApprovedById(entities.getApprovedById());
+//		model.setApprovedByName(entities.getAuthoritymst().getAuthorityName());
+//		model.setHoaId(entities.getHoaId());
+//		model.setWorkTypeId(entities.getWorkTypeId());
+//		model.setFinancialYear(entities.getFinancialYear());
+//		model.setReferenceNumber(entities.getReferenceNumber());
+//		model.setReferenceDate(entities.getReferenceDate());
+//		List<TechnicalSanctionsModel> techSanctionModels = new ArrayList<>();
+//		for (TechnicalSanctionEntity tech : entities.getTechnEntries()) {
+//			TechnicalSanctionsModel techmodel = new TechnicalSanctionsModel();
+//			techmodel.setTsApprovedAmount(tech.getTsApprovedAmount());
+//			techmodel.setTsApprovedDate(tech.getTsApprovedDate());
+//			techmodel.setTsDate(tech.getTsApprovedDate().toString());
+//			techmodel.setTsNumber(tech.getTsNumber());
+//			techSanctionModels.add(techmodel);
+//		}
+//		model.setTechlist(techSanctionModels);
 //	AdminSanctionsModel model = mapper.mapEntityToModel(entities);
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setSuccess(true);
-		responseJson.setData(model);
+		responseJson.setData(models);
 
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
@@ -143,6 +160,8 @@ session.clear();
 		List<AdminSanctionsEntity> entities = adminSanctionRepo
 				.findByunitIdAndFinancialYearAndIsLatestAndDeleteFlagAndCircleIdAndDivisionIdAndSubDivisionIdAndIsAssignedTrue(
 						unit, year, true, false, circle, divisionId, subDivisionId);
+	
+
 		List<AdminSanctionsModel> adminmodels = new ArrayList<>();
 		for (AdminSanctionsEntity admin : entities) {
 			AdminSanctionsModel model = new AdminSanctionsModel();
@@ -253,5 +272,14 @@ session.clear();
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
 		return responseJson;
+	}
+
+
+	 
+	@Override
+	public BaseResponse<HttpStatus, AdminSanctionsModel> getcircle(Integer unitId) {
+		// TODO Auto-generated method stub
+		
+		return null;
 	}
 }

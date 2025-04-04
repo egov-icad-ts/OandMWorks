@@ -2,7 +2,7 @@ package in.OAndM.services;
 
 import java.util.List;
 
-
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 
 
@@ -29,5 +29,5 @@ public interface AdminSanctionService  {
 
 	public BaseResponse<HttpStatus , List<AdminSanctionsModel>> getAdminSanctionByUserByAuthorityByFinyear(Integer unit,Integer circle,Integer division,Integer subdivision,Integer approvedId,Integer finyear);
 	
-	
+	public BaseResponse<HttpStatus, AdminSanctionsModel> getcircle(Integer unitId);
 }

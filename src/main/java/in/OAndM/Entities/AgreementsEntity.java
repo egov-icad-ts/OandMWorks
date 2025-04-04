@@ -4,6 +4,9 @@ package in.OAndM.Entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import org.hibernate.annotations.SQLRestriction;
+
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -94,10 +97,10 @@ private LocalDateTime updatedOn;
 
 @ManyToOne
 @JoinColumn(name = "tech_id", referencedColumnName = "ts_id", insertable=false, updatable=false)  // "parent_id" is the FK column in the child table
+@SQLRestriction("delete_flag = 'false' AND is_latest='true'")
 private TechnicalSanctionEntity technicalSanctionEntity;
 
 @Column(name="tech_id" , insertable = true, updatable = true)
-
 private Integer  techId;
 
 
@@ -136,6 +139,7 @@ public void setTechId(Integer techId) {
 
 @OneToMany	 
 @JoinColumn(name = "agreement_id", referencedColumnName = "agreement_id")
+@SQLRestriction("delete_flag = 'false' AND is_latest='true'")
 private List<BillsEntity> bills;
 
 }

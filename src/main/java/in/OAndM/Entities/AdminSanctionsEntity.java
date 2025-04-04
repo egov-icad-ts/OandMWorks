@@ -6,6 +6,8 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -151,6 +153,7 @@ public class AdminSanctionsEntity {
 	  private WorkApprovedAuthorityMst authoritymst ;
 	
 	  @OneToMany(mappedBy = "adminSanctions" ,fetch = FetchType.LAZY)
+	  @SQLRestriction("delete_flag = 'false' AND is_latest='true'")
 	  private List<TechnicalSanctionEntity> technEntries;
 	  
 //	  @OneToOne(mappedBy = "assignAdminSanction", fetch = FetchType.LAZY) 
