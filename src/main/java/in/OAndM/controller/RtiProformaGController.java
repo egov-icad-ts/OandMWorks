@@ -30,7 +30,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rti/prfmG")
-@CrossOrigin(origins = "http://localhost:3000")  // Adjust if needed
+
 public class RtiProformaGController extends BaseController<RtiProformaG, RtiProformaGDto, Integer> {
 	
 	 private static final Logger logger = LoggerFactory.getLogger(RTIController.class);

@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rti/app")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class RTIController extends BaseController<RTIApplication, RtiApplicationDto, Integer> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RTIController.class);
