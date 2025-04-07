@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
@@ -36,7 +33,6 @@ import in.OAndM.DTO.BillsModel;
 import in.OAndM.DTO.LiftsMasterModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.UploadGOsModel;
-import in.OAndM.DTO.UserModel;
 import in.OAndM.DTO.WorkApprovedAuthorityModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.DTO.WorksTypeMasterModel;
@@ -45,7 +41,6 @@ import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AdminSanctionViewService;
 import in.OAndM.services.AgreementsService;
 import in.OAndM.services.BillsService;
-
 import in.OAndM.services.LiftMasterService;
 import in.OAndM.services.TechnicalSanctionService;
 import in.OAndM.services.UploadGOsService;
@@ -57,6 +52,8 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/OandMWorks")
+
+@RequiredArgsConstructor
 public class OAndMController {
 
 	@Autowired
@@ -107,7 +104,7 @@ String formattedDate=formatter.format(date);
 	}
 
 	@GetMapping("/adminSanctionsByworkId")
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {
