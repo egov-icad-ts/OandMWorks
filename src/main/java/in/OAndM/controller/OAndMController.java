@@ -52,7 +52,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/OandMWorks")
-@CrossOrigin(origins = "http://localhost:3001")
+
 @RequiredArgsConstructor
 public class OAndMController {
 
@@ -100,7 +100,7 @@ String formattedDate=formatter.format(date);
 	}
 
 	@GetMapping("/adminSanctionsByworkId")
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@ResponseBody
 	public ResponseEntity<BaseResponse<HttpStatus, AdminSanctionsModel>> getAdminSanctionsByworkId(
 			@RequestParam Integer workId) {

@@ -251,10 +251,10 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 		BaseResponse<HttpStatus, List<RtiApplicationDto>> response = new BaseResponse<>();
 		
 		  try {
-		Integer unitId = u.getUnit();
-        Integer circleId = u.getCircle();
-        Integer divId = u.getDivision();
-        Integer desgId = u.getDesignation();
+		Integer unitId = u.getUnitId();
+        Integer circleId = u.getCircleId();
+        Integer divId = u.getDivisionId();
+        Integer desgId = u.getDesignationId();
 
         // Adjust for special user scenario
         if ("Kavit070381".equals(u.getUsername()) && unitId == 9815 && circleId == 21588) {
@@ -393,10 +393,10 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 		BaseResponse<HttpStatus, List<RtiApplicationDto>> response = new BaseResponse<>();
 		
 		try {	
-		Integer unit = u.getUnit();
-        Integer circle = u.getCircle();
-        Integer div = u.getDivision();
-        Integer desg = u.getDesignation();
+		Integer unit = u.getUnitId();
+        Integer circle = u.getCircleId();
+        Integer div = u.getDivisionId();
+        Integer desg = u.getDesignationId();
 
         // Adjust for special user scenario
         if ("Kavit070381".equals(u.getUsername()) && unit == 9815 && circle == 21588) {
@@ -665,17 +665,17 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 //            List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
 //            List<Map<String, Object>> rawData = null;
 //        	if(u.getUnit()!=4){
-//        		if (u.getDesignation()==12){
+//        		if (u.getDesignationId()==12){
 //        			unit=u.getUnit();//this was rtiar.unitId
 //        			 circle=u.getCircle();//this was rtiar.circleId
 //        			 System.out.print("1    Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
 //        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
 //        		}
-//        		if (u.getDesignation()==7){        			
+//        		if (u.getDesignationId()==7){        			
 //        			 System.out.print("2  Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle);
 //        			 rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year,quarter,timestamp,unit,circle);
 //        		}
-//        		if (u.getDesignation()==5){        			        			 
+//        		if (u.getDesignationId()==5){        			        			 
 //        			  System.out.print("3   Year "+year+"Qtr "+quarter+"unitId"+unit+"cid"+circle+"division"+division);
 //        			//  System.out.println("Desg  "+u.getDesignationId()+"did"+divisionId+"dt "+dt);
 //        			 //sql=sql+ " where n.unit_id=" +unitId +" and n.circle_id="+circleId+" and n.division_id="+divisionId ;
@@ -785,9 +785,9 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 	    
 	    try {
 	        int month = getMonthForQuarter(quarter);
-	        Integer unit = u.getUnit();
-	        Integer circle = u.getCircle();
-	        Integer division = u.getDivision();
+	        Integer unit = u.getUnitId();
+	        Integer circle = u.getCircleId();
+	        Integer division = u.getDivisionId();
 	        
 	        LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
 	        LocalDate previousQuarter = currentQuarterDate.minus(1, IsoFields.QUARTER_YEARS);
@@ -799,9 +799,9 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
 	        
 	        List<Map<String, Object>> rawData = null;
 	        if (unit != 4) {
-	            if (u.getDesignation() == 12 || u.getDesignation() == 7||u.getDesignation() == 9||u.getDesignation() == 10) {
+	            if (u.getDesignationId() == 12 || u.getDesignationId() == 7||u.getDesignationId() == 9||u.getDesignationId() == 10) {
 	                rawData = rtiApplicationRepository.getrtiAppnDivisionUCConsolidatedProformaC(year, quarter, timestamp, unit, circle);
-	            } else if (u.getDesignation() == 5) {
+	            } else if (u.getDesignationId() == 5) {
 	                rawData = rtiApplicationRepository.getrtiAppnDivisionUCDConsolidatedProformaC(year, quarter, timestamp, unit, circle, division);
 	            }
 	        } else {
@@ -896,7 +896,7 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
         try {
            
             int month = getMonthForQuarter(quarter);
-            Integer unit=u.getUnit();
+            Integer unit=u.getUnitId();
         	
             // Calculate the last day of the previous quarter
             LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
@@ -914,9 +914,9 @@ public class RTIApplicationServiceImpl implements RTIApplicationService {
             
             List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
             List<Map<String, Object>> rawData = null;
-        	if(u.getUnit()!=4){
-        		if (u.getDesignation()==12||u.getDesignation()==9||u.getDesignation()==10){
-        			unit=u.getUnit();  
+        	if(u.getUnitId()!=4){
+        		if (u.getDesignationId()==12||u.getDesignationId()==9||u.getDesignationId()==10){
+        			unit=u.getUnitId();  
         		}
         	}
         	 

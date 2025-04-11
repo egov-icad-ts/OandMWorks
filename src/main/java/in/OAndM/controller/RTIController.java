@@ -25,7 +25,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rti/app")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class RTIController extends BaseController<RTIApplication, RtiApplicationDto, Integer> {
 	
 	private static final Logger logger = LoggerFactory.getLogger(RTIController.class);
@@ -45,7 +45,7 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
     public ResponseEntity<BaseResponse<HttpStatus, List<RtiApplicationDto>>> getAllEditApplications(@Valid @RequestBody UserDetailsDto user) {
     LocalDate myLocal = LocalDate.now();
     System.out.println("Received user details: " + user);
-	LocalDate previousQuarter = myLocal.minus(0, IsoFields.QUARTER_YEARS);
+	LocalDate previousQuarter = myLocal.minus(1, IsoFields.QUARTER_YEARS);
 	long lastDayOfQuarter = IsoFields.DAY_OF_QUARTER.rangeRefinedBy(previousQuarter).getMaximum();
 	LocalDate lastDayInPreviousQuarter = previousQuarter.with(IsoFields.DAY_OF_QUARTER, lastDayOfQuarter);
 	 System.out.println("last "+lastDayInPreviousQuarter);
@@ -71,7 +71,7 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
     	}
     	 UserDetailsDto	user = rtiApplicationDto.getUser();
          System.out.println("Received user details: " + user);
-    	if (user.getUnit() == null) {
+    	if (user.getUnitId() == null) {
     	    logger.error("Unit is null in user details: {}", rtiApplicationDto.getUser());
     	    throw new IllegalArgumentException("Unit is null");
     	}
@@ -125,8 +125,8 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
         if ( rtiApplicationDto.getSelectedUnitId()!= null) {
         	clickedUnitId  =  rtiApplicationDto.getSelectedUnitId();
         System.out.println("Received clickedUnitId1 : " + clickedUnitId);
-        rtiApplicationDto.getUser().setUnit(clickedUnitId);
-        System.out.println("Received clickedUnitId2 : " + rtiApplicationDto.getUser().getUnit());
+        rtiApplicationDto.getUser().setUnitId(clickedUnitId);
+        System.out.println("Received clickedUnitId2 : " + rtiApplicationDto.getUser().getUnitId());
         }
         System.out.println("Received circleConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
         if (rtiApplicationDto.getUser() == null) {
@@ -163,13 +163,13 @@ public class RTIController extends BaseController<RTIApplication, RtiApplication
         if ( rtiApplicationDto.getSelectedUnitId()!= null) {
         	clickedUnitId  =  rtiApplicationDto.getSelectedUnitId();
         System.out.println("Received clickedUnitId : " + clickedUnitId);
-        rtiApplicationDto.getUser().setUnit(clickedUnitId);
+        rtiApplicationDto.getUser().setUnitId(clickedUnitId);
         }
         
         if ( rtiApplicationDto.getSelectedCircleId()!= null) {
         	clickedCircleId  =  rtiApplicationDto.getSelectedCircleId();
         System.out.println("Received clickedCircleId : " + clickedCircleId);
-        rtiApplicationDto.getUser().setCircle(clickedCircleId);
+        rtiApplicationDto.getUser().setCircleId(clickedCircleId);
         }
        // System.out.println("Received divisionConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
         if (rtiApplicationDto.getUser() == null) {
