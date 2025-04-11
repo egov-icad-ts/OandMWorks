@@ -59,7 +59,7 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
     	}
     	 UserDetailsDto	user = rtiProformaGDto.getUser();
          java.lang.System.out.println("Received user details: " + user);
-    	if (user.getUnit() == null) {
+    	if (user.getUnitId() == null) {
     	    logger.error("Unit is null in user details: {}", rtiProformaGDto.getUser());
     	    throw new IllegalArgumentException("Unit is null");
     	}
@@ -218,8 +218,8 @@ public class RtiProformaGController extends BaseController<RtiProformaG, RtiProf
         if ( rtiProformaGDto.getSelectedUnitId()!= null) {
         	clickedUnitId  =  rtiProformaGDto.getSelectedUnitId();
         	java.lang.System.out.println("Received clickedUnitId1 : " + clickedUnitId);
-        rtiProformaGDto.getUser().setUnit(clickedUnitId);
-        java.lang.System.out.println("Received clickedUnitId2 : " + rtiProformaGDto.getUser().getUnit());
+        rtiProformaGDto.getUser().setUnitId(clickedUnitId);
+        java.lang.System.out.println("Received clickedUnitId2 : " + rtiProformaGDto.getUser().getUnitId());
         }
         java.lang.System.out.println("Received circleConsolidated rtiProformaGDto details: " + rtiProformaGDto.getYear() + rtiProformaGDto.getQuarter());
         if (rtiProformaGDto.getUser() == null) {
@@ -256,13 +256,13 @@ public ResponseEntity<BaseResponse<HttpStatus, List<UnitLevelDataDto>>> getDivis
     if ( rtiProformaGDto.getSelectedUnitId()!= null) {
     	clickedUnitId  =  rtiProformaGDto.getSelectedUnitId();
     	java.lang.System.out.println("Received clickedUnitId : " + clickedUnitId);
-    rtiProformaGDto.getUser().setUnit(clickedUnitId);
+    rtiProformaGDto.getUser().setUnitId(clickedUnitId);
     }
     
     if ( rtiProformaGDto.getSelectedCircleId()!= null) {
     	clickedCircleId  =  rtiProformaGDto.getSelectedCircleId();
     	java.lang.System.out.println("Received clickedCircleId : " + clickedCircleId);
-    rtiProformaGDto.getUser().setCircle(clickedCircleId);
+    rtiProformaGDto.getUser().setCircleId(clickedCircleId);
     }
    // System.out.println("Received divisionConsolidated rtiApplicationDto details: " + rtiApplicationDto.getYear() + rtiApplicationDto.getQuarter());
     if (rtiProformaGDto.getUser() == null) {

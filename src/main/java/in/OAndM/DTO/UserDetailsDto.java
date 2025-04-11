@@ -19,18 +19,18 @@ public class UserDetailsDto {
 	  
 	
 	    
-	    private Integer unit;
+	    private Integer unitId;
 	    private String unitName;
-	    private Integer circle;
+	    private Integer circleId;
 	    private String circleName;
-	    private Integer division;
+	    private Integer divisionId;
 	    private String divisionName;
-	    private Integer subDivision;
+	    private Integer subDivisionId;
 	    private String subDivisionName;
 	    
-	    private Integer section;
+	    private Integer sectionId;
 	    private String  sectionName;
-	    private Integer designation;
+	    private Integer designationId;
 	    private String designationName;
 	    
 	    

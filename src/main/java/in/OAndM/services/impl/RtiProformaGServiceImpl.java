@@ -395,10 +395,10 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 		BaseResponse<HttpStatus, List<RtiProformaGDto>> response = new BaseResponse<>();
 		
 		  try {
-		Integer unitId = u.getUnit();
-        Integer circleId = u.getCircle();
-        Integer divId = u.getDivision();
-        Integer desgId = u.getDesignation();
+		Integer unitId = u.getUnitId();
+        Integer circleId = u.getCircleId();
+        Integer divId = u.getDivisionId();
+        Integer desgId = u.getDesignationId();
 
         // Adjust for special user scenario
         if ("Kavit070381".equals(u.getUsername()) && unitId == 9815 && circleId == 21588) {
@@ -499,10 +499,10 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 		{ 		BaseResponse<HttpStatus, List<RtiProformaGDto>> response = new BaseResponse<>();
 		
 		  try {
-		Integer unit = u.getUnit();
-       Integer circle = u.getCircle();
-       Integer div = u.getDivision();
-       Integer desg = u.getDesignation();
+		Integer unit = u.getUnitId();
+       Integer circle = u.getCircleId();
+       Integer div = u.getDivisionId();
+       Integer desg = u.getDesignationId();
 
        // Adjust for special user scenario
        if ("Kavit070381".equals(u.getUsername()) && unit == 9815 && circle == 21588) {
@@ -717,7 +717,7 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
          
            int month = getMonthForQuarter(quarter);
        
-           Integer unit=u.getUnit();
+           Integer unit=u.getUnitId();
 			/*
 			 * if(u.getUnitId()!=4){ if (u.getDesignationId()==12){ unitId=u.getUnitId(); }}
 			 */
@@ -737,9 +737,9 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
            List<UnitLevelDataDto> unitLevelData=new ArrayList<>(); 
            List<Map<String, Object>> rawData = null;
            
-           if(u.getUnit()!=4){
-       		if (u.getDesignation()==12||u.getDesignation()==9||u.getDesignation()==10){
-       			unit=u.getUnit();  
+           if(u.getUnitId()!=4){
+       		if (u.getDesignationId()==12||u.getDesignationId()==9||u.getDesignationId()==10){
+       			unit=u.getUnitId();  
        		}
        	}
            log.info("Fetching unit-level data for Year: {}, Quarter: {}, Date: {},unitId: {}", year, quarter, timestamp,unit);
@@ -842,9 +842,9 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 	    
 	    try {
 	        int month = getMonthForQuarter(quarter);
-	        Integer unit = u.getUnit();
-	        Integer circle = u.getCircle();
-	        Integer division = u.getDivision();
+	        Integer unit = u.getUnitId();
+	        Integer circle = u.getCircleId();
+	        Integer division = u.getDivisionId();
 	        
 	        LocalDate currentQuarterDate = LocalDate.of(year, month, 1);
 	        LocalDate previousQuarter = currentQuarterDate.minus(1, IsoFields.QUARTER_YEARS);
@@ -856,9 +856,9 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 	        
 	        List<Map<String, Object>> rawData = null;
 	        if (unit != 4) {
-	            if (u.getDesignation() == 12 || u.getDesignation() == 7||u.getDesignation() == 9||u.getDesignation() == 10) {
+	            if (u.getDesignationId() == 12 || u.getDesignationId() == 7||u.getDesignationId() == 9||u.getDesignationId() == 10) {
 	                rawData = rtiProformaGRepository.getrtiAppealDivisionUCConsolidatedPrfmG(year, quarter, timestamp, unit, circle);
-	            } else if (u.getDesignation() == 5) {
+	            } else if (u.getDesignationId() == 5) {
 	                rawData = rtiProformaGRepository.getrtiAppealDivisionUCDConsolidatedPrfmG(year, quarter, timestamp, unit, circle, division);
 	            }
 	        } else {
@@ -899,7 +899,7 @@ public class RtiProformaGServiceImpl implements RtiProformaGService {
 	            dto.setRs13(Integer.parseInt(row.get("rs13").toString()));
 	            dto.setRstot(Integer.parseInt(row.get("rstot").toString()));
 	            dto.setRs15(Integer.parseInt(row.get("rs15").toString()));
-	            dto.setTotAmt(row.get("amount") != null ? Double.parseDouble(row.get("amount").toString()) : 0.0);
+	            dto.setAmount(row.get("amount") != null ? Integer.parseInt(row.get("amount").toString()) : 0);
 	            dto.setCircleId(Integer.parseInt(row.get("circle_id").toString()));
 	            dto.setDivisionId(Integer.parseInt(row.get("division_id").toString()));
 	            dto.setRej6(0);

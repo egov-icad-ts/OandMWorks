@@ -110,12 +110,12 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         
         if (model.getUser() != null) {
            // System.out.println("user not null in G Dto1");
-            entity.setUnit(model.getUser().getUnit());
+            entity.setUnit(model.getUser().getUnitId());
             //System.out.println("user not null in G Dto 1"+ model.getUser().getUnit());
-            entity.setCircle(model.getUser().getCircle());
-            entity.setDivision(model.getUser().getDivision());
-            entity.setSubDivision(model.getUser().getSubDivision());
-            entity.setDesignation(model.getUser().getDesignation());
+            entity.setCircle(model.getUser().getCircleId());
+            entity.setDivision(model.getUser().getDivisionId());
+            entity.setSubDivision(model.getUser().getSubDivisionId());
+            entity.setDesignation(model.getUser().getDesignationId());
             entity.setCreatedPostId(model.getUser().getPost());
            // System.out.println("user not null in G Dto 2"+ model.getUser().getPost());
             entity.setCreatedBy(model.getUser().getUsername());
@@ -192,11 +192,11 @@ public class RtiApplicationMapper implements BaseMapper<RTIApplication, RtiAppli
         entity.setCreateDate(model.getCreateDate());        
         if (model.getUser() != null) {
            // System.out.println("user not null in G Dto 2");
-            entity.setUnit(model.getUser().getUnit());
+            entity.setUnit(model.getUser().getUnitId());
             //System.out.println("user not null in G Dto 2"+ model.getUser().getUnit());
-            entity.setCircle(model.getUser().getCircle());
-            entity.setDivision(model.getUser().getDivision());
-            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setCircle(model.getUser().getCircleId());
+            entity.setDivision(model.getUser().getDivisionId());
+            entity.setSubDivision(model.getUser().getSubDivisionId());
            // entity.setCreatedPostId(model.getUser().getPost());
             entity.setCreatedBy(model.getUser().getUsername());
         }

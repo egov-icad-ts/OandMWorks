@@ -106,10 +106,10 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         entity.setRemarks(model.getRemarks());
         if (model.getUser() != null) {
             //System.out.println("user not null in G Dto1");
-            entity.setUnit(model.getUser().getUnit());
-            entity.setCircle(model.getUser().getCircle());
-            entity.setDivision(model.getUser().getDivision());
-            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setUnit(model.getUser().getUnitId());
+            entity.setCircle(model.getUser().getCircleId());
+            entity.setDivision(model.getUser().getDivisionId());
+            entity.setSubDivision(model.getUser().getSubDivisionId());
             entity.setPost(model.getUser().getPost());
             entity.setCreatedBy(model.getUser().getUsername());
         }
@@ -177,10 +177,10 @@ public class RtiProformaGMapper implements BaseMapper<RtiProformaG, RtiProformaG
         entity.setRemarks(model.getRemarks());
         if (model.getUser() != null) {
            // System.out.println("user not null in G Dto2");
-            entity.setUnit(model.getUser().getUnit());
-            entity.setCircle(model.getUser().getCircle());
-            entity.setDivision(model.getUser().getDivision());
-            entity.setSubDivision(model.getUser().getSubDivision());
+            entity.setUnit(model.getUser().getUnitId());
+            entity.setCircle(model.getUser().getCircleId());
+            entity.setDivision(model.getUser().getDivisionId());
+            entity.setSubDivision(model.getUser().getSubDivisionId());
             entity.setPost(model.getUser().getPost());
             entity.setCreatedBy(model.getUser().getUsername());
         }
