@@ -225,4 +225,24 @@ BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResp
 	}
 
 
+	@Override
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getWorkOverViewReport(Integer unitId, Integer circleId,
+			Integer divisionId, Integer subDivisionId) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
+		
+		List<WorkDetailsViewModel> list = null;
+		
+		list=workdetailsrepo.findWorkOverViewReport();
+		
+		
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		//System.out.println("responseJson" +responseJson);
+		return responseJson;
+	}
+
+
 	}

@@ -74,6 +74,8 @@ public class AdminSanctionViewModel {
 	
 	private Integer financialYear;
 	
+	private String finYear;
+	
 	private Integer hoaId;
 	
 	private long scCount;

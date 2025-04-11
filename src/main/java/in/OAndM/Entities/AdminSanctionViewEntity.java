@@ -112,6 +112,8 @@ public class AdminSanctionViewEntity {
 	@Column(name = "financial_year")
 	private Integer financialYear ;
 	
+	@Column(name = "fin_year")
+	private String finYear ;
 	
 	@Column(name = "tank_code")
 	private String tank_code ;

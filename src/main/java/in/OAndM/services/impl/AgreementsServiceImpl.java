@@ -29,15 +29,19 @@ public class AgreementsServiceImpl  extends BaseServiceImpl<AgreementsEntity, Ag
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
-	public void insertAgreements(AgreementsModel agreements) {
+	public BaseResponse<HttpStatus, AgreementsModel> insertAgreements(AgreementsModel agreements) {
 		
+		BaseResponse<HttpStatus, AgreementsModel> responseJson = new BaseResponse<>();
 		System.out.println("agreements:"+ agreements);
 		
 		if(agreements!=null) {
-			create(agreements);
+			responseJson=create(agreements);
+			responseJson.setMessage("Submitted SuccessFully");
 		}else {
-			
+			responseJson.setMessage("Error in submitting");
 		}
+		return responseJson;
+		
 	}
 
 	public BaseResponse<HttpStatus, List<AgreementsModel>>  getAgreementsByworkId(Integer workId){

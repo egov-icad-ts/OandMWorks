@@ -25,5 +25,7 @@ public interface AdminSanctionViewService {
 	
 	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getOMWorksSanctionAADetailedReport(AdminSanctionViewModel admin);
 	
+	public BaseResponse<HttpStatus, List<AdminSanctionViewModel>> getYearWiseReport (Integer unitId,Integer circleId,Integer divisionId,Integer subDivisionId);
+	
 	
 }

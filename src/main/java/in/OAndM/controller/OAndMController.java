@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
@@ -36,7 +33,6 @@ import in.OAndM.DTO.BillsModel;
 import in.OAndM.DTO.LiftsMasterModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
 import in.OAndM.DTO.UploadGOsModel;
-import in.OAndM.DTO.UserModel;
 import in.OAndM.DTO.WorkApprovedAuthorityModel;
 import in.OAndM.DTO.WorkDetailsViewModel;
 import in.OAndM.DTO.WorksTypeMasterModel;
@@ -45,7 +41,6 @@ import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AdminSanctionViewService;
 import in.OAndM.services.AgreementsService;
 import in.OAndM.services.BillsService;
-
 import in.OAndM.services.LiftMasterService;
 import in.OAndM.services.TechnicalSanctionService;
 import in.OAndM.services.UploadGOsService;
@@ -57,7 +52,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/OandMWorks")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 @RequiredArgsConstructor
 public class OAndMController {
 
@@ -87,12 +82,8 @@ public class OAndMController {
 	@Autowired
 	LiftMasterService  liftMasterService;
 	
-	
-	
-
-	
-@Autowired
-WorkApprovedAuthorityService workApprovedAuthorityService;
+	@Autowired
+	WorkApprovedAuthorityService workApprovedAuthorityService;
 
 Date date=new Date(System.currentTimeMillis());
 SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy"); 
@@ -272,14 +263,32 @@ String formattedDate=formatter.format(date);
 	}
 
 	@PostMapping(value = "/submitAgreements")
-	public void submitAgreements(@RequestBody AgreementsModel agreements) {
-		agreementsService.insertAgreements(agreements);
-	}
+	public ResponseEntity<BaseResponse<HttpStatus, AgreementsModel>> submitAgreements(@RequestBody AgreementsModel agreements) {
+		 BaseResponse<HttpStatus, AgreementsModel> response = new BaseResponse<>();
+		  if(agreements!=null) {
+			  
+			  response =agreementsService.insertAgreements(agreements);
+		    } else {
+		        response.setStatus(HttpStatus.BAD_REQUEST);
+		        response.setMessage("Error in Submitting!");
+		    }
+		    return new ResponseEntity<>(response, response.getStatus());
+		  }
+
 
 	@PostMapping(value = "/submitBillDetails")
-	public void submitBillDetails(@RequestBody BillsModel bills) {
-		billsService.insertBills(bills);
-	}
+	public ResponseEntity<BaseResponse<HttpStatus, BillsModel>> submitBillDetails(@RequestBody BillsModel bills) {
+		  BaseResponse<HttpStatus, BillsModel> response = new BaseResponse<>();
+		  if(bills!=null) {
+			  
+			  response =billsService.insertBills(bills);
+		    } else {
+		        response.setStatus(HttpStatus.BAD_REQUEST);
+		        response.setMessage("Error in Submitting!");
+		    }
+		    return new ResponseEntity<>(response, response.getStatus());
+		  }
+	
 	
 	@PostMapping(value = "/submitGos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<BaseResponse<HttpStatus, UploadGOsModel>> submitGos( @ModelAttribute UploadGOsModel gos ) {
@@ -633,8 +642,33 @@ String formattedDate=formatter.format(date);
 	    		}
 	    		
 	 
+	    		@GetMapping("/getYearWiseReport")
+	    		@ResponseBody
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionViewModel>>> getYearWiseReport(
+	    				@ModelAttribute AdminSanctionViewModel adminSanctionViewModel) {
+	    			BaseResponse<HttpStatus, List<AdminSanctionViewModel>> response;
+	    			Integer unitId, circleId, divisionId, subDivisionId = 0;
+	    			unitId = adminSanctionViewModel.getUnitId() != null ? adminSanctionViewModel.getUnitId() : 0;
+	    			circleId = adminSanctionViewModel.getCircleId() != null ? adminSanctionViewModel.getCircleId() : 0;
+	    			divisionId = adminSanctionViewModel.getDivisionId() != null ? adminSanctionViewModel.getDivisionId() : 0;
+	    			subDivisionId = adminSanctionViewModel.getSubDivisionId() != null ? adminSanctionViewModel.getSubDivisionId() : 0;
+	    			response = adminViewService.getYearWiseReport( unitId, circleId, divisionId, subDivisionId);
+	    			
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    		}
 	    		
 	    		
-
+	    		@GetMapping("/getWorkOverViewReport")
+	    		@ResponseBody
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getWorkOverViewReport(@ModelAttribute WorkDetailsViewModel workDetailsViewModel) {
+	    			BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+	    			Integer unitId, circleId, divisionId, subDivisionId = 0;
+	    			unitId = workDetailsViewModel.getUnitId() != null ? workDetailsViewModel.getUnitId() : 0;
+	    			circleId = workDetailsViewModel.getCircleId() != null ? workDetailsViewModel.getCircleId() : 0;
+	    			divisionId = workDetailsViewModel.getDivisionId() != null ? workDetailsViewModel.getDivisionId() : 0;
+	    			subDivisionId = workDetailsViewModel.getSubDivisionId() != null ? workDetailsViewModel.getSubDivisionId() : 0;
+	    			response = workDetailsService.getWorkOverViewReport(unitId, circleId, divisionId, subDivisionId);
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    		}
 
 }

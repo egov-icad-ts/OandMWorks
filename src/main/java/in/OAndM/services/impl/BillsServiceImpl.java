@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import in.OAndM.DTO.BillsModel;
+import in.OAndM.DTO.UploadGOsModel;
 import in.OAndM.Entities.BillsEntity;
 import in.OAndM.config.AppConstant;
 import in.OAndM.core.BaseResponse;
@@ -27,15 +28,19 @@ public class BillsServiceImpl extends BaseServiceImpl<BillsEntity, BillsModel, I
 	
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
-	public void insertBills(BillsModel bills) {
-		
+	public BaseResponse<HttpStatus, BillsModel> insertBills(BillsModel bills) {
+				
+		BaseResponse<HttpStatus, BillsModel> responseJson = new BaseResponse<>();
 		System.out.println("bills:"+ bills);
 		
 		if(bills!=null) {
-			create(bills);
+			responseJson=create(bills);
+			responseJson.setMessage("Submitted SuccessFully");
 		}else {
-			
+			responseJson.setMessage("Error in submitting");
 		}
+		return responseJson;
+		
 	}
 
 	@Override
