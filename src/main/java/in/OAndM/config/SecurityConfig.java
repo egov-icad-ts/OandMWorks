@@ -33,7 +33,7 @@ public class SecurityConfig {
 				.oauth2ResourceServer(oauth2ResourceServerCustomizer -> oauth2ResourceServerCustomizer
 						.jwt(jwtCustomizer -> jwtCustomizer.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 		http.csrf((csrf) -> csrf.disable());
-		http.cors(Customizer.withDefaults());
+		//http.cors(Customizer.withDefaults());
 
 		return http.build();
 	}
