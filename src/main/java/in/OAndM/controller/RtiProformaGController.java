@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rti/prfmG")
+@RequestMapping("/oandm/rti/prfmG")
 
 public class RtiProformaGController extends BaseController<RtiProformaG, RtiProformaGDto, Integer> {
 	

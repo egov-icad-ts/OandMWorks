@@ -24,7 +24,7 @@ import java.time.temporal.IsoFields;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rti/app")
+@RequestMapping("/oandm/rti/app")
 
 public class RTIController extends BaseController<RTIApplication, RtiApplicationDto, Integer> {
 	
