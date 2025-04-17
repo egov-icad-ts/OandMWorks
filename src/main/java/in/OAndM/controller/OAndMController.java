@@ -52,7 +52,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/OandMWorks")
-
+//@CrossOrigin(origins = "http://localhost:3002")
 @RequiredArgsConstructor
 public class OAndMController {
 
