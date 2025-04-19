@@ -14,7 +14,7 @@ public class SecurityConfig {
 
 	private static final String[] WHITELIST = { "/swagger-ui/**", "/api-docs/**", "/v3/api-docs/**",
 			"/swagger-resources/**", "/swagger-resources/", "/api/database-endpoint/**", "/rti/**", "/rti/app/**",
-			"/rti/prfmG/**", "/api/hrms/**", "/OandMWorks/**" };
+			"/rti/prfmG/**", "/api/hrms/**", "/OandMWorks/**","/oandm/rti/**" };
 
 	@Bean
 	public SecurityFilterChain web(HttpSecurity http) throws Exception {
