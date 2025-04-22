@@ -670,5 +670,17 @@ String formattedDate=formatter.format(date);
 	    			response = workDetailsService.getWorkOverViewReport(unitId, circleId, divisionId, subDivisionId);
 	    			return new ResponseEntity<>(response, response.getStatus());
 	    		}
+	    		
+	    		@GetMapping("/getUnAssignedWorks")
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getUnAssignedWorks(
+	    				@RequestParam Integer unit,@RequestParam Integer circle,@RequestParam Integer division,@RequestParam Integer subdivision) {
+	    			BaseResponse<HttpStatus, List<AdminSanctionsModel>> response= new BaseResponse<>();
+//	    			unit = unit != null ? unit: 0;
+//	    			circle =circle != null ? circle : 0;
+//	    			division = division != null ?division : 0;
+//	    			subdivision = subdivision != null ? subdivision : 0;
+	    			response =  adminSanctionService.getUnAssignedAdminSanctions(unit, circle, division, subdivision);
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    		}
 
 }
