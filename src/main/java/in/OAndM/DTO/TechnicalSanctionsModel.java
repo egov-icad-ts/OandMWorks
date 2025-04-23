@@ -36,6 +36,7 @@ private String estFileType;
 
 private Integer  tsType;
 private Integer workId ;
+private String updatedBy;
 
 private List<TechnicalSanctionsModel> techList=new ArrayList<>();
 

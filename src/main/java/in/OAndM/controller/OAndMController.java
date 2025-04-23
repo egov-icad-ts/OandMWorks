@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import in.OAndM.DTO.AdminAssignWorksModel;
 import in.OAndM.DTO.AdminSanctionViewModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.AgreementsModel;
@@ -40,6 +40,7 @@ import in.OAndM.core.BaseResponse;
 import in.OAndM.services.AdminSanctionService;
 import in.OAndM.services.AdminSanctionViewService;
 import in.OAndM.services.AgreementsService;
+import in.OAndM.services.AssignAdminSanctionService;
 import in.OAndM.services.BillsService;
 import in.OAndM.services.LiftMasterService;
 import in.OAndM.services.TechnicalSanctionService;
@@ -52,7 +53,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/OandMWorks")
-//@CrossOrigin(origins = "http://localhost:3002")
+/* @CrossOrigin(origins = "http://localhost:3002") */
 @RequiredArgsConstructor
 public class OAndMController {
 
@@ -85,10 +86,14 @@ public class OAndMController {
 	@Autowired
 	WorkApprovedAuthorityService workApprovedAuthorityService;
 
-Date date=new Date(System.currentTimeMillis());
-SimpleDateFormat formatter = new SimpleDateFormat("ddMMyyyy"); 
-String formattedDate=formatter.format(date);
-
+	/*
+	 * Date date=new Date(System.currentTimeMillis()); SimpleDateFormat formatter =
+	 * new SimpleDateFormat("ddMMyyyy"); String
+	 * formattedDate=formatter.format(date);
+	 */
+	
+	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+	Long uploadTime = timestamp.getTime();
 
 
 	@GetMapping("/adminSanctions")
@@ -182,8 +187,8 @@ String formattedDate=formatter.format(date);
 				tsFile = tsList.get(i).getTechSancUrl();
 				tsEstimateFile = tsList.get(i).getTechEstimateUrl();
 				if (null != tsFile && tsFile.getSize() > 0) {
-					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-					Long uploadTime = timestamp.getTime();
+//					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//					Long uploadTime = timestamp.getTime();
 					String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");
 					;
 					String FileType = tsFile.getContentType();
@@ -210,8 +215,8 @@ String formattedDate=formatter.format(date);
 				}
 
 				if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
-					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-					Long uploadTime = timestamp.getTime();
+//					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+//					Long uploadTime = timestamp.getTime();
 					String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");
 					;
 					String FileType = tsEstimateFile.getContentType();
@@ -294,8 +299,10 @@ String formattedDate=formatter.format(date);
 	public ResponseEntity<BaseResponse<HttpStatus, UploadGOsModel>> submitGos( @ModelAttribute UploadGOsModel gos ) {
 	    BaseResponse<HttpStatus, UploadGOsModel> response = new BaseResponse<>();
 	    String goValidFile = null;
-	    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-	    Long uploadTime = timestamp.getTime();
+		/*
+		 * Timestamp timestamp = new Timestamp(System.currentTimeMillis()); Long
+		 * uploadTime = timestamp.getTime();
+		 */
 	    String fileName = gos.getGoFileUrl().getOriginalFilename().replaceAll("\\s+", "");
 	    String[] temps = fileName.split(Pattern.quote("."));
 	    
@@ -503,9 +510,14 @@ String formattedDate=formatter.format(date);
 	public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> submitAdminSanctions(
 			@ModelAttribute AdminSanctionsModel admin) {
 		String adminFileType = null;
-		Date date = new Date(System.currentTimeMillis());
-
-		String formattedDate = formatter.format(date);
+		/*
+		 * Date date = new Date(System.currentTimeMillis());
+		 * 
+		 * String formattedDate = formatter.format(date);
+		 */
+		
+	
+		
 		String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
 		String[] temps = fileName.split(Pattern.quote("."));
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
@@ -516,7 +528,7 @@ String formattedDate=formatter.format(date);
 		if (!dir.exists())
 			dir.mkdirs();
 
-		String saveFileName = temps[0] + "_" + formattedDate + "." + temps[temps.length - 1];
+		String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
 		try {
 			admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
 		} catch (IllegalStateException | IOException e) {
@@ -682,5 +694,36 @@ String formattedDate=formatter.format(date);
 	    			response =  adminSanctionService.getUnAssignedAdminSanctions(unit, circle, division, subdivision);
 	    			return new ResponseEntity<>(response, response.getStatus());
 	    		}
-
+	    		
+	    		@GetMapping("/getAdminSanctionAmounts")
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<AdminSanctionsModel>>> getAdminSanctionByUserByAuthorityByFinyear(
+	    				@RequestParam Integer unit,@RequestParam Integer circle,@RequestParam Integer division,@RequestParam Integer subdivision,@RequestParam Integer approvedId, Integer finyear) {
+	    			BaseResponse<HttpStatus, List<AdminSanctionsModel>> response;
+	    			finyear = finyear!=null ? finyear : 0;
+	    			unit = unit != null ? unit: 0;
+	    			circle =circle != null ? circle : 0;
+	    			division = division != null ?division : 0;
+	    			subdivision = subdivision != null ? subdivision : 0;
+	    			approvedId =approvedId != null ? approvedId: 0;
+	    			response =  adminSanctionService.getAdminSanctionByUserByAuthorityByFinyear(unit,circle, division, subdivision,
+	    					approvedId,finyear);
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    		}
+	    		@Autowired
+	    		AssignAdminSanctionService assignAdminSanctionService; 
+	    		
+	    		@PostMapping("/submitAssignAdminSanction")
+	    		public ResponseEntity<BaseResponse<HttpStatus, AdminAssignWorksModel>> submitAssignAdmiSanction(@RequestBody AdminAssignWorksModel assignModel){
+	    			
+	    			BaseResponse<HttpStatus, AdminAssignWorksModel>  response=new BaseResponse<>();
+	    			if(assignModel!=null) {
+	    				response=assignAdminSanctionService.insertAssignAdminSanctions(assignModel);
+	    			}else {
+	    				response.setMessage("Error in submission");
+	    				response.setStatus(HttpStatus.BAD_REQUEST);
+	    			}
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    			
+	    		}
+	    		
 }
