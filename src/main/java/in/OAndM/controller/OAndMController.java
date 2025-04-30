@@ -726,4 +726,17 @@ public class OAndMController {
 	    			
 	    		}
 	    		
+	    		
+	    		@GetMapping("/getAbsReportProjectUnitWise")
+	    		@ResponseBody
+	    		public ResponseEntity<BaseResponse<HttpStatus, List<WorkDetailsViewModel>>> getAbsReportProjectUnitWise(@ModelAttribute AdminSanctionViewModel adminSanctionViewModel) {
+	    			BaseResponse<HttpStatus, List<WorkDetailsViewModel>> response;
+	    			Integer finyear=0, projectId=0;
+	    			finyear = adminSanctionViewModel.getFinancialYear()!=null ? adminSanctionViewModel.getFinancialYear() : 0;
+	    			projectId = adminSanctionViewModel.getProjectId()!=null ? adminSanctionViewModel.getProjectId() :0;
+	    			response = workDetailsService.getAbsReportProjectUnitWise(finyear, projectId);
+	    			return new ResponseEntity<>(response, response.getStatus());
+	    		}
+
+	    		
 }

@@ -161,10 +161,9 @@ BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResp
 		// TODO Auto-generated method stub
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
 		List<WorkDetailsViewModel> list = null;
-		
-		if (financialYear > 0 && approvedById == 0 && projectId==0) {
-				if(type==1 || type==3) {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
-				list=workdetailsrepo.findworkDetailsViewEntityByFinancialYearAndUnitId(financialYear,unitId, type);
+		if(type==2 || type==3) {//2 = Technical Sanctions, 3= Tender/Agreement Details, 4 = ACtion to be taken, 5=Bills Paid, 6=Bills pending
+		if (financialYear > 0 && approvedById == 0 && unitId>0) {
+				list=workdetailsrepo.findworkDetailsViewEntityByFinancialYearAndUnitIdAndProjectId(financialYear,unitId, type,projectId);
 			}
 			}
 		responseJson.setSuccess(true);
@@ -241,6 +240,25 @@ BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResp
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
 		responseJson.setStatus(HttpStatus.OK);
 		//System.out.println("responseJson" +responseJson);
+		return responseJson;
+	}
+
+
+	@Override
+	public BaseResponse<HttpStatus, List<WorkDetailsViewModel>> getAbsReportProjectUnitWise(Integer finyear, Integer projectId) {
+		// TODO Auto-generated method stub
+			BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
+		
+		List<WorkDetailsViewModel> list = null;
+		
+		if(finyear > 0) {
+			 list=workdetailsrepo.getAbsReportProjectUnitWise(finyear, projectId);
+		}
+		responseJson.setSuccess(true);
+		responseJson.setData(list);
+		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
+		responseJson.setStatus(HttpStatus.OK);
+		
 		return responseJson;
 	}
 

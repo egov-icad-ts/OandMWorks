@@ -82,6 +82,9 @@ public class WorkDetailsViewModel {
 	
 	private Integer unitId;	
 	private String unitName;
+	private Integer projectId;
+	private String projectName;
+	
 	
 	private Integer circleId;
 	private String circleName;
