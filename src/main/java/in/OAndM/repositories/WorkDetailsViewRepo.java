@@ -15,6 +15,8 @@ public interface WorkDetailsViewRepo extends BaseRepository<WorkDetailsViewEntit
 		       "count(distinct aa.workId) as adminCount, COALESCE(sum(aa.adminApprovedAmountLakh),0) as adminAmt, " +
 		       "count(distinct wd.techWorkId) as techCount, COALESCE(sum(wd.tsApprovedAmountLakhs),0) as techAmt, " +
 		       "count(distinct wd.agrWorkId) as agreementCount, COALESCE(sum(wd.agreementAmountLakhs),0) as agreementAmt, " +
+		       " count(distinct case when aa.workId>0 and wd.techWorkId is null then aa.workId else null end ) as actionToBeTakenCount," +
+			   " COALESCE( sum(case when aa.workId>0 and wd.techWorkId is null then aa.adminApprovedAmountLakh else null end ),0) as actionToBeTakenAmt," +
 		       "sum(wd.billsPaid) as billsPaid, COALESCE(sum(wd.paidAmountLakh),0) as paidAmount, " +
 		       "sum(wd.billsPending) as billsPending, COALESCE(sum(wd.pendingAmountLakh),0) as pendingAmount) " +
 		       "from AdminSanctionViewEntity aa left join WorkDetailsViewEntity wd on aa.workId = wd.techWorkId " +
