@@ -50,26 +50,28 @@ public class WorkDetailsViewServiceImpl extends BaseServiceImpl<WorkDetailsViewE
 		// TODO Auto-generated method stub
 		
 		BaseResponse<HttpStatus, List<WorkDetailsViewModel>> responseJson = new BaseResponse<>();
-		List<WorkDetailsViewModel> list;
-
+		List<WorkDetailsViewModel> list;String type=null;
+		
 		if(designationId==4 || designationId==113 ) {
-			list=workdetailsrepo.getAbsRepSanctionAuthorityWiseDEE(finYear, unit, circle, division, subDivision);
+			//list=workdetailsrepo.getAbsRepSanctionAuthorityWiseDEE(finYear, unit, circle, division, subDivision);
+				type="dee";
 			} else if (designationId==5 || designationId==114) {
-				/* for EE */
-				list=workdetailsrepo.getAbsRepSanctionAuthorityWiseEE(finYear, unit, circle,division);
+				//list=workdetailsrepo.getAbsRepSanctionAuthorityWiseEE(finYear, unit, circle,division);
+				type="ee";
 			}
 			 else if (designationId==7) {
-					/* for SE */
-				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseSE(finYear, unit, circle);
+				//list=workdetailsrepo.getAbsRepSanctionAuthorityWiseSE(finYear, unit, circle);
+				 type="se";
 				}
 			 else if (designationId==9 || designationId==10) {
-					/* for CE */
-				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseCE(finYear, unit);
+				// list=workdetailsrepo.getAbsRepSanctionAuthorityWiseCE(finYear, unit);
+				 type="ce";
 				}
 			 else {
-				 list=workdetailsrepo.getAbsRepSanctionAuthorityWiseByFinyear(finYear);
+				// list=workdetailsrepo.getAbsRepSanctionAuthorityWiseByFinyear(finYear);
+				 type="enc";
 			 }
-	
+		list=workdetailsrepo.getAbsRepSanctionAuthorityWiseByFinyear(finYear,unit, circle, division, subDivision,type);
 		responseJson.setSuccess(true);
 		responseJson.setData(list);
 		responseJson.setMessage(appConstant.getValue(AppConstant.GET_SERVICE_SUCCESS));
