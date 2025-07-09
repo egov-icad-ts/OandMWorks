@@ -51,6 +51,14 @@ import in.OAndM.services.WorkTypeMasterService;
 import in.OAndM.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.net.MalformedURLException;
+
 @RestController
 @RequestMapping("/OandMWorks")
 /* @CrossOrigin(origins = "http://localhost:3002") */
@@ -168,6 +176,37 @@ public class OAndMController {
 				agreementId);
 		return new ResponseEntity<>(response, response.getStatus());
 	}
+	
+		
+	private String handleFileUpload(MultipartFile file, String fileName, StringBuilder fileExtension) {
+	    String rootPath = "/Uploads";
+	    if (file != null && file.getSize() > 0) {
+	        String originalFileName = file.getOriginalFilename().replaceAll("\\s+", "");
+	        String[] fileParts = originalFileName.split(Pattern.quote("."));
+	        String ext = fileParts[fileParts.length - 1];
+	        fileExtension.setLength(0); // clear
+	        fileExtension.append(ext);  // set
+
+	        File dir = new File(rootPath + File.separator + "PMSWebApp" + File.separator + "O&MWorks" + File.separator + fileName + File.separator);
+	        String prefix = fileParts[0] + "_" + uploadTime;
+	        String saveFileName = prefix + "." + ext;
+	        String parentDir = "O&MWorks" + File.separator + fileName + File.separator;
+	        String savedFilePath = parentDir + saveFileName;
+
+	        if (!dir.exists()) {
+	            dir.mkdirs();
+	        }
+
+	        try {
+	            file.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+	        } catch (Exception e) {
+	            e.printStackTrace(); // Replace with logger in production
+	        }
+
+	        return savedFilePath;
+	    }
+	    return null;
+	}
 
 	@PostMapping(value = "/submitTechnicalSanctions", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
@@ -175,88 +214,47 @@ public class OAndMController {
 			@ModelAttribute TechnicalSanctionsModel techlist) {
 
 		MultipartFile tsFile = null, tsEstimateFile = null;
-		List<TechnicalSanctionsModel> tsList1 = new ArrayList<TechnicalSanctionsModel>();
-
 		List<TechnicalSanctionsModel> tsList = techlist.getTechList();
-
-		String tsValidFile, tsEstValidFile = null;
+		
 		if (techlist != null) {
-			for (int i = 0; i < tsList.size(); i++) {
-//					tsList.get(i).setUpdatedByUserName(uname);
+		
+				for (int i = 0; i < tsList.size(); i++) {
+				    TechnicalSanctionsModel model = tsList.get(i);
 
-				tsFile = tsList.get(i).getTechSancUrl();
-				tsEstimateFile = tsList.get(i).getTechEstimateUrl();
-				if (null != tsFile && tsFile.getSize() > 0) {
-//					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//					Long uploadTime = timestamp.getTime();
-					String fileName = tsFile.getOriginalFilename().replaceAll("\\s+", "");
-					;
-					String FileType = tsFile.getContentType();
-					String rootPath = System.getProperty("catalina.home");
-					File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-							+ File.separator + "O&MWorks" + File.separator + "TechSanctionFiles" + File.separator);
-					String[] temps = fileName.split(Pattern.quote("."));
-					if (!dir.exists())
-						dir.mkdirs();
-					String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
-					try {
-						tsFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					tsList.get(i).setTsFileUrl(
-							"O&MWorks" + File.separator + "TechSanctionFiles" + File.separator + saveFileName);
-					tsValidFile = temps[temps.length - 1];
-					tsList.get(i).setSancFileType(tsValidFile);
-				}
+				    tsFile = model.getTechSancUrl();
+				    tsEstimateFile = model.getTechEstimateUrl();
+				    
+				    if (tsFile != null && tsFile.getSize() > 0) {
+				       StringBuilder ext = new StringBuilder();
+				        String savedPath = handleFileUpload( tsFile, "TechSanctionFiles", ext );
+				        if (savedPath != null) {
+				            model.setTsFileUrl(savedPath);
+				            model.setSancFileType(ext.toString());
+				        }
+				    }
 
-				if (null != tsEstimateFile && tsEstimateFile.getSize() > 0) {
-//					Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-//					Long uploadTime = timestamp.getTime();
-					String fileName = tsEstimateFile.getOriginalFilename().replaceAll("\\s+", "");
-					;
-					String FileType = tsEstimateFile.getContentType();
-					String rootPath = System.getProperty("catalina.home");
-					File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-							+ File.separator + "O&MWorks" + File.separator + "TechEstimateFiles" + File.separator);
-					String[] temps = fileName.split(Pattern.quote("."));
-					if (!dir.exists())
-						dir.mkdirs();
-					String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
-					try {
-						tsEstimateFile.transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-					} catch (IllegalStateException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					tsList.get(i).setTsEstFileUrl(
-							"O&MWorks" + File.separator + "TechSanctionFiles" + File.separator + saveFileName);
-					tsEstValidFile = temps[temps.length - 1];
-					tsList.get(i).setEstFileType(tsEstValidFile);
-				}
-				java.sql.Date sqlDate = null;
-				if (tsList.get(i).getTsDate() != null) {
-					try {
-						sqlDate = DateUtil.getSQLDate1(tsList.get(i).getTsDate());
-						if (sqlDate != null) {
-							tsList.get(i).setTsApprovedDate(sqlDate);
-						}
-					} catch (ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+				    if (tsEstimateFile != null && tsEstimateFile.getSize() > 0) {
+				        StringBuilder ext = new StringBuilder();
+				        String savedPath = handleFileUpload(tsEstimateFile, "TechEstimateFiles", ext );
+				        if (savedPath != null) {
+				            model.setTsEstFileUrl(savedPath);
+				            model.setEstFileType(ext.toString());
+				        }
+				    }
+
+				    if (model.getTsDate() != null) {
+				        try {
+				            java.sql.Date sqlDate = DateUtil.getSQLDate1(model.getTsDate());
+				            if (sqlDate != null) {
+				                model.setTsApprovedDate(sqlDate);
+				            }
+				        } catch (ParseException e) {
+				            e.printStackTrace();
+				        }
+				    }
 			}
 		}
-		BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService
-				.insertTechnicalSanctions(tsList);
+		BaseResponse<HttpStatus, List<TechnicalSanctionsModel>> response = technicalSanctionService.insertTechnicalSanctions(tsList);
 
 		return new ResponseEntity<>(response, response.getStatus());
 
@@ -303,26 +301,15 @@ public class OAndMController {
 		 * Timestamp timestamp = new Timestamp(System.currentTimeMillis()); Long
 		 * uploadTime = timestamp.getTime();
 		 */
-	    String fileName = gos.getGoFileUrl().getOriginalFilename().replaceAll("\\s+", "");
-	    String[] temps = fileName.split(Pattern.quote("."));
-	    
-	    String rootPath = System.getProperty("catalina.home");
-	    File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp"
-	            + File.separator + "O&MWorks" + File.separator + "OandMGos");
-
-	    if (!dir.exists()) dir.mkdirs();
-	    
-	    String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
-	    try {
-	    	gos.getGoFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-	    } catch (IllegalStateException | IOException e) {
-	        e.printStackTrace();
-	    }
-
+	    MultipartFile goFile = gos.getGoFileUrl();
+	    if (goFile != null && goFile.getSize() > 0) {
+		       StringBuilder ext = new StringBuilder();
+		        String savedPath = handleFileUpload(goFile, "OandMGos", ext );
+		        if (savedPath != null) {
+		        	gos.setGoUrl(savedPath);
+		        	gos.setGoFileType(ext.toString());
+		        }
 	  
-	    String goUrl = "O&MWorks" + File.separator + "OandMGos" + File.separator + saveFileName;
-	    goValidFile = temps[temps.length - 1].toLowerCase(); 
-	    
 	    java.sql.Date sqlDate = null;
 		if (gos.getGoDate() != null) {
 			try {
@@ -336,13 +323,7 @@ public class OAndMController {
 			}
 		}
 	    
-	    
-
-	    if ("pdf".equals(goValidFile)) {
-	        gos.setGoUrl(goUrl);
-	        gos.setGoFileType(goValidFile);
-	      
-
+	  
 	        response = gosService.insertGOs(gos);
 	    } else {
 	        response.setStatus(HttpStatus.BAD_REQUEST);
@@ -509,37 +490,31 @@ public class OAndMController {
 	@PostMapping(value = "/submitAdminSanctions")
 	public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> submitAdminSanctions(
 			@ModelAttribute AdminSanctionsModel admin) {
-		String adminFileType = null;
-		/*
-		 * Date date = new Date(System.currentTimeMillis());
-		 * 
-		 * String formattedDate = formatter.format(date);
-		 */
-		
-	
-		
-		String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
-		String[] temps = fileName.split(Pattern.quote("."));
 		BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
-		String rootPath = System.getProperty("catalina.home");
-		File dir = new File(rootPath + File.separator + "webapps" + File.separator + "PMSWebApp" + File.separator
-				+ "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator);
+//		String adminFileType = null;
+//		String fileName = admin.getAdminFileUrl().getOriginalFilename().replaceAll("\\s+", "");
+//		String[] temps = fileName.split(Pattern.quote("."));
+//		String rootPath = "/Uploads";
+//		File dir = new File(rootPath + File.separator + "PMSWebApp" + File.separator + "O&MWorks"+ File.separator + "AdminSanctionFiles" + File.separator);
+//		
+//		if (!dir.exists())
+//			dir.mkdirs();
+//
+//		String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
+//		try {
+//			admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
+//		} catch (IllegalStateException | IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//		String adminURL = "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator + saveFileName;
+//		adminFileType = temps[temps.length - 1].toLowerCase();
+		
+		 StringBuilder ext = new StringBuilder();
+	        String savedPath = handleFileUpload( admin.getAdminFileUrl(), "AdminSanctionFiles", ext );
 
-		if (!dir.exists())
-			dir.mkdirs();
-
-		String saveFileName = temps[0] + "_" + uploadTime + "." + temps[temps.length - 1];
-		try {
-			admin.getAdminFileUrl().transferTo(new File(dir.getAbsolutePath() + File.separator + saveFileName));
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-		}
-
-		String adminURL = "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator + saveFileName;
-		adminFileType = temps[temps.length - 1].toLowerCase();
-
-		if ("pdf".equals(adminFileType)) {
-			admin.setAaFileUrl(adminURL);
+		if (savedPath!=null) {
+			admin.setAaFileUrl(savedPath);
 			response = adminSanctionService.insertAdminSanctions(admin);
 		} else {
 
@@ -738,5 +713,32 @@ public class OAndMController {
 	    			return new ResponseEntity<>(response, response.getStatus());
 	    		}
 
-	    		
+	    		@GetMapping("/viewFile")
+	    		public ResponseEntity<Resource> viewDownloadFile(@RequestParam("filepath") String filepath) throws IOException {
+
+	    			String rootPath = "/Uploads/PMSWebApp/";
+	    			String basepath = rootPath + filepath;
+	    			try {
+	    				String decodedPath = java.net.URLDecoder.decode(basepath, "UTF-8");
+	    				Path filePath = Paths.get(rootPath).resolve(decodedPath).normalize();
+	    				Resource resource = new UrlResource(filePath.toUri());
+	    				if (!resource.exists() || !resource.isReadable()) {
+	    					return ResponseEntity.status(404).body(null);
+	    				}
+
+	    				String contentType = Files.probeContentType(filePath);
+	    				if (contentType == null) {
+	    					contentType = "application/octet-stream";
+	    				}
+
+	    				return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+	    						.header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+	    						.body(resource);
+
+	    			} catch (MalformedURLException e) {
+	    				return ResponseEntity.badRequest().body(null);
+	    			} catch (Exception e) {
+	    				return ResponseEntity.status(500).body(null);
+	    			}
+	    		}
 }

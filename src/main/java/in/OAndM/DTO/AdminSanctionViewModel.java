@@ -99,4 +99,6 @@ public class AdminSanctionViewModel {
 	private Integer projSubType;
 	
 	private Integer type;
+	
+	private String aaFileUrl;
 }
