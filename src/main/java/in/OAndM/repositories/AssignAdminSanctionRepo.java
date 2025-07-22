@@ -10,5 +10,9 @@ import in.OAndM.core.BaseRepository;
 
 
 public interface AssignAdminSanctionRepo  extends  BaseRepository<AdminAssignWorksEntity, Integer>{
+	
+Long countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
+	
+	void deleteByWorkId(Integer workId);
 
 }

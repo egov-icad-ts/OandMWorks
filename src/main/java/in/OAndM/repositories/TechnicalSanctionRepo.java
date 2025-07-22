@@ -11,5 +11,9 @@ public interface TechnicalSanctionRepo   extends  BaseRepository<TechnicalSancti
 //	public List<TechnicalSanctionEntity> findByworkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
 	
 	public List<TechnicalSanctionEntity> findByAdminSanctionsWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
+	
+	Long countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
+	
+	void deleteByWorkId(Integer workId);
 
 }

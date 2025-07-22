@@ -12,4 +12,8 @@ public interface AgreementsRepo extends  BaseRepository<AgreementsEntity, Intege
 	public AgreementsEntity findByworkIdAndAgreementIdAndIsLatestAndDeleteFlagAndBillsIsLatestAndBillsDeleteFlag(Integer workId,Integer agreementId,Boolean isLatest,Boolean deleteFlag,Boolean billsIsLatest,Boolean billsDeleteFlag);
 
 	public AgreementsEntity findByworkIdAndAgreementIdAndIsLatestAndDeleteFlag(Integer workId,Integer agreementId,Boolean isLatest,Boolean deleteFlag);
+	
+	Long countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
+	
+	void deleteByWorkId(Integer workId);
 }

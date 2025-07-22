@@ -29,5 +29,7 @@ public interface AdminSanctionService  {
 
 	public BaseResponse<HttpStatus , List<AdminSanctionsModel>> getAdminSanctionByUserByAuthorityByFinyear(Integer unit,Integer circle,Integer division,Integer subdivision,Integer approvedId,Integer finyear);
 	
-	public BaseResponse<HttpStatus, AdminSanctionsModel> getcircle(Integer unitId);
-}
+	public BaseResponse<HttpStatus, AdminSanctionsModel> updateAdminSanctions(AdminSanctionsModel admin);
+	
+	public BaseResponse<HttpStatus, String> deleteByWorkId(Integer WorkId);
+ }

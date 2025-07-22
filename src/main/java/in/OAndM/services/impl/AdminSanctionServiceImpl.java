@@ -1,5 +1,6 @@
 package in.OAndM.services.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,14 +12,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import in.OAndM.DTO.AdminAssignWorksModel;
 import in.OAndM.DTO.AdminSanctionsModel;
 import in.OAndM.DTO.TechnicalSanctionsModel;
+import in.OAndM.Entities.AdminSanctionsBackupEntity;
 import in.OAndM.Entities.AdminSanctionsEntity;
+import in.OAndM.Entities.AgreementsEntity;
+import in.OAndM.Entities.BillsEntity;
 import in.OAndM.Entities.TechnicalSanctionEntity;
 import in.OAndM.config.AppConstant;
 import in.OAndM.core.BaseResponse;
 import in.OAndM.core.BaseServiceImpl;
+import in.OAndM.mappers.AdminSanctionBackupMapper;
+import in.OAndM.repositories.AdminSanctionBackupRepo;
 import in.OAndM.repositories.AdminSanctionRepo;
+import in.OAndM.repositories.AgreementsRepo;
+import in.OAndM.repositories.AssignAdminSanctionRepo;
+import in.OAndM.repositories.BillsRepo;
+import in.OAndM.repositories.TechnicalSanctionRepo;
 import in.OAndM.services.AdminSanctionService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -34,7 +45,24 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 	@Autowired
 	AdminSanctionRepo adminSanctionRepo;
 	
-
+	@Autowired
+	AdminSanctionBackupRepo asBackupRepo;
+	
+	@Autowired
+	private AdminSanctionBackupMapper asBackupMapper;
+	
+	@Autowired
+	BillsRepo billsRepo;
+	
+	@Autowired
+	AgreementsRepo agmtRepo;
+	
+	@Autowired
+	TechnicalSanctionRepo tsRepo;
+	
+	@Autowired
+	AssignAdminSanctionRepo assignAsRepo;
+	
 
 	private static final Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
@@ -262,7 +290,7 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		
 		logger.debug(appConstant.getValue(AppConstant.GET_SERVICE_STARTED));
 		BaseResponse<HttpStatus, List<AdminSanctionsModel>> responseJson = new BaseResponse<>();
-		List<AdminSanctionsEntity> entities = adminSanctionRepo.findByUnitIdAndCircleIdAndDivisionIdAndSubDivisionIdAndIsAssignedFalseAndIsLatestTrueAndDeleteFlagFalse(unit, circle, division, subDivision);
+		List<AdminSanctionsEntity> entities = adminSanctionRepo.findByUnitIdAndCircleIdAndDivisionIdAndSubDivisionIdAndIsAssignedTrueAndIsLatestTrueAndDeleteFlagFalse(unit, circle, division, subDivision);
 		
 		List<AdminSanctionsModel> models = mapper.mapEntityToModel(entities);
 		
@@ -274,12 +302,86 @@ public class AdminSanctionServiceImpl extends BaseServiceImpl<AdminSanctionsEnti
 		return responseJson;
 	}
 
-
-	 
 	@Override
-	public BaseResponse<HttpStatus, AdminSanctionsModel> getcircle(Integer unitId) {
+	public BaseResponse<HttpStatus, AdminSanctionsModel> updateAdminSanctions(AdminSanctionsModel admin) {
 		// TODO Auto-generated method stub
+	
+		BaseResponse<HttpStatus, AdminSanctionsModel> responseJson = new BaseResponse<>();
+			int i=0;   String remarks="yes";
+			
+			  AdminSanctionsEntity  existingRecord = adminSanctionRepo.findByworkIdAndIsLatestAndDeleteFlag(admin.getWorkId(), true, false);
+			  
 		
-		return null;
+				  if (existingRecord != null) {
+					  AdminSanctionsBackupEntity backupEntity = asBackupMapper.mapFromMainEntity(existingRecord);
+
+					    backupEntity.setBackupOn(LocalDateTime.now()); 
+					    asBackupRepo.save(backupEntity); 
+					}
+				 // responseJson = create(admin);
+				  
+				  i=adminSanctionRepo.updateAdminSanctions(admin.getWorkId(),admin.getFinancialYear(), admin.getWorkName(), admin.getHoaId(), admin.getApprovedById(),
+					 admin.getAdminSanctionAmt(), admin.getReferenceNumber(), admin.getReferenceDate(), admin.getAaFileUrl(), remarks);
+			
+			 if(i>0) {
+					logger.debug(appConstant.getValue(AppConstant.CREATE_SERVICE_SUCCESS));
+			responseJson.setMessage("Successfully Submitted");
+			responseJson.setStatus(HttpStatus.CREATED);
+		} 
+			  
+	else {
+			logger.debug(appConstant.getValue(AppConstant.CREATE_SERVICE_FAILED));
+			responseJson.setMessage("Error in submission");
+			responseJson.setStatus(HttpStatus.BAD_REQUEST);
+		}
+		return responseJson;
+	}
+
+	@Override
+	public BaseResponse<HttpStatus, String> deleteByWorkId(Integer WorkId) {
+		// TODO Auto-generated method stub
+		BaseResponse<HttpStatus, String> responseJson = new BaseResponse<>();
+
+		try {
+		    long billCount = billsRepo.countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(WorkId);
+		    long agmtCount = agmtRepo.countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(WorkId);
+		    long tsCount = tsRepo.countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(WorkId);
+		    long asCount = adminSanctionRepo.countByWorkIdAndIsLatestTrueAndDeleteFlagFalseAndIsAssignedTrue(WorkId);
+
+		    if (billCount > 0) {
+		        billsRepo.deleteByWorkId(WorkId);
+		        agmtRepo.deleteByWorkId(WorkId);
+		        tsRepo.deleteByWorkId(WorkId);
+		        assignAsRepo.deleteByWorkId(WorkId);
+		    	adminSanctionRepo.deleteByWorkId(WorkId);
+		        responseJson.setMessage("Bill, Agreement,Technical Sanction and Admin Sanction details deleted successfully.");
+		    } else if (agmtCount > 0) {
+		    	agmtRepo.deleteByWorkId(WorkId);
+		        tsRepo.deleteByWorkId(WorkId);
+		        assignAsRepo.deleteByWorkId(WorkId);
+		    	adminSanctionRepo.deleteByWorkId(WorkId);
+		        responseJson.setMessage("Agreement,Technical Sanction and Admin Sanction details deleted successfully.");
+		    } else if (tsCount > 0) {
+		        tsRepo.deleteByWorkId(WorkId);
+		        assignAsRepo.deleteByWorkId(WorkId);
+		    	adminSanctionRepo.deleteByWorkId(WorkId);
+		        responseJson.setMessage("Technical Sanction and Admin Sanction details deleted successfully.");
+		    }else if(asCount > 0) {
+		    	assignAsRepo.deleteByWorkId(WorkId);
+		    	adminSanctionRepo.deleteByWorkId(WorkId);
+		    	responseJson.setMessage("Admin Sanction details deleted successfully.");
+		    }
+		    else {
+		        responseJson.setMessage("No records found to delete.");
+		    }
+		    responseJson.setSuccess(true);
+		    responseJson.setStatus(HttpStatus.OK);
+
+		} catch (Exception e) {
+		    responseJson.setSuccess(false);
+		    responseJson.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+		    responseJson.setMessage("Error occurred during deletion: " + e.getMessage());
+		}
+		return responseJson;	
 	}
 }

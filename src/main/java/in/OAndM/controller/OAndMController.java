@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -510,17 +511,21 @@ public class OAndMController {
 //		String adminURL = "O&MWorks" + File.separator + "AdminSanctionFiles" + File.separator + saveFileName;
 //		adminFileType = temps[temps.length - 1].toLowerCase();
 		
-		 StringBuilder ext = new StringBuilder();
-	        String savedPath = handleFileUpload( admin.getAdminFileUrl(), "AdminSanctionFiles", ext );
+		StringBuilder ext = new StringBuilder();
 
-		if (savedPath!=null) {
-			admin.setAaFileUrl(savedPath);
-			response = adminSanctionService.insertAdminSanctions(admin);
-		} else {
+		if (admin.getAdminFileUrl() != null) {
+		    // Handle the uploaded file
+		    String savedPath = handleFileUpload(admin.getAdminFileUrl(), "AdminSanctionFiles", ext);
 
-			response.setMessage("Only PDF files are allowed.");
-			response.setStatus(HttpStatus.BAD_REQUEST);
-		}
+		    if (savedPath != null && "pdf".equalsIgnoreCase(ext.toString())) {
+		        admin.setAaFileUrl(savedPath);
+		        response = adminSanctionService.insertAdminSanctions(admin);
+		    } else {
+		        response.setMessage("Only PDF files are allowed.");
+		        response.setStatus(HttpStatus.BAD_REQUEST);
+		    }
+
+		} 
 
 		return new ResponseEntity<>(response, response.getStatus());
 	}
@@ -740,5 +745,44 @@ public class OAndMController {
 	    			} catch (Exception e) {
 	    				return ResponseEntity.status(500).body(null);
 	    			}
+	    		}
+	    		
+	    		@PostMapping(value = "/updateAdminSanctions")
+	    		public ResponseEntity<BaseResponse<HttpStatus,AdminSanctionsModel>> updateAdminSanctions(
+	    				@ModelAttribute AdminSanctionsModel admin) {
+	    			BaseResponse<HttpStatus, AdminSanctionsModel> response = new BaseResponse<>();
+
+	    			StringBuilder ext = new StringBuilder();
+
+	    			if (admin.getAdminFileUrl() != null) {
+	    			    String savedPath = handleFileUpload(admin.getAdminFileUrl(), "AdminSanctionFiles", ext);
+	    			    
+	    			    if ("pdf".equalsIgnoreCase(ext.toString())) {
+	    			        admin.setAaFileUrl(savedPath);
+	    			    } else {
+	    			        response.setMessage("Only PDF files are allowed.");
+	    			        response.setStatus(HttpStatus.BAD_REQUEST);
+	    			        return new ResponseEntity<>(response, response.getStatus());
+	    			    }
+
+	    			} else {
+	    			    if (admin.getAaFileUrl() == null || admin.getAaFileUrl().isEmpty()) {
+	    			        response.setMessage("No file uploaded and no existing file found.");
+	    			        response.setStatus(HttpStatus.BAD_REQUEST);
+	    			        return new ResponseEntity<>(response, response.getStatus());
+	    			    }
+	    			   
+	    			}
+	    			response = adminSanctionService.updateAdminSanctions(admin);
+	    			return new ResponseEntity<>(response, response.getStatus());
+
+	    		}
+	    		
+	    		@DeleteMapping(value="deleteByWorkId")
+	    		public ResponseEntity<BaseResponse<HttpStatus, String>> deleteByWorkId(@RequestParam Integer workId) {
+	    			// Call service method to delete the unit
+	    			BaseResponse<HttpStatus, String> response = adminSanctionService.deleteByWorkId(workId);
+
+	    			return new ResponseEntity<>(response, HttpStatus.CREATED); // 201 Created
 	    		}
 }

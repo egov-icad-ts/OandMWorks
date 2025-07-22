@@ -2,6 +2,7 @@ package in.OAndM.DTO;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +109,10 @@ public class AdminSanctionsModel {
 
 	
 	private String unitName;
+	
+	private String modifiedRemarks;
+	
+	private LocalDateTime modifiedOn;
 	
 	
 

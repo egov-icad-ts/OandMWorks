@@ -62,6 +62,7 @@ public class AdminSanctionViewServiceImpl extends BaseServiceImpl<AdminSanctionV
 				adminModel.setHeadOfAccount(work.getHeadOfAccount());
 				adminModel.setApprovedByName(work.getApprovedByName());
 				adminModel.setFinancialYear(work.getFinancialYear());
+				adminModel.setFinYear(work.getFinYear());
 				adminViewModel.add(adminModel);
 			}
 			}

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 
 import in.OAndM.DTO.BillsModel;
+import in.OAndM.Entities.AdminSanctionsEntity;
 import in.OAndM.Entities.BillsEntity;
 
 public interface BillsRepo extends  BaseRepository<BillsEntity, Integer>{
@@ -73,6 +74,10 @@ public interface BillsRepo extends  BaseRepository<BillsEntity, Integer>{
 			+ " and aa.financialYear=:financialYear and aa.workTypeId=:workTypeId and aa.approvedById IN :approvedByIds ")
 	public List<BillsModel> findbillsEntityViewEntityByFinancialYearAndWorkTypeIdAndApprovedByIdIn(Integer financialYear,Integer workTypeId,List<Integer> approvedByIds,Integer type);
 	
+	BillsEntity findByWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
 	
+	Long countByWorkIdAndIsLatestTrueAndDeleteFlagFalse(Integer workId);
+	
+	void deleteByWorkId(Integer workId);
 
 }

@@ -1,4 +1,3 @@
-
 package in.OAndM.Entities;
 
 import java.math.BigDecimal;
@@ -6,17 +5,11 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.hibernate.annotations.SQLRestriction;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
@@ -27,23 +20,24 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="o_m_admin_sanction")
+@Table(name="o_m_admin_sanction_backup")
 @EqualsAndHashCode(callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminSanctionsEntity {
+public class AdminSanctionsBackupEntity {
 	
+	@Column(name = "admin_backup_id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_sanction_backup_seq")
+	@SequenceGenerator(name = "admin_sanction_backup_seq", sequenceName = "o_m_admin_sanction_backup_admin_backup_id_seq", allocationSize = 1)
+	@NotNull
+	private Integer adminBackupId;
 	
 	@Column(name = "admin_id")
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "admin_sanction_seq")
-	@SequenceGenerator(name = "admin_sanction_seq", sequenceName = "o_m_admin_sanction_admin_id_seq", allocationSize = 1)
-	@NotNull
 	private Integer adminId;
 	
-//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "work_id_seq")
-//    @SequenceGenerator(name = "work_id_seq", sequenceName = "work_approval_details_work_id_seq", allocationSize = 1)
+
     @Column(name = "work_id", unique = true)
 	 private Integer workId ;
 	
@@ -70,8 +64,6 @@ public class AdminSanctionsEntity {
 	
 	@Column(name = "hoa_id")
 	private Integer hoaId ;
-	
-
 	
 	@Column(name = "approved_by_name")
 	private String approvedByName ;
@@ -151,33 +143,17 @@ public class AdminSanctionsEntity {
 	@Column(name = "work_type_id")
 	private Integer workTypeId;
 	
-	@OneToOne(fetch = FetchType.LAZY)
-	 @JoinColumn(name = "approved_by_id", referencedColumnName = "authority_id",insertable=false, updatable=false)
-	  private WorkApprovedAuthorityMst authoritymst ;
+	@Column(name = "updated_on")
+	private LocalDateTime updatedOn;
 	
-	  @OneToMany(mappedBy = "adminSanctions" ,fetch = FetchType.LAZY)
-	  @SQLRestriction("delete_flag = 'false' AND is_latest='true'")
-	  private List<TechnicalSanctionEntity> technEntries;
-	  
-//	  @OneToOne(mappedBy = "assignAdminSanction", fetch = FetchType.LAZY) 
-//		private AdminAssignWorksEntity adminAssignWorksEntities ;
-	  
-	  @Column(name = "updated_on", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	  private LocalDateTime updatedOn;
-	  
-	  @Column(name = "modified_on", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-		private LocalDateTime modifiedOn;
+	@Column(name = "backup_on", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private LocalDateTime backupOn;
 
 	  @PrePersist
 	  public void prePersist() {
-	      LocalDateTime now = LocalDateTime.now(); // Get the current timestamp
-	      this.updatedOn = now; // Optionally set updatedAt to the current timestamp as well
-	      this.isLatest = true; 
-	      this.deleteFlag = false; 
-	      this.isAssigned=false;
-	      
+	      LocalDateTime now = LocalDateTime.now(); 
+	      this.backupOn = now;     
 	    
 	  }
-	 
-	 
+
 }
